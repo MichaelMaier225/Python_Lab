@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="/Snake.css">
+</head>
+<body>
+    <h1>🐍 Snake Game</h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <p id="score">Score: 0</p>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const gridSize = 20;
+        let snake = [{ x: 160, y: 200 }];
+        let direction = "RIGHT";
+        let food = spawnFood();
+        let gameOver = false;
+        let score = 0;
+
+        document.addEventListener("keydown", e => {
+            if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+            if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+            if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+            if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+        });
+
+        function spawnFood() {
+            let newFood;
+            let isOnSnake;
+
+            do {
+                isOnSnake = false;
+                const x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+                const y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+                newFood = { x, y };
+
+                for (let i = 0; i < snake.length; i++) {
+                    if (snake[i].x === newFood.x && snake[i].y === newFood.y) {
+                        isOnSnake = true;
+                        break;
+                    }
+                }
+            } while (isOnSnake);
+
+            return newFood;
+        }
+
+        function drawRoundedRect(x, y, size, radius, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + size - radius, y);
+            ctx.quadraticCurveTo(x + size, y, x + size, y + radius);
+            ctx.lineTo(x + size, y + size - radius);
+            ctx.quadraticCurveTo(x + size, y + size, x + size - radius, y + size);
+            ctx.lineTo(x + radius, y + size);
+            ctx.quadraticCurveTo(x, y + size, x, y + size - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.fill();
+        }
+
+        function gameLoop() {
+            if (gameOver) return;
+
+            const head = { ...snake[0] };
+            if (direction === "UP") head.y -= gridSize;
+            if (direction === "DOWN") head.y += gridSize;
+            if (direction === "LEFT") head.x -= gridSize;
+            if (direction === "RIGHT") head.x += gridSize;
+
+            if (
+                head.x < 0 || head.x >= canvas.width ||
+                head.y < 0 || head.y >= canvas.height ||
+                snake.some(segment => segment.x === head.x && segment.y === head.y)
+            ) {
+                gameOver = true;
+                alert("Game Over! Final Score: " + score);
+                return;
+            }
+
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                food = spawnFood();
+                score++;
+                document.getElementById("score").textContent = "Score: " + score;
+            } else {
+                snake.pop();
+            }
+
+            ctx.fillStyle = "#1a1a1a";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < snake.length; i++) {
+                const segment = snake[i];
+                const gradient = ctx.createLinearGradient(segment.x, segment.y, segment.x + gridSize, segment.y + gridSize);
+                gradient.addColorStop(0, "#00ff99");
+                gradient.addColorStop(1, "#0066ff");
+                drawRoundedRect(segment.x, segment.y, gridSize, 5, gradient);
+            }
+
+            drawRoundedRect(food.x, food.y, gridSize, 5, "#ff3333");
+        }
+
+        setInterval(gameLoop, 120);
+    </script>
+</body>
+</html>
