@@ -1,0 +1,12 @@
+Python/Queens of Sparkles/
+Python/**/.env
+Python/**/.env.*
+Python/**/OPENAI.py
+Python/**/*.bin
+Python/**/*.pdf
+Python/**/chroma.sqlite3*
+Python/**/__pycache__/
+Python/**/.ipynb_checkpoints/
+SAVN/**/.env
+SAVN/**/.env.*
+SAVN/**/node_modules/

@@ -1,0 +1,37 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE settings
+.idea/
+.vscode/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Private projects
+/Queens of Sparkles/
+/Python Files for Work/Queen of Sparkles/
+/App Development//Python Files for Work/
+
+/Python Files for Work/
+/App Development/
+*.sqlite3
+/Ethan_Elite_Workout_System.xlsx
