@@ -1,0 +1,16 @@
+EXPERIMENTAL LIVE STEAM REINFORCEMENT LEARNING
+
+1. Extract these files into your CenterPerksAI folder.
+2. Run Install_Live_Game_RL.bat once.
+3. Launch The Escapists in windowed mode and enter a safe open area.
+4. Run Run_Live_Game_RL.bat and type START.
+5. Focus the game within five seconds.
+6. F6 rewards the last move, F7 penalizes it, F8 stops and saves.
+
+WARNING: The agent moves randomly at first and has NO navigation, inventory,
+escape detection, obstacle handling, or automatic resets. Use a disposable save.
+It is real Q-learning from live game screenshots and human feedback, but it is
+NOT a fully autonomous escape bot. Your old rl_model.json is a different state
+space and cannot be transferred into this learner.
+
+Saved results: real_game_q.json, real_game_log.jsonl
