@@ -60,3 +60,11 @@ FAQ revised to five customer-oriented questions: getting started, timing, mainte
 Final ownership and recurring price update: Ongoing maintenance is prominent in the estimator ($15/mo or $150/yr Starter; $25/mo or $250/yr Business) but not included in the one-time launch total. First month care billed at launch. Future maintenance requires explicit opt-in. Canceling care does not authorize taking a fully paid website offline. Clients must keep domain and hosting paid; transfer where needed.
 
 Contract protections update: added privacy.html; 60-day workmanship warranty, defined routine maintenance exclusions, overdue/inactive-project process, documented cancellation settlement, explicit acceptance/handoff, privacy notice, and Louisiana law/informal resolution language. Check hosting provider analytics/cookies and update privacy disclosures to actual deployed services. Legal review recommended.
+
+
+## Portfolio upgrade
+The selected-work section now includes three fictional visual concepts and desktop/mobile preview controls. The new files are portfolio-upgrade.css and portfolio-upgrade.js. Portfolio photos load from Unsplash and need an internet connection. Open index.html to preview. Other site content, pricing and legal terms remain unchanged.
+
+
+## Premium studio update
+The Our Work section now uses a premium interactive showcase. Three standalone fictional demo sites (`demo-landscaping.html`, `demo-cleaning.html`, `demo-coffee.html`) can be opened individually. Keep all files in the same directory. Images load from Unsplash when online. Prices, policies, and other site sections are unchanged.
