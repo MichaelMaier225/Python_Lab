@@ -1,0 +1,51 @@
+MAIER WEB SOLUTIONS — CLIENT WEBSITE AGREEMENT (TEMPLATE)
+
+Client / business: _____________________________  Email: __________________________
+Agreement date: ______________________________  Project contact: __________________
+
+1. SCOPE AND DELIVERABLES
+Package: [ ] Starter 1 page [ ] Business up to 4 simple pages [ ] Custom
+Pages / deliverables: ______________________________________________________
+Included features and basic search setup: ___________________________________
+Excluded features / third-party services: ___________________________________
+Client provides/approves copy, photos, logo, rights and business information.
+One consolidated in-scope revision round included; extras need written approval.
+
+2. SCHEDULE AND APPROVAL
+Start: __________ Review: __________ Target launch: __________
+Client materials/access due: __________  Feedback due: __________
+Client reviews site and provides consolidated feedback within 7 calendar days of review link, or communicates a revised date. Silence is not approval. Final website balance due after express approval and before launch/handoff.
+
+3. PRICES AND PAYMENT
+Agreed website build price: $________
+50% deposit to start: $________  50% after approval before launch: $________
+First month maintenance at launch: $________ ($15 Starter / $25 Business)
+Total through launch: $________
+Approved domain, hosting, third-party charges and applicable taxes are separate.
+Invoice due dates: __________. If an invoice is over 7 days overdue, we may pause unfinished work after written reminder. We will not disable a separately fully paid live website for an unpaid new project.
+
+4. PAUSES, CANCELLATION, AND SETTLEMENT
+If essential client materials or feedback are over 14 days late, we may pause after a written reminder. After 30 days inactive, a final written notice gives at least 7 days to respond before closing the project. On cancellation, we document work completed and value it using the milestones/rates below, not exceeding the agreed website price unless additional work was separately approved. Prior payments count toward that value; any excess is refunded, any balance invoiced, subject to law. No blanket nonrefundable deposit or automatic cancellation fee.
+Milestone values or agreed cancellation work rate: __________________________
+
+5. MAINTENANCE AND REQUESTED CHANGES
+First month of maintenance is charged at launch. For subsequent care, client must affirmatively opt in; no automatic enrollment or renewal.
+[ ] No ongoing care [ ] Starter $15/month [ ] Starter $150/year
+[ ] Business $25/month [ ] Business $250/year
+Routine maintenance: periodic site loading, navigation/contact link checks, minor technical upkeep of delivered site. Not continuous monitoring, uptime guarantee, unlimited support, third-party outages, or new content. Customer-requested edits $20/hour with advance approval; major work separately quoted. Workmanship defects in our original implementation reported within 60 days after launch corrected without extra labor charges, regardless of maintenance enrollment, excluding customer/third-party changes. Annual care covers 12 months after first separately billed month; no auto-renewal. Refund unused full months at 1/12 annual price per unused month; no partial-month proration.
+
+6. OWNERSHIP, HOSTING, AND HANDOFF
+After full payment, client owns final custom deliverables, subject to third-party licenses and identified pre-existing reusable tools. Client owns and renews their domain and approved paid services. Canceling care does not authorize taking down or withholding a fully paid website. If hosting is in our account, parties coordinate a reasonable transfer or a separately agreed hosting arrangement; free indefinite hosting is not promised. After full payment, client may request a reasonable export and basic handoff instructions.
+Hosting account owner: ___________________ Domain owner: ____________________
+Third-party subscriptions / renewal responsibility: _________________________
+
+7. QUALITY, RESPONSIBILITY, AND DISPUTES
+We will perform services with reasonable care and skill. We do not guarantee rankings, traffic, leads, sales, or uninterrupted third-party service. Client confirms rights to submitted content and accuracy of business claims. Louisiana law generally applies where permitted. Contact us to attempt informal resolution; no mandatory arbitration or exclusive court venue is imposed by this template. No provision waives non-waivable legal rights. Any negotiated liability cap or additional dispute terms must be reviewed and expressly added here: ________________________________________
+
+8. RATE CHANGES AND TERMS
+Agreed project fee is honored for defined scope. Maintenance rate changes require at least 60 days written notice; prepaid annual rate is honored through its paid term. Client confirms receipt of Terms of Service and Privacy Policy, incorporated by reference where applicable. Signed agreement controls in a conflict to the extent permitted by law.
+
+Client signature: _________________________ Date: __________
+Maier Web Solutions: _____________________ Date: __________
+
+DRAFT TEMPLATE — Have a Louisiana attorney review before relying on it for paying customers.

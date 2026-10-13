@@ -10,12 +10,27 @@ ENV_GET_SAVE_DIRECTORY = 31
 ENV_SET_SUPPORT_NO_GAME = 18
 DEVICE_JOYPAD = 1
 MEMORY_SYSTEM_RAM = 2
+ENV_SET_MEMORY_MAPS = 36
+EWRAM_START = 0x02000000
+EWRAM_SIZE = 0x40000
 
 class GameInfo(C.Structure):
     _fields_ = [('path', C.c_char_p), ('data', C.c_void_p), ('size', C.c_size_t), ('meta', C.c_char_p)]
 
 class SystemInfo(C.Structure):
     _fields_ = [('library_name', C.c_char_p), ('library_version', C.c_char_p), ('valid_extensions', C.c_char_p), ('need_fullpath', C.c_bool), ('block_extract', C.c_bool)]
+
+class MemoryDescriptor(C.Structure):
+    _fields_ = [
+        ('flags', C.c_uint64), ('ptr', C.c_void_p),
+        ('offset', C.c_size_t), ('start', C.c_size_t),
+        ('select', C.c_size_t), ('disconnect', C.c_size_t),
+        ('len', C.c_size_t), ('addrspace', C.c_char_p),
+    ]
+
+class MemoryMap(C.Structure):
+    _fields_ = [('descriptors', C.POINTER(MemoryDescriptor)),
+                ('num_descriptors', C.c_uint)]
 
 ENV_CB = C.CFUNCTYPE(C.c_bool, C.c_uint, C.c_void_p)
 VIDEO_CB = C.CFUNCTYPE(None, C.c_void_p, C.c_uint, C.c_uint, C.c_size_t)
@@ -35,6 +50,7 @@ class Emulator:
             raise FileNotFoundError(f'Missing core or ROM: {core_path}, {rom_path}')
         self.core = C.CDLL(str(core_path))
         self.pressed = set()
+        self._memory_regions = []
         self.frame = np.zeros((160, 240, 3), dtype=np.uint8)
         self._rom_path = str(rom_path).encode('utf-8')
         self._system_dir = str(Path(system_dir or rom_path.parent).resolve()).encode('utf-8')
@@ -83,6 +99,20 @@ class Emulator:
         self._closed = False
 
     def _environment(self, command, data):
+        if command == ENV_SET_MEMORY_MAPS:
+            # Core-advertised pointers; no guessed memory offsets or unsafe scanning.
+            if not data:
+                return False
+            maps = C.cast(data, C.POINTER(MemoryMap)).contents
+            self._memory_regions = []
+            for i in range(min(int(maps.num_descriptors), 256)):
+                d = maps.descriptors[i]
+                if d.ptr and d.len:
+                    self._memory_regions.append((
+                        int(d.start), int(d.len), int(d.ptr),
+                        int(d.offset), int(d.select), int(d.disconnect)
+                    ))
+            return True
         if command == ENV_SET_PIXEL_FORMAT:
             # 0 = 0RGB1555, 1 = XRGB8888, 2 = RGB565
             fmt = C.cast(data, C.POINTER(C.c_int))[0]
@@ -149,6 +179,23 @@ class Emulator:
         size = self.core.retro_get_memory_size(MEMORY_SYSTEM_RAM)
         ptr = self.core.retro_get_memory_data(MEMORY_SYSTEM_RAM)
         return C.string_at(ptr, size) if ptr and size else b''
+
+    def ewram(self):
+        """Read GBA EWRAM if the Libretro core advertises a direct memory map.
+
+        Returns None when no safe mapping is exposed by this core.
+        """
+        for start, length, ptr, offset, select, disconnect in self._memory_regions:
+            # Require a direct contiguous mapping covering the entire EWRAM range.
+            # Do not dereference uncertain mirrors or bank-switched mappings.
+            if disconnect != 0:
+                continue
+            if start <= EWRAM_START and EWRAM_START + EWRAM_SIZE <= start + length:
+                relative = EWRAM_START - start
+                if select and (EWRAM_START & select) != (start & select):
+                    continue
+                return C.string_at(ptr + offset + relative, EWRAM_SIZE)
+        return None
 
     def close(self):
         if not self._closed:
