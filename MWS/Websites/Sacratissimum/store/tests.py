@@ -15,10 +15,21 @@ from .models import Product, ProductImage, ProductVariant
 class StorefrontTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.product = Product.objects.create(name="A real sample", slug="sample", description="A thoughtful design.", price=Decimal("29.95"), is_published=True, is_featured=True)
-        cls.draft = Product.objects.create(name="Private draft", slug="draft", description="Hidden", price=Decimal("30"))
+        cls.product = Product.objects.create(
+            name="A real sample",
+            slug="sample",
+            description="A thoughtful design.",
+            price=Decimal("29.95"),
+            is_published=True,
+            is_featured=True,
+        )
+        cls.draft = Product.objects.create(
+            name="Private draft", slug="draft", description="Hidden", price=Decimal("30")
+        )
         ProductVariant.objects.create(product=cls.product, size="M", color="Ivory")
-        ProductVariant.objects.create(product=cls.product, size="XL", color="Secret color", is_active=False)
+        ProductVariant.objects.create(
+            product=cls.product, size="XL", color="Secret color", is_active=False
+        )
 
     def test_public_pages_and_navigation(self):
         for name in ("home", "collection", "story"):
@@ -35,7 +46,9 @@ class StorefrontTests(TestCase):
             self.assertContains(response, "A real sample")
             self.assertNotContains(response, "Private draft")
         self.assertEqual(self.client.get(self.draft.get_absolute_url()).status_code, 404)
-        self.assertEqual(self.client.get(reverse("store:product", args=["missing"])).status_code, 404)
+        self.assertEqual(
+            self.client.get(reverse("store:product", args=["missing"])).status_code, 404
+        )
 
     def test_detail_has_money_variants_and_placeholder(self):
         response = self.client.get(self.product.get_absolute_url())
@@ -80,7 +93,13 @@ class StorefrontTests(TestCase):
         self.assertContains(response, "&lt;script&gt;")
 
     def test_collection_search_color_and_sort(self):
-        other = Product.objects.create(name="Another design", slug="other", description="A cross design", price=Decimal("19.00"), is_published=True)
+        other = Product.objects.create(
+            name="Another design",
+            slug="other",
+            description="A cross design",
+            price=Decimal("19.00"),
+            is_published=True,
+        )
         ProductVariant.objects.create(product=other, size="S", color="Charcoal")
         route = reverse("store:collection")
         response = self.client.get(route, {"q": "cross"})
@@ -96,9 +115,13 @@ class StorefrontTests(TestCase):
 
     def test_collection_no_matches_and_safe_parameters(self):
         route = reverse("store:collection")
-        self.assertContains(self.client.get(route, {"q": "no-such-product"}), "No pieces match just yet.")
+        self.assertContains(
+            self.client.get(route, {"q": "no-such-product"}), "No pieces match just yet."
+        )
         self.assertEqual(self.client.get(route, {"sort": "invalid"}).status_code, 200)
-        self.assertContains(self.client.get(route, {"q": '<script>alert(1)</script>'}), "&lt;script&gt;")
+        self.assertContains(
+            self.client.get(route, {"q": "<script>alert(1)</script>"}), "&lt;script&gt;"
+        )
         response = self.client.get(route, {"color": "Secret color"})
         self.assertEqual(list(response.context["products"]), [])
         self.assertNotIn("Secret color", response.context["colors"])
@@ -124,7 +147,14 @@ class StorefrontTests(TestCase):
             image = BytesIO()
             Image.new("RGB", (10, 10), "white").save(image, format="PNG")
             for index in range(2):
-                ProductImage.objects.create(product=self.product, image=SimpleUploadedFile(f"tee-{index}.png", image.getvalue(), content_type="image/png"), alt_text=f"Ivory tee view {index}", display_order=index)
+                ProductImage.objects.create(
+                    product=self.product,
+                    image=SimpleUploadedFile(
+                        f"tee-{index}.png", image.getvalue(), content_type="image/png"
+                    ),
+                    alt_text=f"Ivory tee view {index}",
+                    display_order=index,
+                )
             response = self.client.get(self.product.get_absolute_url())
             self.assertContains(response, "data-gallery-src=", count=2)
             self.assertContains(response, 'alt="Ivory tee view 0"')
@@ -137,7 +167,10 @@ class StorefrontTests(TestCase):
 
     def test_admin_product_management(self):
         from django.contrib.auth import get_user_model
-        owner = get_user_model().objects.create_superuser("owner", "owner@example.test", "test-only-password")
+
+        owner = get_user_model().objects.create_superuser(
+            "owner", "owner@example.test", "test-only-password"
+        )
         self.client.force_login(owner)
         response = self.client.get(reverse("admin:store_product_change", args=[self.product.pk]))
         self.assertEqual(response.status_code, 200)
@@ -174,6 +207,7 @@ class DemoCommandTests(TestCase):
 
     def test_repeated_preview_loading_has_no_duplicates_or_accounts(self):
         from django.contrib.auth import get_user_model
+
         for _ in range(3):
             call_command("load_demo_products", publish=True, stdout=StringIO())
         self.assertEqual(Product.objects.count(), 3)

@@ -1,5 +1,6 @@
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404, render
+
 from .models import Product, ProductVariant
 
 
@@ -33,13 +34,23 @@ def collection(request):
         products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
     if color:
         products = products.filter(variants__is_active=True, variants__color=color).distinct()
-    colors = ProductVariant.objects.filter(
-        product__is_published=True, is_active=True
-    ).order_by("color").values_list("color", flat=True).distinct()
-    return render(request, "store/collection.html", {
-        "products": products.order_by(*ordering[sort]), "colors": colors,
-        "query": query, "selected_color": color, "selected_sort": sort,
-    })
+    colors = (
+        ProductVariant.objects.filter(product__is_published=True, is_active=True)
+        .order_by("color")
+        .values_list("color", flat=True)
+        .distinct()
+    )
+    return render(
+        request,
+        "store/collection.html",
+        {
+            "products": products.order_by(*ordering[sort]),
+            "colors": colors,
+            "query": query,
+            "selected_color": color,
+            "selected_sort": sort,
+        },
+    )
 
 
 def product(request, slug):

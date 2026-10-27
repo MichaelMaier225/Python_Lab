@@ -1,8 +1,10 @@
 import uuid
 from decimal import Decimal
+
 from django.conf import settings
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
+from django.urls import reverse
 
 
 class CustomerProfile(models.Model):
@@ -23,12 +25,16 @@ class Order(models.Model):
         REFUNDED = "refunded", "Refunded"
         PART_REFUNDED = "part_refunded", "Partially refunded"
 
+    OPEN_STATUSES = (Status.CREATING, Status.PENDING)
+
     reference = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     email = models.EmailField()
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.CREATING)
     currency = models.CharField(max_length=3, default="usd")
-    subtotal = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(Decimal("0"))])
+    subtotal = models.DecimalField(
+        max_digits=12, decimal_places=2, validators=[MinValueValidator(Decimal("0"))]
+    )
     shipping = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     tax = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -52,14 +58,24 @@ class Order(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        constraints = [models.UniqueConstraint(fields=["customer"], condition=models.Q(status__in=["creating", "pending"]), name="one_open_checkout_per_customer")]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["customer"],
+                condition=models.Q(status__in=["creating", "pending"]),
+                name="one_open_checkout_per_customer",
+            )
+        ]
 
     def clean(self):
         from django.core.exceptions import ValidationError
+
         if self.fulfilled_at and (not self.paid_at or self.status == self.Status.REVIEW):
             raise ValidationError("Only a paid order can be marked fulfilled.")
         if self.tracking_url and not self.tracking_url.startswith("https://"):
             raise ValidationError("Tracking links must use HTTPS.")
+
+    def get_absolute_url(self):
+        return reverse("commerce:order", args=[self.reference])
 
     def __str__(self):
         return str(self.reference)
@@ -84,7 +100,9 @@ class InventoryMovement(models.Model):
     variant = models.ForeignKey("store.ProductVariant", on_delete=models.PROTECT)
     delta = models.IntegerField()
     reason = models.CharField(max_length=240)
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
+    )
     order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
 

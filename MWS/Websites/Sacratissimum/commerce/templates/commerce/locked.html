@@ -1,1 +1,9 @@
-{% extends 'store/base.html' %}{% block title %}Please try again later — Sacratissimum{% endblock %}{% block content %}<section class="account-panel wrap"><h1>Take a moment.</h1><p>Too many sign-in attempts. Please wait 15 minutes before trying again.</p><a class="text-link" href="{% url 'commerce:password_reset' %}">Reset your password</a></section>{% endblock %}
+{% extends 'store/base.html' %}
+{% block title %}Please try again later — Sacratissimum{% endblock %}
+{% block content %}
+  <section class="account-panel wrap">
+    <h1>Take a moment.</h1>
+    <p>Too many sign-in attempts. Please wait 15 minutes before trying again.</p>
+    <a class="text-link" href="{% url 'commerce:password_reset' %}">Reset your password</a>
+  </section>
+{% endblock %}

@@ -15,3 +15,5 @@ local.sqlite3
 *.pem
 *.key
 backups/
+
+.ruff_cache/

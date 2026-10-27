@@ -88,3 +88,25 @@ This configuration is for sharing a disposable showcase, not a live shop. Real p
 ## Store foundation
 
 See [COMMERCE.md](COMMERCE.md) for inventory/barcodes, verified accounts, administrator MFA, permanent database/media/email setup, Stripe sandbox setup, stock/payment recovery, Git protection and the remaining live-store requirements. US shipping is selected; its fee is not decided. No live checkout or external services have been enabled.
+
+## Code layout and development checks
+
+- `commerce/accounts.py`: registration, verification and staff authenticator enrollment.
+- `commerce/views.py`: HTTP handlers for bags, checkout and owned orders.
+- `commerce/inventory.py`: stock changes and reservations.
+- `commerce/payments.py`: Stripe integration and verified payment transitions.
+- `commerce/security.py`: shared preview access, throttles and verification tokens.
+- `commerce/notifications.py`: transactional email.
+- `commerce/admin_site.py`: the configured Django admin authentication policy.
+
+Install `requirements-dev.txt` for consistent formatting and linting:
+
+```bash
+python -m pip install -r requirements-dev.txt
+ruff check .
+ruff format --check .
+python manage.py test
+```
+
+Account templates are formatted with `djhtml --tabwidth 2 commerce/templates`.
+The cleanup preserves existing URLs and database migrations.
