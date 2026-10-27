@@ -1,51 +1,49 @@
-MAIER WEB SOLUTIONS — CLIENT WEBSITE AGREEMENT (TEMPLATE)
+MAIER WEB SOLUTIONS — MANAGED WEBSITE CLIENT AGREEMENT (DRAFT)
 
-Client / business: _____________________________  Email: __________________________
-Agreement date: ______________________________  Project contact: __________________
+Client / business: __________________________  Email: __________________________
+Agreement date: ___________________________  Project contact: __________________
 
-1. SCOPE AND DELIVERABLES
-Package: [ ] Starter 1 page [ ] Business up to 4 simple pages [ ] Custom
-Pages / deliverables: ______________________________________________________
-Included features and basic search setup: ___________________________________
-Excluded features / third-party services: ___________________________________
-Client provides/approves copy, photos, logo, rights and business information.
-One consolidated in-scope revision round included; extras need written approval.
+1. PROJECT SCOPE
+Package: [ ] Starter (1 page) [ ] Business (up to 4 simple pages) [ ] Custom
+Agreed pages / features: ____________________________________________________
+Exclusions and approved third-party services: _________________________________
+Client supplies or approves accurate text, images, logo, and business information and confirms usage rights. One consolidated in-scope design revision round is included.
 
-2. SCHEDULE AND APPROVAL
+2. SETUP AND LAUNCH
 Start: __________ Review: __________ Target launch: __________
-Client materials/access due: __________  Feedback due: __________
-Client reviews site and provides consolidated feedback within 7 calendar days of review link, or communicates a revised date. Silence is not approval. Final website balance due after express approval and before launch/handoff.
+Client materials due: __________ Feedback due: __________
+Customer will provide consolidated review feedback within 7 calendar days or agree to a new date. Silence is not approval. Launch requires express approval and payment.
 
-3. PRICES AND PAYMENT
-Agreed website build price: $________
-50% deposit to start: $________  50% after approval before launch: $________
-First month maintenance at launch: $________ ($15 Starter / $25 Business)
+3. SETUP PRICE AND REQUIRED CARE
+Agreed website setup price: $________
+50% setup deposit: $________  50% due after approval/before launch: $________
+Required first month of managed care at launch: [ ] Starter $20 [ ] Business $30
 Total through launch: $________
-Approved domain, hosting, third-party charges and applicable taxes are separate.
-Invoice due dates: __________. If an invoice is over 7 days overdue, we may pause unfinished work after written reminder. We will not disable a separately fully paid live website for an unpaid new project.
+Care billing choice after first month (choose one, affirmative authorization required):
+[ ] Starter $20/month  [ ] Starter $200/year
+[ ] Business $30/month [ ] Business $300/year
+Care is required while Maier Web Solutions hosts/manages the site. Subscriptions continue at the selected interval until canceled; renewal dates, payment authorization, and cancellation instructions will be provided before the first recurring charge. Approved third-party charges and applicable taxes are disclosed separately.
 
-4. PAUSES, CANCELLATION, AND SETTLEMENT
-If essential client materials or feedback are over 14 days late, we may pause after a written reminder. After 30 days inactive, a final written notice gives at least 7 days to respond before closing the project. On cancellation, we document work completed and value it using the milestones/rates below, not exceeding the agreed website price unless additional work was separately approved. Prior payments count toward that value; any excess is refunded, any balance invoiced, subject to law. No blanket nonrefundable deposit or automatic cancellation fee.
-Milestone values or agreed cancellation work rate: __________________________
+4. INCLUDED CARE AND REQUEST LIMITS
+Managed care includes hosting on a suitable platform, periodic basic checks and minor technical upkeep. Starter includes up to 1 hour/month and Business up to 2 hours/month of reasonable minor edits to existing text, images, business hours, contact details and similar existing content. Requests should be consolidated and emailed. Unused time does not roll over. Work beyond the time limit or outside the scope (new pages, redesigns, custom features or extensive content creation) is not included and may be separately quoted at a fixed price with written approval. Original-work defects reported within 60 days of launch are corrected without counting toward the edit allowance, excluding third-party or customer changes.
 
-5. MAINTENANCE AND REQUESTED CHANGES
-First month of maintenance is charged at launch. For subsequent care, client must affirmatively opt in; no automatic enrollment or renewal.
-[ ] No ongoing care [ ] Starter $15/month [ ] Starter $150/year
-[ ] Business $25/month [ ] Business $250/year
-Routine maintenance: periodic site loading, navigation/contact link checks, minor technical upkeep of delivered site. Not continuous monitoring, uptime guarantee, unlimited support, third-party outages, or new content. Customer-requested edits $20/hour with advance approval; major work separately quoted. Workmanship defects in our original implementation reported within 60 days after launch corrected without extra labor charges, regardless of maintenance enrollment, excluding customer/third-party changes. Annual care covers 12 months after first separately billed month; no auto-renewal. Refund unused full months at 1/12 annual price per unused month; no partial-month proration.
+5. COMMUNICATIONS AND BOUNDARIES
+Routine requests are handled by email Monday–Friday excluding holidays. Target acknowledgment within two business days; target completion of straightforward approved edits within five business days after complete materials. These are not guarantees. No 24/7, emergency, or unlimited support. Repeated calls/messages do not increase priority. Threats, harassment or serious repeated violations may justify ending service with appropriate notice and any refunds required by law.
 
-6. OWNERSHIP, HOSTING, AND HANDOFF
-After full payment, client owns final custom deliverables, subject to third-party licenses and identified pre-existing reusable tools. Client owns and renews their domain and approved paid services. Canceling care does not authorize taking down or withholding a fully paid website. If hosting is in our account, parties coordinate a reasonable transfer or a separately agreed hosting arrangement; free indefinite hosting is not promised. After full payment, client may request a reasonable export and basic handoff instructions.
-Hosting account owner: ___________________ Domain owner: ____________________
-Third-party subscriptions / renewal responsibility: _________________________
+6. CANCELLATION, HOSTING AND HANDOFF
+Customer may cancel at any time by emailing Maier Web Solutions. We confirm cancellation and stop future renewals after the current paid period. Managed hosting normally ends after the paid period, with at least 14 days written notice and a reasonable opportunity to export/transfer the website. A standard export of fully paid custom deliverables and basic handoff instructions are available upon request without an additional labor charge. Customer owns and controls their domain and may move to another host. We will not hold customer-owned domains hostage or disable unrelated, separately paid services. Annual prepaid unused full months are refunded at 1/12 of the annual fee per unused month after the effective cancellation date, subject to law; partial months are not prorated. No cancellation penalty.
 
-7. QUALITY, RESPONSIBILITY, AND DISPUTES
-We will perform services with reasonable care and skill. We do not guarantee rankings, traffic, leads, sales, or uninterrupted third-party service. Client confirms rights to submitted content and accuracy of business claims. Louisiana law generally applies where permitted. Contact us to attempt informal resolution; no mandatory arbitration or exclusive court venue is imposed by this template. No provision waives non-waivable legal rights. Any negotiated liability cap or additional dispute terms must be reviewed and expressly added here: ________________________________________
+7. OWNERSHIP AND THIRD PARTIES
+After full setup payment, customer owns the agreed final custom deliverables, subject to third-party licenses and identified pre-existing reusable tools. Maier Web Solutions retains rights to its pre-existing reusable components. Hosting service may end on cancellation, but customer ownership of paid deliverables does not. Domain registrant: __________  Hosting provider/account: __________  Other subscriptions: __________
 
-8. RATE CHANGES AND TERMS
-Agreed project fee is honored for defined scope. Maintenance rate changes require at least 60 days written notice; prepaid annual rate is honored through its paid term. Client confirms receipt of Terms of Service and Privacy Policy, incorporated by reference where applicable. Signed agreement controls in a conflict to the extent permitted by law.
+8. PROJECT PAUSE / PRELAUNCH CANCELLATION
+If client materials or feedback are more than 14 days late, we may pause after written reminder. After 30 days inactive, we may give a final notice with at least 7 days to respond. On prelaunch cancellation, documented completed work is valued by agreed milestones, not above setup price unless additional work was separately approved. Prior payments are credited and excess refunded, subject to law. Milestones/values: ____________________________________
 
+9. SERVICE QUALITY, RATES AND DISPUTES
+Services will be performed with reasonable care and skill. No guarantee of rankings, leads, sales or uninterrupted third-party hosting. At least 60 days written notice for rate increases; prepaid annual price remains fixed for its paid term. Louisiana law generally applies where permitted. Parties first attempt informal resolution. No waiver of non-waivable rights. Signed agreement controls over general terms to extent permitted by law. Any liability cap must be separately negotiated and legally reviewed.
+
+Customer acknowledges receiving the Terms of Service and Privacy Policy and authorizes the selected recurring billing terms.
 Client signature: _________________________ Date: __________
 Maier Web Solutions: _____________________ Date: __________
 
-DRAFT TEMPLATE — Have a Louisiana attorney review before relying on it for paying customers.
+DRAFT — Obtain Louisiana legal review and confirm billing/auto-renewal compliance before use.

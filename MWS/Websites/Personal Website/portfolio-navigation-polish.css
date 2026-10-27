@@ -1,0 +1,19 @@
+/* Clear portfolio navigation and comfortable sticky-header anchor offset */
+#work {
+  scroll-margin-top: 92px;
+}
+.hero .actions a[href="#work"] {
+  white-space: nowrap;
+}
+.hero .hero-slide-link:focus-visible,.hero .hero-slide-arrow:focus-visible,.hero .hero-slide-dots button:focus-visible,.hero .actions a[href="#work"]:focus-visible {
+  outline: 3px solid #85c8ff;
+  outline-offset: 4px;
+}
+@media(max-width:720px) {
+  #work {
+    scroll-margin-top: 82px;
+  }
+  .hero .actions a[href="#work"] {
+    white-space: normal;
+  }
+}

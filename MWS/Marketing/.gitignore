@@ -1,0 +1,16 @@
+# Google OAuth credentials
+credentials.json
+token.json
+
+# Environment variables
+.env
+
+# Local database
+*.sqlite3
+
+# Generated lead files
+*.csv
+
+# Python
+__pycache__/
+.venv/

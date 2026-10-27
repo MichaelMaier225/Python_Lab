@@ -1,0 +1,245 @@
+/* High-legibility pricing redesign: warm canvas, ink typography, clear surfaces. */
+#pricing {
+  background: #edece7!important;
+  color: #142538!important;
+}
+#pricing .section-top h2,#pricing .section-top h2 span {
+  color: #142538!important;
+}
+#pricing .section-top>p {
+  color: #425367!important;
+  font-size: 16px;
+}
+#pricing .kicker {
+  color: #075ba8!important;
+}
+#pricing .pricing-grid {
+  gap: 22px;
+}
+#pricing .plan,#pricing .plan.highlight {
+  background: #fff!important;
+  color: #17283b!important;
+  border: 1px solid #c7d0d6!important;
+  border-radius: 18px!important;
+  padding: 32px!important;
+  box-shadow: 0 12px 28px rgba(11,29,47,.09)!important;
+}
+#pricing .plan.highlight {
+  border: 2px solid #1474d2!important;
+  box-shadow: 0 14px 32px rgba(12,73,133,.13)!important;
+}
+#pricing .plan h3 {
+  font-size: 26px!important;
+  color: #15263a!important;
+}
+#pricing .plan .amount {
+  color: #0c2746!important;
+  font-size: 46px!important;
+}
+#pricing .plan .amount small,#pricing .plan p,#pricing .plan li,#pricing .plan .plan-perk,#pricing .plan-head,#pricing .plan-head>span {
+  color: #34485c!important;
+  font-size: 14px!important;
+  line-height: 1.7!important;
+}
+#pricing .plan li {
+  padding: 7px 0!important;
+}
+#pricing .plan li:before {
+  color: #096ec9!important;
+}
+#pricing .plan .original-price {
+  color: #64748b!important;
+}
+#pricing .plan .launch-label {
+  color: #075ba8!important;
+  background: #e5f2ff!important;
+}
+#pricing .plan .chip {
+  color: #075ba8!important;
+  border-color: #94bce0!important;
+  background: #e9f3ff!important;
+}
+#pricing .plan .chip.neutral {
+  color: #394c5f!important;
+  background: #edf0f3!important;
+  border-color: #cbd3db!important;
+}
+#pricing .plan .plan-perk {
+  background: #edf5fb!important;
+  border: 1px solid #d5e6f3!important;
+  border-radius: 9px;
+  padding: 14px!important;
+  margin-bottom: 20px!important;
+}
+#pricing .plan .btn.outline {
+  color: #0c5ca5!important;
+  border: 2px solid #0c5ca5!important;
+}
+#pricing .plan .btn.primary {
+  background: #096dca!important;
+  color: white!important;
+}
+#pricing .estimate {
+  display: block!important;
+  background: #fff!important;
+  border: 1px solid #c8d1d8!important;
+  color: #142538!important;
+  border-radius: 20px!important;
+  padding: clamp(20px,3vw,38px)!important;
+  box-shadow: 0 14px 34px rgba(10,30,48,.08)!important;
+  margin-top: 26px!important;
+}
+#pricing .estimate .care-header h3 {
+  color: #142538!important;
+  font-size: 29px!important;
+}
+#pricing .estimate .care-header p {
+  color: #405267!important;
+  font-size: 15px!important;
+  max-width: 650px!important;
+}
+#pricing .care-pills span {
+  background: #e8f2fc!important;
+  color: #175386!important;
+  border: 1px solid #b7d5ec!important;
+  font-size: 12px!important;
+}
+#pricing .price-estimator {
+  background: #10253a!important;
+  border: 1px solid #2f516e!important;
+  border-radius: 15px!important;
+  gap: 32px!important;
+  padding: clamp(20px,3vw,32px)!important;
+  margin-top: 22px!important;
+}
+#pricing .estimator-left>label,#pricing .estimator-right .total span,#pricing .estimator-right .maintenance-first-line span,#pricing .estimator-right .launch-total span,#pricing .estimator-right .ongoing-care-line span {
+  color: #eef5fd!important;
+  font-size: 14px!important;
+  font-weight: 600!important;
+}
+#pricing .estimator-left select {
+  background: #f8fbff!important;
+  color: #142538!important;
+  border: 2px solid #8db3d6!important;
+  font-size: 14px!important;
+  min-height: 52px!important;
+}
+#pricing .estimator-hint,#pricing .ongoing-care-note,#pricing .deposit-breakdown,#pricing #recurring {
+  color: #d4e3f1!important;
+  font-size: 13px!important;
+  line-height: 1.7!important;
+}
+#pricing .estimator-right strong {
+  color: #fff!important;
+}
+#pricing #launch-total,#pricing #ongoing-care-price {
+  color: #83c4ff!important;
+}
+#pricing .estimator-right .total,#pricing .estimator-right .maintenance-first-line,#pricing .estimator-right .launch-total,#pricing .estimator-right .ongoing-care-line {
+  border-color: #3c5369!important;
+  padding: 12px 0!important;
+}
+#pricing .estimate-inquiry {
+  background: #1879da!important;
+  color: #fff!important;
+  border-radius: 8px!important;
+  padding: 13px 16px!important;
+  font-size: 13px!important;
+}
+#pricing .care-plans {
+  border-top: 1px solid #cbd5dc!important;
+  gap: 12px!important;
+  margin-top: 28px!important;
+}
+#pricing .care-plans>div,#pricing .care-plans>div+div {
+  background: #f0f4f6!important;
+  border: 1px solid #d8e1e6!important;
+  border-radius: 12px!important;
+  padding: 20px!important;
+  margin-top: 18px!important;
+}
+#pricing .care-plans strong {
+  color: #17283b!important;
+  font-size: 15px!important;
+}
+#pricing .care-plans em,#pricing .annual-option {
+  color: #0965b3!important;
+  font-weight: 800!important;
+}
+#pricing .care-plans p {
+  color: #3b5063!important;
+  font-size: 13px!important;
+  line-height: 1.7!important;
+}
+#pricing .care-footnote,#pricing .fineprint {
+  color: #47596b!important;
+  font-size: 13px!important;
+  line-height: 1.8!important;
+}
+#pricing .care-footnote a {
+  color: #075ca9!important;
+  text-decoration: underline!important;
+}
+#pricing .loyalty-note {
+  background: #e6f0f6!important;
+  color: #344b60!important;
+  border: 1px solid #bcd3e2!important;
+  border-radius: 12px!important;
+  padding: 18px!important;
+  font-size: 13px!important;
+  line-height: 1.7!important;
+}
+#pricing .loyalty-note strong {
+  color: #123b5d!important;
+}
+@media(max-width:720px) {
+  #pricing .pricing-grid,#pricing .price-estimator,#pricing .care-plans {
+    grid-template-columns: 1fr!important;
+  }
+  #pricing .plan,#pricing .plan.highlight {
+    padding: 24px!important;
+  }
+  #pricing .care-plans>div,#pricing .care-plans>div+div {
+    margin-top: 0!important;
+  }
+}
+/* Simplified estimate: remove repeated billing copy and keep one clear subscription summary. */
+#pricing .price-estimator {
+  align-items: start;
+}
+#pricing .estimator-right {
+  display: flex;
+  flex-direction: column;
+}
+#pricing .ongoing-care-summary {
+  margin: 14px 0 18px;
+  padding: 18px;
+  background: #1c3a55;
+  border: 1px solid #456783;
+  border-radius: 12px;
+}
+#pricing .ongoing-care-summary strong {
+  color: #fff !important;
+  display: block;
+  font-size: 19px;
+}
+#pricing .ongoing-care-summary p {
+  color: #d7e7f4 !important;
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 7px 0 0;
+}
+#pricing .estimate-inquiry {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+#pricing .launch-total {
+  margin-top: 4px;
+}
+#pricing .launch-total strong {
+  color: #83c4ff !important;
+  font-size: 27px;
+}

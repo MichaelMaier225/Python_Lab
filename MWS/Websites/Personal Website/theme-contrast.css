@@ -1,0 +1,275 @@
+/* Maier Web Solutions — contrast-led editorial redesign, inspired by contemporary agency design principles. */
+:root {
+  --bg: #f1f2f0;
+  --panel: #fff;
+  --panel2: #e9eef0;
+  --line: #d9e0e3;
+  --text: #162333;
+  --muted: #566579;
+  --blue: #1579e8;
+  --accent: #1579e8;
+}
+body {
+  background: #f1f2f0;
+  color: #162333;
+}
+.header {
+  background: rgba(8,19,32,.97);
+  border-bottom: 1px solid #2b3c50;
+}
+.hero {
+  position: relative;
+  isolation: isolate;
+  background: #091626;
+  color: #fff;
+  min-height: 610px;
+}
+.hero:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: linear-gradient(90deg,rgba(7,19,33,.98) 0%,rgba(7,19,33,.91) 48%,rgba(8,25,41,.72) 100%),url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1800&q=85') center 45%/cover no-repeat;
+}
+.hero:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .18;
+  background: radial-gradient(circle at 77% 45%,#248cf6,transparent 45%);
+}
+.hero .browser {
+  box-shadow: 0 38px 95px #000a;
+  border-color: #8293a5;
+  transform: rotate(-1deg);
+}
+.hero h1 {
+  font-size: clamp(48px,5.5vw,78px);
+  letter-spacing: -.065em;
+  color: white;
+}
+.hero h1 em {
+  color: #84c4ff;
+}
+.hero-copy>p {
+  color: #d9e4ef;
+  font-size: 17px;
+}
+.hero-foot,.hero-foot b {
+  color: #e5edf5;
+}
+.trustbar {
+  background: #dce5e8!important;
+  color: #273c4b;
+  border-color: #ccd8df;
+}
+#services {
+  background: #f0f2f0;
+  color: #1b2937;
+  position: relative;
+}
+#services .tile {
+  background: #fff!important;
+  border: 1px solid #e0e4e3!important;
+  box-shadow: 0 16px 40px #26394c0d!important;
+  border-radius: 15px;
+}
+#services .tile h3 {
+  color: #1c2b3a;
+}
+#work {
+  background: #12283b!important;
+  color: #f4f8ff;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+#work:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 80% 10%,#2b506c 0%,transparent 45%),linear-gradient(135deg,#132c42,#081a2b);
+}
+#work .section-top h2,#work .section-top h3 {
+  color: #fff;
+}
+#work .section-top h2 span {
+  color: #8dc7ff;
+}
+#work .section-top>p {
+  color: #c6d6e4;
+}
+#work .kicker {
+  color: #8cc7ff;
+}
+#work .premium-studio {
+  background: #f8fafb;
+  border: 1px solid #526a80;
+  box-shadow: 0 25px 80px #0006;
+}
+#work .premium-top {
+  background: #edf1f2;
+}
+#work .premium-top h3 {
+  color: #1c2c3b;
+}
+#work .premium-top p {
+  color: #586979;
+}
+#work .premium-selector button {
+  background: #e8eef1;
+  color: #263a4b;
+}
+#work .premium-selector button.active {
+  background: #d0e5f7;
+  box-shadow: inset 0 4px #1779e7;
+}
+#work .premium-preview {
+  background: radial-gradient(circle at 50% 40%,#42627c,#152d42 80%);
+}
+#work .premium-details {
+  background: #f8fafb;
+}
+#work .premium-details h3 {
+  color: #1a2b3b;
+}
+#work .premium-details>p,#work .premium-personal p,#work .premium-details small {
+  color: #5d6d7b;
+}
+#work .premium-personal strong {
+  color: #233747;
+}
+#work .premium-framefoot {
+  color: #dce9f7;
+}
+#work .premium-device button {
+  background: #203e59;
+  color: #fff;
+  border-color: #5c7891;
+}
+#work .premium-device button.active {
+  background: #167be6;
+  border-color: #167be6;
+}
+#pricing {
+  background: #f9f7f2;
+  color: #1a2a38;
+}
+#pricing .plan {
+  background: #fff!important;
+  border-color: #dddcd5!important;
+  box-shadow: 0 14px 36px #473d2a10!important;
+}
+#pricing .plan.highlight {
+  border: 2px solid #1876d7!important;
+  box-shadow: 0 20px 45px #135baf1a!important;
+}
+#pricing .estimate {
+  background: #e8edf0!important;
+  border-color: #d0dce4!important;
+}
+#process {
+  background: #dce5e6;
+  color: #1d2e3c;
+}
+#about {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(90deg,rgba(9,26,41,.97),rgba(11,35,51,.89)),url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=85') center/cover;
+  color: #f8fbff;
+}
+#about .section-top h2,#about .section-top h3,#about h2,#about h3 {
+  color: #fff;
+}
+#about h2 span {
+  color: #8cc7ff;
+}
+#about .section-top>p,#about p {
+  color: #d6e2ed;
+}
+#about .kicker {
+  color: #8dc8ff;
+}
+#about .about-box {
+  background: rgba(255,255,255,.1)!important;
+  border-color: #617589!important;
+  backdrop-filter: blur(8px);
+  color: #fff;
+  box-shadow: none!important;
+}
+#about .about-box h3 {
+  color: #fff;
+}
+#about .about-box p {
+  color: #dce8f2;
+}
+#about .about-box a {
+  color: #a6d4ff;
+}
+#faq {
+  background: #f0f1ef;
+  color: #1a2b39;
+}
+#contact {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(110deg,rgba(7,19,33,.97),rgba(12,40,63,.9)),url('https://images.unsplash.com/photo-1497366858526-0766cadbe8fa?auto=format&fit=crop&w=1600&q=85') center/cover;
+  color: #f5faff;
+}
+#contact h2,#contact h3,#contact .section-top h2 {
+  color: #fff;
+}
+#contact h2 span {
+  color: #93cbff;
+}
+#contact p,#contact .section-top>p {
+  color: #d5e3f0;
+}
+#contact .kicker {
+  color: #91c9ff;
+}
+#contact .contact-panel {
+  background: #f9fbfd!important;
+  color: #182d41;
+  border: 1px solid #b8c8d5!important;
+  box-shadow: 0 22px 55px #0003!important;
+}
+#contact .contact-panel h3 {
+  color: #1a2d40;
+}
+#contact .contact-panel p {
+  color: #546879;
+}
+.footer,footer {
+  background: #071321;
+  color: #dbe7f2;
+}
+.section h2 {
+  letter-spacing: -.055em;
+}
+@media(min-width:900px) {
+  #work .premium-frame-wrap {
+    height: 520px;
+  }
+  #work .premium-preview {
+    padding: 32px;
+  }
+}
+@media(max-width:700px) {
+  .hero {
+    min-height: unset;
+  }
+  .hero:before {
+    background: linear-gradient(90deg,rgba(7,19,33,.96),rgba(7,19,33,.82)),url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1000&q=80') center/cover;
+  }
+  #work .premium-frame-wrap {
+    height: 370px;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .hero .browser {
+    transform: none;
+  }
+}

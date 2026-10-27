@@ -1,0 +1,99 @@
+/* Final sizing and header legibility refinements; loaded after existing themes. */
+@media(min-width:900px) {
+  .wrap {
+    width: min(1080px,calc(100% - 72px))!important;
+  }
+  .hero {
+    padding: 60px 0 58px!important;
+  }
+  .hero-grid {
+    gap: 36px!important;
+  }
+  .hero h1 {
+    font-size: clamp(40px,4.1vw,58px)!important;
+    line-height: 1.12!important;
+  }
+  .section {
+    padding-top: 66px!important;
+    padding-bottom: 66px!important;
+  }
+  .section h2 {
+    font-size: clamp(29px,2.8vw,39px)!important;
+  }
+  #pricing .plan,#pricing .plan.highlight {
+    padding: 25px!important;
+  }
+  #pricing .plan .amount {
+    font-size: 40px!important;
+  }
+  #pricing .plan h3 {
+    font-size: 23px!important;
+  }
+  #pricing .price-estimator {
+    padding: 25px!important;
+  }
+  #pricing .care-plans>div,#pricing .care-plans>div+div {
+    padding: 16px!important;
+  }
+  #pricing .pricing-grid {
+    gap: 18px!important;
+  }
+}
+/* Clear, legible wordmark in the sticky header. */
+.header .logo {
+  gap: 13px!important;
+  font-size: 19px!important;
+  letter-spacing: .025em!important;
+  color: #fff!important;
+  font-weight: 800!important;
+  line-height: 1.12!important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.28);
+}
+.header .logo small {
+  font-size: 11px!important;
+  letter-spacing: .15em!important;
+  color: #dcecff!important;
+  margin-top: 4px!important;
+  font-weight: 700!important;
+}
+.header .brand-icon {
+  width: 47px!important;
+  height: 47px!important;
+  object-fit: contain!important;
+  background: #fff!important;
+  border-radius: 10px!important;
+  padding: 3px!important;
+}
+@media(max-width:600px) {
+  .header .logo {
+    font-size: 16px!important;
+    gap: 9px!important;
+  }
+  .header .logo small {
+    font-size: 9px!important;
+    letter-spacing: .12em!important;
+  }
+  .header .brand-icon {
+    width: 39px!important;
+    height: 39px!important;
+  }
+  .hero {
+    padding-top: 50px!important;
+    padding-bottom: 50px!important;
+  }
+  .hero h1 {
+    font-size: clamp(36px,9vw,49px)!important;
+  }
+}
+/* Trust highlights readability */
+.trustbar {
+  background: #17344d!important;
+  border-block: 1px solid #365675!important;
+}
+.trustbar span {
+  color: #fff!important;
+  font-size: 14px!important;
+  font-weight: 700!important;
+  opacity: 1!important;
+  text-align: center!important;
+}

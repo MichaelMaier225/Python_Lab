@@ -1,0 +1,115 @@
+/* Constrained, responsive hero slideshow */
+.hero .hero-grid {
+  grid-template-columns: minmax(0,1fr) minmax(0,1.12fr)!important;
+  align-items: center;
+  gap: clamp(28px,4vw,58px)!important;
+}
+.hero .hero-copy,.hero #showcase {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+.hero .hero-copy h1 {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.hero #showcase {
+  padding: 14px 0 12px;
+  transform: none!important;
+}
+.hero #showcase .browser {
+  width: 100%;
+  max-width: 100%;
+  transform: none!important;
+  overflow: hidden;
+  border-radius: 14px;
+}
+.hero #showcase .hero-slide-window {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.65;
+  position: relative;
+  overflow: hidden;
+  background: #e9efea;
+}
+.hero #showcase .hero-slide-window iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 1200px!important;
+  height: 820px!important;
+  max-width: none!important;
+  border: 0;
+  pointer-events: none;
+  transform: scale(var(--hero-frame-scale,.45));
+  transform-origin: top left;
+  transition: opacity .22s ease;
+}
+.hero #showcase .hero-slide-window iframe.fading {
+  opacity: .18;
+}
+.hero #showcase .hero-slide-link {
+  display: inline-flex;
+  margin: 12px 0 0;
+  padding: 4px 0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.hero #showcase .hero-slide-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 12px;
+}
+.hero #showcase .hero-slide-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #8aa6c5;
+  background: #163450;
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+}
+.hero #showcase .hero-slide-arrow:hover,.hero #showcase .hero-slide-arrow:focus-visible {
+  background: #267ac1;
+}
+.hero #showcase .hero-slide-dots {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.hero #showcase .hero-slide-dots button {
+  width: 11px;
+  height: 11px;
+  border: 1px solid #c3d5e9;
+  background: #7089a5;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+.hero #showcase .hero-slide-dots button[aria-pressed=true] {
+  width: 26px;
+  border-radius: 10px;
+  background: #fff;
+}
+@media(max-width:850px) {
+  .hero .hero-grid {
+    grid-template-columns: minmax(0,1fr)!important;
+    gap: 30px!important;
+  }
+  .hero #showcase {
+    max-width: 650px;
+    margin-inline: auto;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .hero #showcase .hero-slide-window iframe {
+    transition: none;
+  }
+}

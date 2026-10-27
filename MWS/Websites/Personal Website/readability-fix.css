@@ -1,0 +1,84 @@
+/* Readability fixes for light-background sections and the contact panel.
+   Loaded last to override earlier theme styles without changing the layout. */
+/* Services: darker secondary text and clearly visible action links. */
+#services .section-top > p,
+#services .tile p {
+  color: #425468 !important;
+  font-size: 14px;
+  line-height: 1.65;
+}
+#services .tile a {
+  color: #075eb5 !important;
+  font-size: 13px;
+}
+#services .tile a:hover {
+  color: #003e85 !important;
+  text-decoration: underline;
+}
+#services .tile-icon {
+  color: #116cce !important;
+}
+/* Process: readable step descriptions and number labels. */
+#process .step p {
+  color: #405669 !important;
+  font-size: 14px;
+  line-height: 1.65;
+}
+#process .step h3 {
+  color: #172d40 !important;
+}
+#process .step > span {
+  color: #1168c4 !important;
+}
+/* FAQ: expanded answers were using pale text intended for dark backgrounds. */
+#faq .faqs details p,
+#faq .faqs details[open] p,
+#faq .faqs details > p {
+  color: #354a5e !important;
+  font-size: 14px;
+  line-height: 1.75;
+}
+#faq .faqs summary {
+  color: #172b3d !important;
+  font-size: 14px;
+}
+#faq .faqs summary:hover {
+  color: #075eb5 !important;
+}
+#faq .faqs details {
+  border-color: #9aaab7;
+}
+/* Contact: keep light text on the dark photo, dark text inside the white card. */
+#contact .contact-panel .contact-label,
+#contact .contact-panel .contact-item small {
+  color: #3e5d78 !important;
+  font-size: 11px;
+}
+#contact .contact-panel .contact-item a,
+#contact .contact-panel .contact-item strong {
+  color: #132b42 !important;
+}
+#contact .contact-panel .contact-item button {
+  color: #075eb5 !important;
+  font-size: 12px;
+  font-weight: 700;
+}
+#contact .contact-panel .contact-item span,
+#contact .contact-panel .contact-note,
+#contact .contact-panel p {
+  color: #465d70 !important;
+  font-size: 12px !important;
+  line-height: 1.6;
+}
+#contact .contact-panel .contact-item {
+  border-bottom-color: #a7b7c5;
+}
+#contact .contact-grid > div:first-child > p {
+  color: #e4edf5 !important;
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  #services .tile p, #process .step p, #faq .faqs details p {
+    font-size: 14px;
+  }
+}

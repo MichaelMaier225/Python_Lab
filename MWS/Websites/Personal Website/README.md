@@ -1,70 +1,48 @@
-# Maier Web Solutions — V4
+# Maier Web Solutions
 
-Static HTML/CSS/JavaScript website. No paid services, backend, or build step required.
+Static marketing website for a Louisiana-based small-business web design service.
 
 ## Local preview
-Open `index.html` or run `py -m http.server 8000` inside this folder and visit http://localhost:8000.
 
-## Files
-- `index.html`: full website content
-- `styles.css`: full responsive design
-- `script.js`: menu, pricing estimator, portfolio device preview, reveal effects, copy email
-- `assets/logo.png`: existing logo asset (favicon)
+From this directory, run:
 
-## Before publishing
-- Verify email and phone.
-- Confirm $99 introductory availability and pricing details.
-- Replace fictional Evergreen & Co. demo with a real finished demo later; it is currently explicitly labeled as a concept.
-- Test on phone and desktop.
-- Do not publish your home street address.
-- Contact is by email or telephone; there is no misleading nonfunctional contact form.
-- Google Fonts requires internet; system fallbacks are included.
+```bash
+python -m http.server 8000
+```
 
-## Hosting
-Connect a GitHub repository to Cloudflare Pages using the free plan. Static site, no build command, output directory `/` (repository root).
+Then open `http://localhost:8000` in a browser. No build step or package installation is required.
 
+## Project structure
 
-## V5 changes
-- Replaced the placeholder M. brand mark with the provided Maier Web Solutions logo in header, footer, and About section.
-- Condensed repetitive marketing copy and reduced section spacing.
-- Kept the pricing estimator, responsive preview, and other JavaScript interactions.
+- `index.html` — homepage, sections, and pricing estimator markup.
+- `styles.css` — core site styles.
+- `script.js` — navigation, pricing, portfolio preview, and page interactions.
+- `theme-light.css`, `theme-contrast.css`, `scale-refinement.css` — visual theme refinements.
+- `pricing-readable.css`, `readability-fix.css` — pricing and text contrast improvements.
+- `portfolio-upgrade.css`, `portfolio-navigation-polish.css`, `portfolio-upgrade.js` — interactive portfolio styling and behavior.
+- `hero-slideshow.css`, `hero-slideshow.js` — rotating website demo in the hero.
+- `demo-*.html` — fictional website examples, **not actual client work**.
+- `terms.html`, `privacy.html` — public-facing policies.
+- `Client_Agreement_Template.txt` — agreement draft; seek local legal review before use.
 
+## Pricing
 
-## Refined visual styling
-This edition changes only CSS colors, background lighting, card surfaces, and subtle hover/focus styling. The original V5 layout, copy, JavaScript, and assets are unchanged.
+| Package | Setup | Required managed care | Included minor edits |
+| --- | --- | --- | --- |
+| Starter launch offer (first three qualifying clients) | $100 | $20/month or $200/year | Up to 1 hour/month |
+| Starter regular | $130 | $20/month or $200/year | Up to 1 hour/month |
+| Business | From $349 | $30/month or $300/year | Up to 2 hours/month |
 
+The first month of care is paid at launch. Setup requires a 50% deposit, with the remainder due after approval and before launch. Customers can cancel managed care and request transfer of their paid site files; hosted service ends after the paid period and appropriate notice. New pages and major changes are separately quoted.
 
-V5 Interactive additions: portfolio theme selector, prefilled pricing inquiry, and thin reading progress bar. No backend or dependencies required.
-\nInteractive portfolio studio: three fictional industries, three palettes, working preview Home/Services/Contact tabs, desktop/mobile toggle, all client-side.\n
-FINAL PRICING: $75 first-three-clients introductory Starter (planned regular $125); Business from $349; optional maintenance $15/month up to 30 minutes; additional minor work $15/hour. Client pays domain and paid services separately. 50% deposit and 50% after approval before launch. Coffee concept palette and selected concept label corrected.
+## Publishing checklist
 
-Pricing panel cleaned up: correct $15 maintenance label, responsive estimate CTA, three concise payment-term columns.
+1. Upload all files together to the site root, including any existing `assets/` directory.
+2. Verify the domain, contact links, images, pricing estimator, and demo links.
+3. Check desktop and mobile layouts and the expanded FAQ text.
+4. Confirm the latest terms and agreement match your actual hosting, billing, and cancellation practices.
+5. Test the deployed site before directing customers to it.
 
-Pricing policy update: all builds require $15/month maintenance (up to 30 minutes minor edits); additional approved minor work $20/hour. Ensure written client agreement specifies billing, cancellation, ownership, access, and handoff if maintenance ends.
+**Assets:** This archive does not include the original `assets/` directory. Preserve the existing branding and image files from your deployed project. Some backgrounds and demo photos require an internet connection.
 
-Client-ready pricing: Starter $100 for first three clients then $130; Business from $349. First month maintenance included. Optional thereafter: Starter $15/month for up to 30 minutes minor edits; Business $25/month for up to 60 minutes. Approved minor extra work $20/hour. Three curated demo palettes replace swatch picker.
-
-Annual maintenance: Starter $150/year or $15/month, Business $250/year or $25/month, both beginning after the first included month. Existing client rate protection: 60-day written notice; prepaid annual price locked through term.
-\nFair pricing policy (Oct 2026): Current $100 promotional/$130 regular Starter, Business from $349, Starter care $15 monthly/$150 annually, Business care $25 monthly/$250 annually, extra approved work $20/hr. Future higher prices are not advertised as current charges. New project price changes apply to new quotes; agreed project prices honored. Existing maintenance rates retained when sustainable; 60 days written notice and cancel option for any necessary change; annual prepaid term protected.\n
-Annual care policy: Manual renewal only, no automatic billing. Annual plans start after included first month, last 12 months; cancel anytime, refund unused full months at 1/12 annual rate per unused month, no partial-month refunds. Maintenance price changes require 60 days written notice; prepaid terms retain agreed rates. Confirm terms in signed client agreement and comply with applicable consumer law.
-
-Launch-ready update: shorter pricing footnote, larger small text, payment deposit breakdown, separate terms.html, and Client_Agreement_Template.txt. Confirm terms and local legal compliance before using with paying clients.
-
-CURRENT PRICES (Oct 2026): Starter $100 promotional first 3, $130 regular; Business starting at $349; maintenance and terms unchanged.
-
-Billing revision: website build $100/$130/$349+, first month maintenance billed separately at launch $15 Starter/$25 Business. Total through launch $115/$145/$374 at base prices. Website 50% deposit and balance before launch, first month care at launch. Ongoing monthly/annual maintenance optional after first month; no automatic renewals.\n
-FINAL MAINTENANCE POLICY: Starter $15/mo or $150/year; Business $25/mo or $250/year. Routine upkeep and basic functionality checks included. No bundled editing minutes. Customer-requested edits $20/hour with prior approval. Larger projects separately quoted. Fix defects caused by our original work without extra labor charges, regardless of maintenance status. First month billed separately at launch; ongoing plans optional.
-
-FAQ revised to five customer-oriented questions: getting started, timing, maintenance, ownership, payments/revisions. Pricing and Terms unchanged.
-
-Final ownership and recurring price update: Ongoing maintenance is prominent in the estimator ($15/mo or $150/yr Starter; $25/mo or $250/yr Business) but not included in the one-time launch total. First month care billed at launch. Future maintenance requires explicit opt-in. Canceling care does not authorize taking a fully paid website offline. Clients must keep domain and hosting paid; transfer where needed.
-
-Contract protections update: added privacy.html; 60-day workmanship warranty, defined routine maintenance exclusions, overdue/inactive-project process, documented cancellation settlement, explicit acceptance/handoff, privacy notice, and Louisiana law/informal resolution language. Check hosting provider analytics/cookies and update privacy disclosures to actual deployed services. Legal review recommended.
-
-
-## Portfolio upgrade
-The selected-work section now includes three fictional visual concepts and desktop/mobile preview controls. The new files are portfolio-upgrade.css and portfolio-upgrade.js. Portfolio photos load from Unsplash and need an internet connection. Open index.html to preview. Other site content, pricing and legal terms remain unchanged.
-
-
-## Premium studio update
-The Our Work section now uses a premium interactive showcase. Three standalone fictional demo sites (`demo-landscaping.html`, `demo-cleaning.html`, `demo-coffee.html`) can be opened individually. Keep all files in the same directory. Images load from Unsplash when online. Prices, policies, and other site sections are unchanged.
+**Billing:** The pricing calculator is informational; it does not collect payments or create subscriptions.

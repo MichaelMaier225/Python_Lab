@@ -1,0 +1,250 @@
+/* Maier Web Solutions: balanced light editorial theme. Loaded last. */
+:root {
+  --bg: #f7f8fa;
+  --panel: #ffffff;
+  --panel2: #eef2f6;
+  --line: #dce3eb;
+  --text: #162235;
+  --muted: #566477;
+  --blue: #1268ce;
+  --accent: #1268ce;
+}
+body {
+  background: #f7f8fa;
+  color: #162235;
+}
+.header {
+  background: rgba(8,21,38,.97);
+  border-bottom: 1px solid #1c3552;
+}
+.header nav a {
+  color: #c9d7e9;
+}
+.header nav a:hover,.header nav a.active {
+  color: white;
+}
+.header .logo {
+  color: white;
+}
+.header .navbutton {
+  color: white;
+}
+.hero {
+  background: radial-gradient(ellipse at 80% 35%,#1c3856 0%,#0b1b2f 52%,#081525 100%);
+  color: #f5f8ff;
+}
+.hero h1,.hero h2,.hero h3 {
+  color: #fff;
+}
+.hero-copy>p {
+  color: #cbd7e7;
+}
+.hero-foot {
+  color: #c6d4e4;
+}
+.hero-foot b {
+  color: #fff;
+}
+.trustbar {
+  background: #eaf0f6!important;
+  color: #34465a;
+  border-top: 1px solid #dbe3ed;
+  border-bottom: 1px solid #dbe3ed;
+}
+.section {
+  background: #fff;
+  color: #162235;
+}
+#services {
+  background: #fff;
+}
+#work {
+  background: #f3f6f9!important;
+}
+#pricing {
+  background: #fff;
+}
+#process {
+  background: #f3f6f9;
+}
+#about {
+  background: #fff;
+}
+#faq {
+  background: #f3f6f9;
+}
+#contact {
+  background: #fff;
+}
+.section h2,.section h3,.section-top h2 {
+  color: #162235;
+}
+.section h2 span {
+  color: #1268ce;
+}
+.section-top>p,.section p,.tile p,.plan p {
+  color: #566477;
+}
+.kicker {
+  color: #1769bc;
+}
+.tile,.plan,.plan.highlight,.about-box,.contact-panel {
+  background: #fff!important;
+  color: #17283b;
+  border: 1px solid #dce4ed!important;
+  box-shadow: 0 12px 32px rgba(18,38,64,.055)!important;
+}
+.tile h3,.plan h3,.about-box h3,.contact-panel h3 {
+  color: #14243a;
+}
+.tile a,.section a:not(.btn):not(.navbutton) {
+  color: #1268ce;
+}
+.btn.primary,.navbutton {
+  background: #126ee0;
+  color: #fff!important;
+}
+.btn.ghost,.btn.outline {
+  border-color: #b7c9db;
+  color: #1a4c7c;
+}
+#pricing .estimate {
+  background: #f2f6fa!important;
+  border: 1px solid #d6e1ec!important;
+  color: #182a3d;
+}
+#pricing .care-header h3,#pricing .estimate h3,#pricing .care-plans strong {
+  color: #14263a;
+}
+#pricing .care-header p,#pricing .care-plans p,#pricing .care-footnote,#pricing .estimator-hint,#pricing .estimate-result>span,#pricing .deposit-breakdown {
+  color: #51657a;
+}
+#pricing .care-pills span {
+  color: #245783;
+  border-color: #c4d7e8;
+}
+#pricing .price-estimator {
+  background: #fff;
+  border-color: #d9e3ec;
+}
+#pricing .estimator-left select {
+  background: #fff;
+  color: #14283d;
+  border-color: #c6d5e3;
+}
+#pricing .total span,#pricing .maintenance-first-line,#pricing .launch-total,#pricing .ongoing-care-line {
+  color: #42576b;
+}
+#pricing .total strong,#pricing .maintenance-first-line strong,#pricing .launch-total strong,#pricing .ongoing-care-line strong {
+  color: #15365d;
+}
+#pricing .loyalty-note {
+  background: #edf4fb;
+  color: #40566e;
+  border-color: #d4e4f3;
+}
+#pricing .loyalty-note strong {
+  color: #18324e;
+}
+#pricing .plan-perk,#pricing .annual-option {
+  color: #1769bc!important;
+}
+#work .premium-studio {
+  background: #fff;
+  border: 1px solid #d9e2ec;
+  box-shadow: 0 20px 55px rgba(20,43,67,.08);
+}
+#work .premium-top {
+  background: #fff;
+  border-bottom: 1px solid #e0e7ef;
+}
+#work .premium-top h3,#work .premium-details h3 {
+  color: #17283d;
+}
+#work .premium-top p,#work .premium-details>p,#work .premium-personal p,#work .premium-details small {
+  color: #56677a;
+}
+#work .premium-overline,#work .premium-number {
+  color: #1769bc;
+}
+#work .premium-mark {
+  color: #c0d4e9;
+}
+#work .premium-selector {
+  border-color: #e1e8f0;
+}
+#work .premium-selector button {
+  background: #f5f7fa;
+  color: #23364a;
+  border-color: #e1e8f0;
+}
+#work .premium-selector button.active {
+  background: #e6f1fd;
+  box-shadow: inset 0 3px #1677df;
+}
+#work .premium-selector button span,#work .premium-selector button small {
+  color: #506982;
+}
+#work .premium-preview {
+  background: #e9eef4;
+}
+#work .premium-details {
+  border-color: #dfe6ee;
+}
+#work .premium-personal {
+  border-color: #dce5ee;
+}
+#work .premium-personal strong {
+  color: #1b2c40;
+}
+#work .premium-contact {
+  color: #1268ce;
+}
+#work .premium-framefoot {
+  color: #3d5369;
+}
+#work .premium-device button {
+  background: #fff;
+  color: #23435e;
+  border-color: #b6cadc;
+}
+#work .premium-device button.active {
+  background: #126ee0;
+  color: white;
+  border-color: #126ee0;
+}
+#work .premium-browser {
+  border-color: #c5d3e2;
+  box-shadow: 0 18px 36px rgba(20,42,65,.13);
+}
+#work .premium-browserbar {
+  background: #17283e;
+  color: #dce9f7;
+}
+#work .premium-frame-wrap.mobile iframe {
+  box-shadow: 0 0 0 200px #dce5ee;
+}
+footer,.footer {
+  background: #081525;
+  color: #dbe8f7;
+}
+footer a,.footer a {
+  color: #dbe8f7;
+}
+/* Preserve readable dark text on dark utility panels where appropriate */
+#contact .contact-panel a:not(.btn) {
+  color: #1268ce;
+}
+@media(max-width:700px) {
+  .section {
+    padding-top: 58px;
+    padding-bottom: 58px;
+  }
+  .hero {
+    padding-top: 65px;
+    padding-bottom: 65px;
+  }
+  #work .premium-selector button {
+    padding: 14px 9px;
+  }
+}

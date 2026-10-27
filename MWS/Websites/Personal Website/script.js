@@ -1,12 +1,40 @@
-const menu=document.querySelector('.menu');const nav=document.querySelector('#nav');menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false');}));document.querySelector('#year').textContent=new Date().getFullYear();const pkg=document.querySelector('#package'),total=document.querySelector('#total'),recurring=document.querySelector('#recurring');function updatePrice(){const business=pkg.value==='349';const monthly=business?25:15;total.textContent='$'+pkg.value;recurring.textContent='First month $'+monthly+' at launch · After that, optional $'+monthly+'/month or $'+(business?250:150)+'/year';document.querySelector('#first-care').textContent='$'+monthly;document.querySelector('#launch-total').textContent='$'+(Number(pkg.value)+monthly);document.querySelector('#ongoing-care-price').textContent='$'+monthly+'/month';document.querySelector('.ongoing-care-note').textContent='Or $'+(business?250:150)+'/year. Choose whether to continue before month two. Canceling maintenance does not take your website offline; you remain responsible for domain and hosting renewals.';}pkg.addEventListener('change',updatePrice);updatePrice();const preview=document.querySelector('#preview-site');document.querySelectorAll('.preview-btn').forEach(btn=>btn.addEventListener('click',()=>{const mobile=btn.dataset.device==='mobile';preview.classList.toggle('mobile',mobile);document.querySelectorAll('.preview-btn').forEach(b=>{const selected=b===btn;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});}));const sections=[...document.querySelectorAll('main section[id]')];const links=[...nav.querySelectorAll('a[href^="#"]')];if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible');});},{threshold:.08});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));const navObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.hash==='#'+entry.target.id));}});},{rootMargin:'-25% 0px -60% 0px'});sections.forEach(s=>navObserver.observe(s));}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));const copy=document.querySelector('#copy-email');const toast=document.querySelector('#toast');let toastTimer;copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText('maierwebsolutions@gmail.com');toast.textContent='Email address copied';}catch{toast.textContent='Email: maierwebsolutions@gmail.com';}toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2400);});
+const menu = document.querySelector('.menu');
+const nav = document.querySelector('#nav');
+menu.addEventListener('click', () => {
+  const open = nav.classList.toggle('open');
+  menu.setAttribute('aria-expanded', String(open));
+});
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  nav.classList.remove('open');
+  menu.setAttribute('aria-expanded', 'false');
+}));
+document.querySelector('#year').textContent = new Date().getFullYear();
+
+const pkg = document.querySelector('#package');
+const total = document.querySelector('#total');
+function updatePrice() {
+  const business = pkg.value === '349';
+  const monthly = business ? 30 : 20;
+  const annual = business ? 300 : 200;
+  const setup = Number(pkg.value);
+  total.textContent = '$' + setup;
+  document.querySelector('#first-care').textContent = '$' + monthly;
+  document.querySelector('#launch-total').textContent = '$' + (setup + monthly);
+  document.querySelector('#ongoing-care-price').textContent = '$' + monthly + '/month after launch';
+  document.querySelector('#annual-care').textContent = 'Or $' + annual + '/year. Hosting, maintenance, and minor edits included. Subscription required while we host your site.';
+}
+pkg.addEventListener('change', updatePrice);
+updatePrice();
+
+const preview=document.querySelector('#preview-site');document.querySelectorAll('.preview-btn').forEach(btn=>btn.addEventListener('click',()=>{const mobile=btn.dataset.device==='mobile';preview.classList.toggle('mobile',mobile);document.querySelectorAll('.preview-btn').forEach(b=>{const selected=b===btn;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));});}));const sections=[...document.querySelectorAll('main section[id]')];const links=[...nav.querySelectorAll('a[href^="#"]')];if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible');});},{threshold:.08});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));const navObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.hash==='#'+entry.target.id));}});},{rootMargin:'-25% 0px -60% 0px'});sections.forEach(s=>navObserver.observe(s));}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));const copy=document.querySelector('#copy-email');const toast=document.querySelector('#toast');let toastTimer;copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText('maierwebsolutions@gmail.com');toast.textContent='Email address copied';}catch{toast.textContent='Email: maierwebsolutions@gmail.com';}toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2400);});
 // Price estimator creates a ready-to-send inquiry without requiring a server.
 const inquiry=document.querySelector('#estimate-inquiry');
 function updateInquiry(){
  const business=pkg.value==='349';
  const selected=business?'Business (from $349)':pkg.value==='100'?'Starter introductory ($100)':'Starter regular ($130)';
- const monthly=business?25:15;
+ const monthly=business?30:20;
  const subject='Website inquiry - '+selected;
- const body='Hello Maier Web Solutions,\n\nI am interested in the '+selected+' website package.\nFirst month of maintenance: $'+monthly+' due at launch. Total through launch: $'+(Number(pkg.value)+monthly)+'. After that: $'+monthly+'/month or $'+(business?250:150)+'/year, optional to continue.\nRoutine upkeep is included in maintenance. Customer-requested edits: $20/hour with approval; larger projects quoted separately.\n\nMy business: \nWhat I need: \n\nThank you!';
+ const body='Hello Maier Web Solutions,\n\nI am interested in the '+selected+' website package.\nRequired first month of managed care: $'+monthly+' due at launch. Total through launch: $'+(Number(pkg.value)+monthly)+'. Required ongoing subscription: $'+monthly+'/month or $'+(business?300:200)+'/year until canceled.\nHosting, routine upkeep, and reasonable minor edits (Starter up to 1 hour/month; Business up to 2 hours/month) are included. Larger projects are separately quoted at fixed prices.\n\nMy business: \nWhat I need: \n\nThank you!';
  inquiry.href='mailto:maierwebsolutions@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
 }
 pkg.addEventListener('change',updateInquiry);
@@ -57,18 +85,4 @@ select.addEventListener('change',()=>{panel='home';render();});
 buttons.forEach(b=>b.addEventListener('click',()=>{panel=b.dataset.panel;render();}));
 cta.addEventListener('click',()=>{panel=panel==='contact'?'home':panel==='home'&&select.value==='coffee'?'services':'contact';render();});
 render();
-})();
-
-// Show the two-part payment schedule beside the selected package.
-(() => {
- const select=document.querySelector('#package');
- const display=document.querySelector('#deposit-breakdown');
- if(!select||!display)return;
- function renderDeposit(){
-  const price=Number(select.value);
-  const half=(price/2).toLocaleString('en-US',{style:'currency',currency:'USD'});
-  const care=select.value==='349'?25:15;display.textContent=`Website: ${half} deposit · ${half} after approval, before launch · $${care} first-month care at launch`;
- }
- select.addEventListener('change',renderDeposit);
- renderDeposit();
 })();
