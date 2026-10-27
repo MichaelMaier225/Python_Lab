@@ -1,2 +1,8 @@
 {% extends 'admin/base_site.html' %}
-{% block content %}<h2>{{ variant }}</h2><p>Physical: {{ variant.stock_quantity }} · Reserved: {{ variant.reserved_quantity }}</p><form method="post">{% csrf_token %}{{ form.as_p }}<button type="submit">Record adjustment</button></form>{% endblock %}
+{% block content %}
+  <h2>{{ variant }}</h2>
+  <p>Physical: {{ variant.stock_quantity }} · Reserved: {{ variant.reserved_quantity }}</p>
+  <form method="post">
+    {% csrf_token %}{{ form.as_p }}<button type="submit">Record adjustment</button>
+  </form>
+{% endblock %}

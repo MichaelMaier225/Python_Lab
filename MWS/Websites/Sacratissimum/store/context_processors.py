@@ -1,4 +1,5 @@
 """Content-based asset URLs keep CSS/JS fresh after a Git pull and restart."""
+
 from functools import lru_cache
 from hashlib import sha256
 from pathlib import Path

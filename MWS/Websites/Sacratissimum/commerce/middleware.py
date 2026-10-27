@@ -3,8 +3,9 @@ import unicodedata
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
 from django.shortcuts import render
-from .services import limited, limit_key
+
 from .models import RequestLimit
+from .security import limit_key, limited
 
 
 class LoginThrottleMiddleware:
@@ -13,6 +14,7 @@ class LoginThrottleMiddleware:
     Uses REMOTE_ADDR only through Axes defaults; no arbitrary forwarded IP is trusted.
     Runs after CSRF validation, and also covers incorrect admin OTP attempts.
     """
+
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -28,4 +30,6 @@ class LoginThrottleMiddleware:
 
 @receiver(user_logged_in)
 def reset_login_limit(sender, request, user, **kwargs):
-    RequestLimit.objects.filter(key=limit_key("login", unicodedata.normalize("NFKC", user.get_username().strip()))).delete()
+    RequestLimit.objects.filter(
+        key=limit_key("login", unicodedata.normalize("NFKC", user.get_username().strip()))
+    ).delete()

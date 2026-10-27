@@ -3,11 +3,10 @@
 Run with the project's venv Python. Requires installed requirements and Bash.
 Uses a random throwaway secret, temporary SQLite databases and a local port.
 """
+
 import gzip
-from html.parser import HTMLParser
 import http.client
 import os
-from pathlib import Path
 import secrets
 import signal
 import socket
@@ -16,6 +15,8 @@ import subprocess
 import sys
 import tempfile
 import time
+from html.parser import HTMLParser
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 HOST = "sacratissimum-smoke.onrender.com"
@@ -57,8 +58,12 @@ def serve_and_check(environment):
     environment = {**environment, "PORT": str(port)}
     with tempfile.TemporaryFile(mode="w+") as log:
         process = subprocess.Popen(
-            ["bash", "start.sh"], cwd=ROOT, env=environment,
-            stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
+            ["bash", "start.sh"],
+            cwd=ROOT,
+            env=environment,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
         )
         try:
             deadline = time.monotonic() + 30
@@ -76,7 +81,14 @@ def serve_and_check(environment):
                 time.sleep(0.15)
 
             urls = set()
-            for path in ("/", "/collection/", "/our-story/", "/collection/demo-most-sacred/", "/collection/demo-walk-in-faith/", "/collection/demo-abide/"):
+            for path in (
+                "/",
+                "/collection/",
+                "/our-story/",
+                "/collection/demo-most-sacred/",
+                "/collection/demo-walk-in-faith/",
+                "/collection/demo-abide/",
+            ):
                 status, _, body = request(port, path)
                 assert status == 200, f"Page failed: {path}: {status}"
                 parser = Assets()
@@ -88,21 +100,32 @@ def serve_and_check(environment):
                 assert status == 200 and body, f"Static asset failed: {url}"
                 assert headers.get("X-Content-Type-Options") == "nosniff", url
                 if ".css" in url:
-                    assert headers.get("Content-Encoding") == "gzip", "WhiteNoise CSS compression missing"
+                    assert headers.get("Content-Encoding") == "gzip", (
+                        "WhiteNoise CSS compression missing"
+                    )
                     assert b"Sacratissimum" in gzip.decompress(body)
             assert request(port, "/", host="untrusted.example.test")[0] == 400
             assert request(port, "/", https=False)[0] == 301
             assert request(port, "/not-a-real-page/")[0] == 404
             admin_status, _, admin_body = request(port, "/admin/login/")
-            assert admin_status == 200 and b"otp_token" in admin_body, "Production admin must request OTP"
-            assert request(port, "/account/register/")[0] == 503, "Disposable preview must not collect customer accounts"
+            assert admin_status == 200 and b"otp_token" in admin_body, (
+                "Production admin must request OTP"
+            )
+            assert request(port, "/account/register/")[0] == 503, (
+                "Disposable preview must not collect customer accounts"
+            )
             assert request(port, "/bag/")[0] == 503
 
             with sqlite3.connect(environment["SACRATISSIMUM_DB_PATH"]) as database:
                 assert database.execute("SELECT count(*) FROM store_product").fetchone()[0] == 3
-                assert database.execute("SELECT count(*) FROM store_productvariant").fetchone()[0] == 15
+                assert (
+                    database.execute("SELECT count(*) FROM store_productvariant").fetchone()[0]
+                    == 15
+                )
                 assert database.execute("SELECT count(*) FROM auth_user").fetchone()[0] == 0
-            print(f"PASS: Gunicorn pages, {len(urls)} static assets, HTTPS/host checks, 3 demo products, 15 variants, no accounts")
+            print(
+                f"PASS: Gunicorn pages, {len(urls)} static assets, HTTPS/host checks, 3 demo products, 15 variants, no accounts"
+            )
         except Exception:
             log.seek(0)
             print(log.read(), file=sys.stderr)
@@ -119,14 +142,22 @@ def main():
             **os.environ,
             "PATH": str(Path(sys.executable).parent) + os.pathsep + os.environ.get("PATH", ""),
             "PYTHONDONTWRITEBYTECODE": "1",
-            "RENDER": "true", "RENDER_EXTERNAL_HOSTNAME": HOST,
-            "DJANGO_DEBUG": "false", "DJANGO_SECRET_KEY": secrets.token_urlsafe(64),
-            "DJANGO_ALLOWED_HOSTS": "", "DJANGO_CSRF_TRUSTED_ORIGINS": "",
+            "RENDER": "true",
+            "RENDER_EXTERNAL_HOSTNAME": HOST,
+            "DJANGO_DEBUG": "false",
+            "DJANGO_SECRET_KEY": secrets.token_urlsafe(64),
+            "DJANGO_ALLOWED_HOSTS": "",
+            "DJANGO_CSRF_TRUSTED_ORIGINS": "",
             "SACRATISSIMUM_PREVIEW": "true",
             "SACRATISSIMUM_DB_PATH": str(Path(directory) / "preview.sqlite3"),
         }
         subprocess.run(["bash", "build.sh"], cwd=ROOT, env=environment, check=True)
-        subprocess.run([sys.executable, "manage.py", "check", "--deploy"], cwd=ROOT, env=environment, check=True)
+        subprocess.run(
+            [sys.executable, "manage.py", "check", "--deploy"],
+            cwd=ROOT,
+            env=environment,
+            check=True,
+        )
         serve_and_check(environment)
         serve_and_check(environment)  # Same database: must not duplicate demo records.
         Path(environment["SACRATISSIMUM_DB_PATH"]).unlink()

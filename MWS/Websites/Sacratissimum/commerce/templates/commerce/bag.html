@@ -1,1 +1,47 @@
-{% extends 'store/base.html' %}{% block title %}Your bag — Sacratissimum{% endblock %}{% block content %}<section class="account-panel account-wide wrap"><span class="eyebrow">Your selection</span><h1>Your bag.</h1>{% for row in rows %}<article class="bag-row"><div><h2><a href="{{ row.variant.product.get_absolute_url }}">{{ row.variant.product.name }}</a></h2><p>{{ row.variant.color }} / {{ row.variant.size }}</p><p>USD ${{ row.unit_price|floatformat:2 }} each</p></div><div><form method="post" action="{% url 'commerce:bag_update' row.variant.pk %}" class="quantity-form">{% csrf_token %}<label for="qty-{{ row.variant.pk }}">Quantity</label><input id="qty-{{ row.variant.pk }}" name="quantity" type="number" min="1" max="20" value="{{ row.quantity }}"><button type="submit">Update</button><button type="submit" name="remove" value="true">Remove</button></form><p>USD ${{ row.total|floatformat:2 }}</p></div></article>{% empty %}<p>Your bag is empty. Demo concepts cannot be purchased.</p>{% endfor %}{% if rows %}<div class="bag-summary"><h2>Subtotal: USD ${{ subtotal|floatformat:2 }}</h2><p>Shipping and tax are calculated at Stripe-hosted checkout. Items are reserved only when checkout starts.</p>{% if checkout_ready %}<p class="demo-notice">Test checkout only. No real money will be charged.</p><form action="{% url 'commerce:checkout' %}" method="post">{% csrf_token %}<button class="button" type="submit">Continue to Stripe test checkout</button></form>{% else %}<p class="demo-notice">Checkout is not open. Nothing has been charged.</p>{% endif %}</div>{% endif %}<a class="text-link" href="{% url 'store:collection' %}">Continue exploring</a></section>{% endblock %}
+{% extends 'store/base.html' %}
+{% block title %}Your bag — Sacratissimum{% endblock %}
+{% block content %}
+  <section class="account-panel account-wide wrap">
+    <span class="eyebrow">Your selection</span>
+    <h1>Your bag.</h1>
+    {% for row in rows %}
+      <article class="bag-row">
+        <div>
+          <h2>
+            <a href="{{ row.variant.product.get_absolute_url }}">{{ row.variant.product.name }}</a>
+          </h2>
+          <p>{{ row.variant.color }} / {{ row.variant.size }}</p>
+          <p>USD ${{ row.unit_price|floatformat:2 }} each</p>
+        </div>
+        <div>
+          <form method="post" action="{% url 'commerce:bag_update' row.variant.pk %}" class="quantity-form">
+            {% csrf_token %}
+            <label for="qty-{{ row.variant.pk }}">Quantity</label>
+            <input id="qty-{{ row.variant.pk }}" name="quantity" type="number" min="1" max="20" value="{{ row.quantity }}">
+            <button type="submit">Update</button>
+            <button type="submit" name="remove" value="true">Remove</button>
+          </form>
+          <p>USD ${{ row.total|floatformat:2 }}</p>
+        </div>
+      </article>
+    {% empty %}
+      <p>Your bag is empty. Demo concepts cannot be purchased.</p>
+    {% endfor %}
+    {% if rows %}
+      <div class="bag-summary">
+        <h2>Subtotal: USD ${{ subtotal|floatformat:2 }}</h2>
+        <p>Shipping and tax are calculated at Stripe-hosted checkout. Items are reserved only when checkout starts.</p>
+        {% if checkout_ready %}
+          <p class="demo-notice">Test checkout only. No real money will be charged.</p>
+          <form action="{% url 'commerce:checkout' %}" method="post">
+            {% csrf_token %}
+            <button class="button" type="submit">Continue to Stripe test checkout</button>
+          </form>
+        {% else %}
+          <p class="demo-notice">Checkout is not open. Nothing has been charged.</p>
+        {% endif %}
+      </div>
+    {% endif %}
+    <a class="text-link" href="{% url 'store:collection' %}">Continue exploring</a>
+  </section>
+{% endblock %}
