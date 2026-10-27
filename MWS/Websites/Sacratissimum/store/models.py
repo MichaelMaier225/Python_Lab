@@ -7,6 +7,17 @@ from django.urls import reverse
 from .validators import product_image_size
 
 
+class ProductVariantQuerySet(models.QuerySet):
+    def purchasable(self):
+        """Real, published merchandise; stock is checked separately at reservation time."""
+        return self.filter(
+            is_active=True,
+            product__is_published=True,
+            product__is_demo=False,
+            product__availability=Product.Availability.AVAILABLE,
+        )
+
+
 class Product(models.Model):
     class Availability(models.TextChoices):
         PREVIEW = "preview", "Preview only"
@@ -104,6 +115,8 @@ class ProductImage(models.Model):
 
 
 class ProductVariant(models.Model):
+    objects = ProductVariantQuerySet.as_manager()
+
     product = models.ForeignKey(Product, related_name="variants", on_delete=models.CASCADE)
     size = models.CharField(max_length=24, help_text="For example: S, M, L, XL.")
     color = models.CharField(max_length=60, help_text="For example: Warm ivory.")

@@ -57,7 +57,3 @@ def product(request, slug):
     item = get_object_or_404(published_products(), slug=slug)
     related = published_products().exclude(pk=item.pk)[:3]
     return render(request, "store/product.html", {"product": item, "related": related})
-
-
-def story(request):
-    return render(request, "store/story.html")

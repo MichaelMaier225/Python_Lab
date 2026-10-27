@@ -39,13 +39,8 @@ def cart_rows(session):
         if str(k).isdigit() and str(v).isdigit() and 1 <= int(v) <= 20
     }
     variants = (
-        ProductVariant.objects.filter(
-            pk__in=quantities,
-            is_active=True,
-            product__is_published=True,
-            product__is_demo=False,
-            product__availability="available",
-        )
+        ProductVariant.objects.purchasable()
+        .filter(pk__in=quantities)
         .select_related("product")
         .order_by("pk")
     )
@@ -80,18 +75,14 @@ def reserve_order(user, rows):
     subtotal = Decimal("0")
     for row in sorted(rows, key=lambda r: r["variant"].pk):
         variant = (
-            ProductVariant.objects.select_for_update()
+            ProductVariant.objects.purchasable()
+            .select_for_update()
             .select_related("product")
-            .get(pk=row["variant"].pk)
+            .filter(pk=row["variant"].pk)
+            .first()
         )
         quantity = row["quantity"]
-        if not (
-            1 <= quantity <= 20
-            and variant.is_active
-            and variant.product.is_published
-            and not variant.product.is_demo
-            and variant.product.availability == "available"
-        ):
+        if variant is None or not 1 <= quantity <= 20:
             raise ValidationError("A selected product is no longer available.")
         updated = ProductVariant.objects.filter(
             pk=variant.pk, stock_quantity__gte=F("reserved_quantity") + quantity

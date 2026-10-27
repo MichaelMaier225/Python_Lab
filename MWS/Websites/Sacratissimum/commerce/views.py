@@ -60,12 +60,8 @@ def bag_update(request, variant_id):
     else:
         form = QuantityForm(request.POST)
         variant = get_object_or_404(
-            ProductVariant.objects.select_related("product"),
+            ProductVariant.objects.purchasable().select_related("product"),
             pk=variant_id,
-            is_active=True,
-            product__is_published=True,
-            product__is_demo=False,
-            product__availability="available",
         )
         if not form.is_valid():
             messages.error(request, "Choose a quantity between 1 and 20.")
