@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.db import models
 from django.urls import reverse
+from .validators import product_image_size
 
 
 class Product(models.Model):
@@ -65,7 +66,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="products/%Y/%m/", validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"])], help_text="Upload an owned or licensed JPG, PNG, or WebP. First image is the cover.")
+    image = models.ImageField(upload_to="products/%Y/%m/", validators=[FileExtensionValidator(["jpg", "jpeg", "png", "webp"]), product_image_size], help_text="Upload an owned or licensed JPG, PNG, or WebP. First image is the cover.")
     alt_text = models.CharField(max_length=240, help_text="Describe the garment, color, design, and view for screen readers.")
     display_order = models.PositiveIntegerField(default=0)
 
@@ -80,13 +81,27 @@ class ProductVariant(models.Model):
     product = models.ForeignKey(Product, related_name="variants", on_delete=models.CASCADE)
     size = models.CharField(max_length=24, help_text="For example: S, M, L, XL.")
     color = models.CharField(max_length=60, help_text="For example: Warm ivory.")
-    sku = models.CharField(max_length=80, blank=True, help_text="Optional internal reference; no stock tracking yet.")
+    sku = models.CharField(max_length=80, blank=True, help_text="Your internal SKU. Each variant also has a unique internal barcode based on its ID.")
+    stock_quantity = models.PositiveIntegerField(default=0, help_text="Physical units. Use Adjust stock to change this with an audit trail.")
+    reserved_quantity = models.PositiveIntegerField(default=0, editable=False)
     is_active = models.BooleanField(default=True, help_text="Display this size/color combination on the product page.")
     display_order = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ["display_order", "pk"]
-        constraints = [models.UniqueConstraint(fields=["product", "size", "color"], name="unique_product_size_color")]
+        constraints = [
+            models.UniqueConstraint(fields=["product", "size", "color"], name="unique_product_size_color"),
+            models.CheckConstraint(condition=models.Q(stock_quantity__gte=models.F("reserved_quantity")), name="stock_covers_reservations"),
+        ]
 
     def __str__(self):
         return f"{self.product} — {self.color} / {self.size}"
+
+    @property
+    def available_quantity(self):
+        return self.stock_quantity - self.reserved_quantity
+
+    @property
+    def barcode_value(self):
+        # Internal Code 128 identifier, not a purchased GS1/UPC retail number.
+        return f"SAC{self.pk:012d}" if self.pk else ""

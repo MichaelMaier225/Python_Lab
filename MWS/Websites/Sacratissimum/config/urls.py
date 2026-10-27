@@ -6,6 +6,7 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("store.urls")),
+    path("", include("commerce.urls")),
 ]
 
 # Production must serve media through a dedicated server, never Django.

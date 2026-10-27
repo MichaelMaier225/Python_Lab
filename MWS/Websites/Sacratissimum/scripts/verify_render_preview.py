@@ -93,7 +93,11 @@ def serve_and_check(environment):
             assert request(port, "/", host="untrusted.example.test")[0] == 400
             assert request(port, "/", https=False)[0] == 301
             assert request(port, "/not-a-real-page/")[0] == 404
-            assert request(port, "/admin/login/")[0] == 200
+            admin_status, _, admin_body = request(port, "/admin/login/")
+            assert admin_status == 200 and b"otp_token" in admin_body, "Production admin must request OTP"
+            assert request(port, "/account/register/")[0] == 503, "Disposable preview must not collect customer accounts"
+            assert request(port, "/bag/")[0] == 503
+
             with sqlite3.connect(environment["SACRATISSIMUM_DB_PATH"]) as database:
                 assert database.execute("SELECT count(*) FROM store_product").fetchone()[0] == 3
                 assert database.execute("SELECT count(*) FROM store_productvariant").fetchone()[0] == 15

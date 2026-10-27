@@ -1,6 +1,6 @@
 # Free Render preview for Tanner
 
-This is a disposable showcase, not a live shop. No cloud resources have been created. Use the included `onrender.com` hostname, a **Free** Python web service, and temporary SQLite. Do not add a database service, persistent disk, Redis, paid instance, custom domain or any add-on.
+This is a disposable showcase, not a live shop. No cloud resources have been created by this configuration. The staged commerce features remain disabled in disposable preview mode; see [COMMERCE.md](COMMERCE.md). Use the included `onrender.com` hostname, a **Free** Python web service, and temporary SQLite. Do not add a database service, persistent disk, Redis, paid instance, custom domain or any add-on.
 
 ## Manual setup in Render (after merging these files into GitHub)
 
@@ -57,9 +57,9 @@ Start (`bash start.sh`, on each new process/container):
 
 1. `python manage.py migrate --noinput`
 2. `python manage.py load_demo_products --publish` when `SACRATISSIMUM_PREVIEW=true`.
-3. `exec gunicorn config.wsgi:application --bind "0.0.0.0:${PORT:-8000}" --workers 1 --threads 2 --timeout 60 --access-logfile - --error-logfile -`
+3. `exec gunicorn config.wsgi:application --bind "0.0.0.0:${PORT:-8000}" --workers 1 --threads 2 --timeout 60 --access-logfile - --error-logfile - --access-logformat '%(m)s %(s)s %(b)s %(L)s'`
 
-The demo loader uses stable unique slugs and preserves existing records, so repeat starts do not duplicate products or variants. If the ephemeral SQLite file disappears, the next start recreates the schema and three labeled demo products with fifteen variants. Neither script creates an admin user or default password. No pre-deploy command or paid persistent disk is needed.
+The demo loader uses stable unique slugs and preserves existing records, so repeat starts do not duplicate products or variants. If the ephemeral SQLite file disappears, the next start recreates the schema and three labeled demo products with fifteen variants. Neither script creates an admin user or default password. Production admin requires an enrolled authenticator. Customer signup, bag and checkout return an unavailable page in disposable preview mode; no customer information should be stored there. No pre-deploy command or paid persistent disk is needed.
 
 `SACRATISSIMUM_PREVIEW` defaults to false outside the preview. Running Django locally does not automatically publish demo content or require a production secret.
 

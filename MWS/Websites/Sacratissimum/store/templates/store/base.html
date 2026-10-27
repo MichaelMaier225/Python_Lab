@@ -12,6 +12,6 @@
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 {% include 'store/includes/header.html' %}
-<main id="main" tabindex="-1">{% block content %}{% endblock %}</main>
+<main id="main" tabindex="-1">{% if messages %}<div class="site-messages wrap" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}{% block content %}{% endblock %}</main>
 {% include 'store/includes/footer.html' %}
 </body></html>

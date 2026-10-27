@@ -57,3 +57,19 @@ class RenderSettingsTests(SimpleTestCase):
         self.assertEqual(settings["ALLOWED_HOSTS"], ["extra.example.test", "assigned-preview.onrender.com"])
         self.assertEqual(settings["DATABASES"]["default"]["NAME"], "/tmp/custom-preview.sqlite3")
         self.assertEqual(len(settings["CSRF_TRUSTED_ORIGINS"]), 2)
+
+    def test_permanent_account_environment_requires_opt_in_and_verified_database_tls(self):
+        variables = {
+            "DJANGO_DEBUG": "false", "DJANGO_SECRET_KEY": "test-only-not-a-real-secret",
+            "DATABASE_URL": "postgresql://test_user:test_password@db.example.test/test_database",
+            "EMAIL_HOST": "smtp.example.test", "DEFAULT_FROM_EMAIL": "store@example.test",
+            "SITE_URL": "https://store.example.test",
+        }
+        settings = self.load_settings(variables)
+        self.assertFalse(settings["STORE_FEATURES_ENABLED"])
+        self.assertEqual(settings["DATABASES"]["default"]["OPTIONS"]["sslmode"], "verify-full")
+        self.assertEqual(settings["DATABASES"]["default"]["OPTIONS"]["sslrootcert"], "system")
+        settings = self.load_settings({**variables, "ACCOUNTS_ENABLED": "true"})
+        self.assertTrue(settings["STORE_FEATURES_ENABLED"])
+        with self.assertRaises(ImproperlyConfigured):
+            self.load_settings({**variables, "ACCOUNTS_ENABLED": "true", "SACRATISSIMUM_PREVIEW": "true"})

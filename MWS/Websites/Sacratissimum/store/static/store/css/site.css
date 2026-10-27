@@ -403,3 +403,42 @@ p { color: var(--muted); }
   *, *:before, *:after { transition: none !important; animation: none !important; }
   .button:hover, .product-art:hover > img { transform: none; }
 }
+
+/* Account and commerce pages reuse the storefront's accessible visual language. */
+.account-panel { max-width: 620px; padding-block: 45px 65px; }
+.account-wide { max-width: 1060px; }
+.account-panel > .eyebrow { margin-bottom: 20px; }
+.account-panel h1 { font-size: clamp(36px, 6vw, 60px); overflow-wrap: anywhere; }
+.account-panel h2 { font-size: clamp(27px, 4vw, 36px); }
+.shop-form p { margin-bottom: 23px; }
+.shop-form label { display: block; margin-bottom: 8px; color: var(--ink); font-size: 16px; }
+.shop-form input:not([type=hidden]), .quantity-form input { width: 100%; padding: 12px; min-height: 48px; border: 1px solid #9da38f; background: var(--paper); color: var(--ink); font-size: 16px; }
+.shop-form .helptext { display: block; margin-top: 8px; font-size: 14px; }
+.shop-form ul { padding-left: 22px; font-size: 15px; }
+.errorlist { color: #8a2323; font-size: 16px; }
+.account-links { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 25px; margin-block: 25px 35px; font-size: 16px; }
+.account-links a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: underline; }
+.text-button { min-height: 44px; padding: 7px 0; border: 0; background: none; color: var(--ink); text-decoration: underline; }
+.site-messages { padding-top: 20px; }
+.site-messages p { padding: 14px 18px; border-left: 2px solid var(--gold); background: #e8dfca; font-size: 16px; }
+.order-row, .bag-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding-block: 25px; border-bottom: 1px solid var(--line); font-size: 17px; }
+.order-row small, .order-reference { font-size: 14px; overflow-wrap: anywhere; }
+.order-row:hover { color: var(--gold); }
+.bag-row h2 { margin-bottom: 12px; }
+.bag-row p { font-size: 16px; margin-bottom: 10px; }
+.quantity-form { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; max-width: 400px; font-size: 16px; }
+.quantity-form input { max-width: 70px; }
+.quantity-form button, .variant-purchase button { min-height: 44px; padding: 7px 12px; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); font-size: 16px; }
+.bag-summary { padding-block: 30px; }
+.order-totals { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding-block: 20px; font-size: 17px; }
+.order-totals dd { text-align: right; margin: 0; }
+.private-key { padding: 20px; border: 1px solid var(--line); margin-bottom: 25px; }
+.private-key code { display: block; overflow-wrap: anywhere; font-size: 15px; }
+.variant-purchase { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding-block: 12px; border-bottom: 1px solid var(--line); font-size: 16px; }
+.purchase-options h2 { margin-top: 25px; font-size: 27px; }
+@media (min-width: 901px) and (max-width: 1250px) {
+  .site-nav, .site-nav.enhanced { gap: 18px; }
+  .site-nav > a { font-size: 15px; }
+  .site-nav .nav-cta { display: none; }
+}
+@media (min-width: 1200px) { body:has(.site-nav a[href='/bag/']) .nav-cta { display: none; } }

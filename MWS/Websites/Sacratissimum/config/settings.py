@@ -5,6 +5,9 @@ Local development and free, disposable Render preview configuration.
 """
 
 import os
+from datetime import timedelta
+
+import dj_database_url
 from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
@@ -65,6 +68,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "store.apps.StoreConfig",
+    "commerce.apps.CommerceConfig",
+    "axes",
+    "django_otp",
+    "django_otp.plugins.otp_totp",
 ]
 
 
@@ -77,8 +84,11 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "axes.middleware.AxesMiddleware",
+    "commerce.middleware.LoginThrottleMiddleware",
 ]
 
 
@@ -95,6 +105,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.request",
                 "store.context_processors.asset_version",
+                "commerce.context_processors.shop",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
@@ -187,3 +198,93 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Email: print emails in the terminal during development
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Commerce is staged: the disposable demo must not accept customer data or money.
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
+if DATABASE_URL:
+    if PREVIEW_MODE:
+        raise ImproperlyConfigured("Disposable preview must use SQLite. Disable SACRATISSIMUM_PREVIEW before connecting PostgreSQL.")
+    if not DATABASE_URL.startswith(("postgres://", "postgresql://")):
+        raise ImproperlyConfigured("DATABASE_URL must use PostgreSQL; local SQLite uses SACRATISSIMUM_DB_PATH.")
+    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=60)
+    if not DEBUG:
+        # Encrypt AND verify the PostgreSQL server certificate/hostname.
+        # A provider-specific CA may be supplied as a private runtime file.
+        options = DATABASES["default"].setdefault("OPTIONS", {})
+        options["sslmode"] = "verify-full"
+        options.setdefault("sslrootcert", os.environ.get("PGSSLROOTCERT", "system"))
+
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "false").lower() == "true"
+if EMAIL_USE_SSL:
+    EMAIL_USE_TLS = False
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "webmaster@localhost" if DEBUG else "")
+EMAIL_BACKEND = ("django.core.mail.backends.console.EmailBackend" if DEBUG
+                 else "django.core.mail.backends.smtp.EmailBackend" if EMAIL_HOST
+                 else "django.core.mail.backends.dummy.EmailBackend")
+SITE_URL = os.environ.get("SITE_URL", f"https://{RENDER_HOSTNAME}" if RENDER_HOSTNAME else "http://127.0.0.1:8000").rstrip("/")
+if not DEBUG and SITE_URL and not SITE_URL.startswith("https://"):
+    # A disabled preview without a host can still run build-time checks.
+    if RENDER_HOSTNAME or DATABASE_URL:
+        raise ImproperlyConfigured("Production SITE_URL must use HTTPS.")
+
+ACCOUNTS_ENABLED = os.environ.get("ACCOUNTS_ENABLED", "true" if DEBUG else "false").lower() == "true"
+STORE_FEATURES_ENABLED = bool(not PREVIEW_MODE and ACCOUNTS_ENABLED and (DEBUG or (DATABASE_URL and EMAIL_HOST and DEFAULT_FROM_EMAIL)))
+LOGIN_URL = "commerce:login"
+LOGIN_REDIRECT_URL = "commerce:account"
+LOGOUT_REDIRECT_URL = "store:home"
+PASSWORD_RESET_TIMEOUT = 3600
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+AUTHENTICATION_BACKENDS = ["axes.backends.AxesStandaloneBackend", "django.contrib.auth.backends.ModelBackend"]
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = timedelta(minutes=15)
+AXES_LOCKOUT_PARAMETERS = [["username", "ip_address"]]
+AXES_RESET_ON_SUCCESS = True
+AXES_VERBOSE = False
+AXES_LOCKOUT_TEMPLATE = "commerce/locked.html"
+ADMIN_REQUIRE_OTP = not DEBUG
+
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+# This implementation is test-mode only. No live charges can be enabled accidentally.
+if STRIPE_SECRET_KEY and not STRIPE_SECRET_KEY.startswith(("sk_test_", "rk_test_")):
+    raise ImproperlyConfigured("Only Stripe TEST-mode keys are supported in this version.")
+CHECKOUT_ENABLED = os.environ.get("CHECKOUT_ENABLED", "false").lower() == "true"
+STORE_CURRENCY = "usd"
+STORE_FULFILLMENT = os.environ.get("STORE_FULFILLMENT", "shipping")  # shipping or pickup; owner must confirm.
+SHIPPING_COUNTRIES = [c.strip().upper() for c in os.environ.get("SHIPPING_COUNTRIES", "US").split(",") if c.strip()]
+SHIPPING_RATE_CENTS = int(os.environ.get("SHIPPING_RATE_CENTS", "-1"))
+PICKUP_INSTRUCTIONS = os.environ.get("PICKUP_INSTRUCTIONS", "")
+STRIPE_AUTOMATIC_TAX = True
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+
+# Optional S3-compatible durable product-media storage. No service is provisioned.
+STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET", "")
+if STORAGE_BUCKET:
+    endpoint = os.environ.get("STORAGE_ENDPOINT_URL", "")
+    if not endpoint or not os.environ.get("STORAGE_ACCESS_KEY") or not os.environ.get("STORAGE_SECRET_KEY"):
+        raise ImproperlyConfigured("Object storage requires an explicit endpoint and private access credentials.")
+    if endpoint and not endpoint.startswith("https://"):
+        raise ImproperlyConfigured("Object storage must use HTTPS.")
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": STORAGE_BUCKET,
+            "access_key": os.environ.get("STORAGE_ACCESS_KEY", ""),
+            "secret_key": os.environ.get("STORAGE_SECRET_KEY", ""),
+            "endpoint_url": endpoint or None,
+            "region_name": os.environ.get("STORAGE_REGION", "us-east-1"),
+            "default_acl": None, "file_overwrite": False, "querystring_auth": True,
+        },
+    }
+
+DEFAULT_EXCEPTION_REPORTER_FILTER = "commerce.reporting.PrivateExceptionReporterFilter"
+
+OTP_TOTP_ISSUER = "Sacratissimum"
