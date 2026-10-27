@@ -1,8 +1,1 @@
-<footer class="site-footer">
-  <div class="footer-top wrap">
-    <div><a class="wordmark" href="{% url 'store:home' %}">SACRATISSIMUM<span>MOST SACRED</span></a><p>Faith at the heart.<br>Intention in the everyday.</p></div>
-    <nav aria-label="Footer navigation"><span class="eyebrow">Discover</span><a href="{% url 'store:collection' %}">The Collection</a><a href="{% url 'store:story' %}">Our Story</a><a href="{% url 'store:home' %}">Home</a></nav>
-    <div class="footer-note"><span class="eyebrow">An expression of faith</span><p>Christian apparel. A shared belief.<br>A place for every denomination.</p><p class="small">A collection showcase. Online purchasing is not available.</p></div>
-  </div>
-  <div class="footer-bottom wrap"><span>© {% now "Y" %} Sacratissimum</span><span>Most sacred. Every day.</span></div>
-</footer>
+<footer class="site-footer"><div class="footer-top wrap"><div><a class="brand" href="{% url 'store:home' %}">{% include 'store/includes/cross.html' %}<span class="wordmark">SACRATISSIMUM<span>MOST SACRED</span></span></a><p>Rooted in Christ.<br>Worn with purpose.</p></div><nav aria-label="Footer navigation"><span class="eyebrow">Explore Sacratissimum</span><a href="{% url 'store:collection' %}">The Collection</a><a href="{% url 'store:story' %}">Our Story</a><a href="{% url 'store:home' %}">Home</a></nav><div class="footer-note"><span class="eyebrow">One faith. Many stories.</span><p>Christian apparel for the everyday.<br>Welcoming Christians across denominations.</p><p class="small">A collection showcase.<br>Online purchasing is not available.</p></div></div><div class="footer-bottom wrap"><span>© {% now "Y" %} Sacratissimum</span><span>Most sacred. Every day.</span><button class="back-to-top" type="button" hidden>Back to top <span aria-hidden="true">↑</span></button></div></footer>

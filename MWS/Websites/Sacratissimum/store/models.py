@@ -35,6 +35,18 @@ class Product(models.Model):
         return reverse("store:product", kwargs={"slug": self.slug})
 
     @property
+    def placeholder_art(self):
+        # Demo concepts get distinct original artwork. Real products retain a
+        # neutral placeholder until the owner uploads genuine photography.
+        art = {
+            "demo-most-sacred": "concept-sacred.svg",
+            "demo-walk-in-faith": "concept-walk.svg",
+            "demo-abide": "concept-abide.svg",
+        }
+        filename = art.get(self.slug, "tee-placeholder.svg") if self.is_demo else "tee-placeholder.svg"
+        return f"store/images/{filename}"
+
+    @property
     def primary_image(self):
         return next(iter(self.images.all()), None)
 

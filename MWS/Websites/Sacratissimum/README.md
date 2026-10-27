@@ -1,6 +1,6 @@
 # Sacratissimum
 
-A Django Christian apparel **showcase**: editorial homepage, collection, product details and brand story. No cart, accounts, payment collection or newsletter. The storefront makes no shipping, manufacturing or donation claims.
+A Django Christian apparel **showcase**: high-contrast editorial homepage, searchable/filterable collection, product details and brand story. The visual identity includes cross motifs and explicitly Christ-centered copy, welcoming Christians across denominations. No cart, accounts, payment collection or newsletter. The storefront makes no shipping, manufacturing or donation claims.
 
 ## Local setup
 
@@ -51,7 +51,9 @@ Prices use decimal fields and are labeled USD. Product/variant IDs and optional 
 - Real public contact details and approved social links. None have been invented.
 - Business and purchase policies when actual sales are introduced. There is no checkout in this version.
 
-The SVG apparel illustrations are original vector placeholders created for this project. They are labeled illustrations, not photographs. The generic tee does not depict each demo design. No external stock photos, fonts, trackers or CDNs are loaded. Typography uses locally available Georgia and Arial system fonts.
+The hero charcoal campaign image (`campaign-charcoal.png`) is AI-generated concept art, explicitly labeled as a concept rather than real merchandise. It is not a product photograph or a manufacturing claim. The ivory hero option and three distinct demo designs are original SVG concept illustrations. Non-demo products continue to use a neutral placeholder until real photography is uploaded. No external stock photos, fonts, trackers or CDNs are loaded. Typography uses locally available Georgia and Arial system fonts. Body text, navigation, controls and product details use larger, higher-contrast type.
+
+Interactive features include an accessible mobile menu; a hero concept palette switcher (not a purchasable product selector); server-backed collection search, active-variant color filtering and price/name sorting, with debounced JavaScript updates; gallery thumbnails; a keyboard-accessible full-size image dialog; story question accordions; and a back-to-top control that returns keyboard focus to the header. Search/filter forms and gallery links still work without JavaScript. Motion respects reduced-motion preferences.
 
 ## Validation
 
@@ -61,7 +63,9 @@ python manage.py makemigrations --check --dry-run
 python manage.py test
 ```
 
-The tests cover published/draft behavior, empty states, decimal price validation, safe description rendering, active size/color combinations, unique variants, image galleries, admin access and editing forms, bounded catalog queries, and safe repeatable demo creation.
+The tests cover published/draft behavior, empty states, decimal price validation, safe description rendering, active size/color combinations, unique variants, image galleries, admin access and editing forms, bounded catalog queries, search/color/sort behavior, distinct demo art, and safe repeatable demo creation.
+
+Chromium checks covered all four page types at 1440, 768, 390 and 320 CSS pixels, no horizontal overflow or broken displayed images, mobile menu keyboard behavior, reduced motion, concept switching, live search/color/sorting, rapid search updates, empty results and empty catalogs, image dialog Escape/focus return, story accordions, back-to-top focus, and filtering without JavaScript. Other browser engines and actual device touch behavior were not tested.
 
 For internal cloud validation, the prepared interpreter is `/workspace/.venvs/sacratissimum/bin/python`. Use that path in place of `python` if not activating your own venv.
 

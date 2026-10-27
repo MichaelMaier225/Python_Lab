@@ -79,6 +79,36 @@ class StorefrontTests(TestCase):
         self.assertNotContains(response, '<script>alert("x")</script>')
         self.assertContains(response, "&lt;script&gt;")
 
+    def test_collection_search_color_and_sort(self):
+        other = Product.objects.create(name="Another design", slug="other", description="A cross design", price=Decimal("19.00"), is_published=True)
+        ProductVariant.objects.create(product=other, size="S", color="Charcoal")
+        route = reverse("store:collection")
+        response = self.client.get(route, {"q": "cross"})
+        self.assertContains(response, "Another design")
+        self.assertNotContains(response, "A real sample")
+        response = self.client.get(route, {"color": "Ivory"})
+        self.assertContains(response, "A real sample")
+        self.assertNotContains(response, "Another design")
+        response = self.client.get(route, {"sort": "price-low"})
+        self.assertEqual(list(response.context["products"]), [other, self.product])
+        response = self.client.get(route, {"sort": "price-high"})
+        self.assertEqual(list(response.context["products"]), [self.product, other])
+
+    def test_collection_no_matches_and_safe_parameters(self):
+        route = reverse("store:collection")
+        self.assertContains(self.client.get(route, {"q": "no-such-product"}), "No pieces match just yet.")
+        self.assertEqual(self.client.get(route, {"sort": "invalid"}).status_code, 200)
+        self.assertContains(self.client.get(route, {"q": '<script>alert(1)</script>'}), "&lt;script&gt;")
+        response = self.client.get(route, {"color": "Secret color"})
+        self.assertEqual(list(response.context["products"]), [])
+        self.assertNotIn("Secret color", response.context["colors"])
+
+    def test_concept_art_does_not_replace_real_photography(self):
+        self.product.slug = "demo-most-sacred"
+        self.assertTrue(self.product.placeholder_art.endswith("tee-placeholder.svg"))
+        self.product.is_demo = True
+        self.assertTrue(self.product.placeholder_art.endswith("concept-sacred.svg"))
+
     def test_price_validation(self):
         self.product.price = Decimal("-1")
         with self.assertRaises(ValidationError):
@@ -116,7 +146,7 @@ class StorefrontTests(TestCase):
         self.assertContains(response, 'name="variants-TOTAL_FORMS"')
 
     def test_pages_use_bounded_queries(self):
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(4):
             response = self.client.get(reverse("store:collection"))
             self.assertEqual(response.status_code, 200)
 

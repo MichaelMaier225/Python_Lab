@@ -17,9 +17,9 @@ class Command(BaseCommand):
             ("demo-most-sacred", "The Most Sacred Tee", "32.00", "Warm ivory",
              "A concept centered on the meaning of our name: most sacred. Quiet lettering gives a simple T-shirt a thoughtful focus.\n\nThis is fictional demo merchandise. Fabric, fit, care and final design are not yet specified."),
             ("demo-walk-in-faith", "The Walk in Faith Tee", "34.00", "Charcoal",
-             "A concept inspired by the everyday practice of faith. An understated expression for the ordinary moments that shape a life.\n\nThis is fictional demo merchandise. The illustration is a generic placeholder, not a rendering of this design. Materials and fit are to be confirmed."),
+             "A concept inspired by the everyday practice of faith. An understated expression for the ordinary moments that shape a life.\n\nThis is fictional demo merchandise. The illustration is an original design concept, not final merchandise. Materials and fit are to be confirmed."),
             ("demo-abide", "The Abide Tee", "32.00", "Stone",
-             "A concept built around a single word: abide. A reminder to stay rooted in faith, wherever the day leads.\n\nThis is fictional demo merchandise. The illustration is a generic placeholder, not a rendering of this design. Final product details are not yet available."),
+             "A concept built around a single word: abide. A reminder to stay rooted in faith, wherever the day leads.\n\nThis is fictional demo merchandise. The illustration is an original design concept, not final merchandise. Final product details are not yet available."),
         ]
         for order, (slug, name, price, color, description) in enumerate(concepts):
             existing = Product.objects.filter(slug=slug).first()
