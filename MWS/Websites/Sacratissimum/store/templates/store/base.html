@@ -6,8 +6,8 @@
   <meta name="description" content="{% block description %}Christian apparel for everyday life. Discover Sacratissimum: a thoughtful expression of faith, shared across denominations.{% endblock %}">
   <meta name="theme-color" content="#f5f2eb">
   <link rel="icon" href="{% static 'store/images/mark.svg' %}" type="image/svg+xml">
-  <link rel="stylesheet" href="{% static 'store/css/site.css' %}">
-  <script src="{% static 'store/js/site.js' %}" defer></script>
+  <link rel="stylesheet" href="{% static 'store/css/site.css' %}?v={{ asset_version }}">
+  <script src="{% static 'store/js/site.js' %}?v={{ asset_version }}" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
