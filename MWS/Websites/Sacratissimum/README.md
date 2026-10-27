@@ -1,6 +1,6 @@
 # Sacratissimum
 
-A Django Christian apparel **showcase**: high-contrast editorial homepage, searchable/filterable collection, product details and brand story. The visual identity includes cross motifs and explicitly Christ-centered copy, welcoming Christians across denominations. No cart, accounts, payment collection or newsletter. The storefront makes no shipping, manufacturing or donation claims.
+A Django Christian apparel **showcase**: high-contrast editorial homepage, searchable/filterable collection, product details and brand story. The visual identity includes cross motifs and explicitly Christ-centered copy, welcoming Christians across denominations. The disposable preview remains a showcase. A staged inventory/accounts/Stripe **test** checkout foundation is documented in [COMMERCE.md](COMMERCE.md); it is disabled on the public preview. There is no newsletter. The storefront makes no shipping, manufacturing or donation claims.
 
 ## Local setup
 
@@ -15,9 +15,9 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-On Windows, activate with `.venv\Scripts\activate` instead. Local development uses an ignored `local.sqlite3` database. The original tracked `db.sqlite3` is retained unchanged. Migrations initialize the product tables. Back up any database containing valuable data before migrating. To use a separate database, set `SACRATISSIMUM_DB_PATH` to an absolute SQLite path before running management commands.
+On Windows, activate with `.venv\Scripts\activate` instead. Local development uses an ignored `local.sqlite3` database. The old `db.sqlite3` and compiled files are no longer tracked; a local copy is retained on this working machine. Back up any old database changes before merging a removal into another checkout. Migrations initialize the product tables. Back up any database containing valuable data before migrating. To use a separate database, set `SACRATISSIMUM_DB_PATH` to an absolute SQLite path before running management commands.
 
-Open the local server in your development browser. `/admin/` is the owner's management interface. There are no public customer accounts.
+Open the local server in your development browser. `/admin/` is the owner's management interface. Customer account behavior and production prerequisites are covered in [COMMERCE.md](COMMERCE.md). Production admin requires an enrolled authenticator; local development admin stays usable while setting up.
 
 ## Optional demo content
 
@@ -38,10 +38,10 @@ All demo products carry visible “Demo concept” labels and illustrative price
 
 1. Create a product in admin: name, unique slug, description, USD price, availability.
 2. Upload owned/licensed JPG, PNG or WebP product photos in the image inline. Add meaningful alt text. Lowest display order is the cover; additional photos form a gallery. Photos are uploaded to `media/` and not committed to Git.
-3. Add each genuine size/color combination in the variant inline. Inactive variants stay hidden. Variants are descriptive; this version does not track stock. Availability is an owner-managed label, not a live inventory promise.
+3. Add each genuine size/color combination in the variant inline. Inactive variants stay hidden. Variants now track physical and reserved stock. Open a variant in admin and use **Adjust stock** to record changes with an audit reason. Availability remains an owner-managed product label; checkout rechecks physical availability atomically. Internal Code 128 labels are downloadable from the variant admin.
 4. Select **Is featured** to include it on the homepage (first three by display order), and **Is published** when it is ready. Leave **Is demo** checked for fictional concepts; only uncheck it for actual products.
 
-Prices use decimal fields and are labeled USD. Product/variant IDs and optional SKU references leave space for future stock and order systems without implementing them here.
+Prices use decimal fields and are labeled USD. Variant IDs identify internal barcode labels; optional SKUs remain owner-managed. The commerce app adds orders and stock audit records without collecting card data.
 
 ## Assets and content still needed
 
@@ -84,3 +84,7 @@ This configuration is for sharing a disposable showcase, not a live shop. Real p
 - `store/static/store/`: CSS, progressive menu/gallery JavaScript and original SVG art.
 - `store/management/commands/load_demo_products.py`: opt-in fictional content.
 - `store/migrations/`: versioned database schema; `store/tests.py`: behavior tests.
+
+## Store foundation
+
+See [COMMERCE.md](COMMERCE.md) for inventory/barcodes, verified accounts, administrator MFA, permanent database/media/email setup, Stripe sandbox setup, stock/payment recovery, Git protection and the remaining live-store requirements. US shipping is selected; its fee is not decided. No live checkout or external services have been enabled.

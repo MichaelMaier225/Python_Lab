@@ -6,6 +6,7 @@
     <a href="{% url 'store:home' %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>Home</a>
     <a href="{% url 'store:collection' %}" {% if request.resolver_match.url_name == 'collection' or request.resolver_match.url_name == 'product' %}aria-current="page"{% endif %}>The Collection</a>
     <a href="{% url 'store:story' %}" {% if request.resolver_match.url_name == 'story' %}aria-current="page"{% endif %}>Our Story</a>
+    {% if store_features %}<a href="{% url 'commerce:account' %}">Account</a><a href="{% url 'commerce:bag' %}">Bag ({{ bag_count }})</a>{% endif %}
     <a class="nav-cta" href="{% url 'store:collection' %}">Find your expression {% include 'store/includes/arrow.html' %}</a>
   </nav>
 </div></header>

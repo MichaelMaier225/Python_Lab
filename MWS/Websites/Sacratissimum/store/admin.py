@@ -10,6 +10,7 @@ class ProductImageInline(admin.TabularInline):
 class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 0
+    readonly_fields = ("stock_quantity", "reserved_quantity", "barcode_value")
 
 
 @admin.register(Product)
