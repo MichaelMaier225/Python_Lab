@@ -1,6 +1,6 @@
 <div class="announcement"><span>CHRISTIAN APPAREL</span><span>Rooted in Christ. Worn with purpose.</span><span>MOST SACRED</span></div>
 <header class="site-header"><div class="header-inner wrap">
-  <a class="brand" href="{% url 'store:home' %}" aria-label="Sacratissimum home">{% include 'store/includes/cross.html' %}<span class="wordmark">SACRATISSIMUM<span>FAITH IN EVERY THREAD</span></span></a>
+  <a class="brand" href="{% url 'store:home' %}">{% include 'store/includes/cross.html' %}<span class="wordmark">SACRATISSIMUM<span>MOST SACRED</span></span></a>
   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>Menu <span class="menu-lines" aria-hidden="true"></span></button>
   <nav class="site-nav" id="site-nav" aria-label="Main navigation">
     <a href="{% url 'store:home' %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>Home</a>
