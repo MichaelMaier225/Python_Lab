@@ -21,7 +21,10 @@
       if (!nav.contains(event.target) && !toggle.contains(event.target)) close();
     });
     nav.addEventListener('click', event => { if (event.target.closest('a')) close(); });
-    window.matchMedia('(min-width: 761px)').addEventListener('change', () => close());
+    document.addEventListener('focusin', event => {
+      if (!nav.closest('.site-header').contains(event.target)) close();
+    });
+    window.matchMedia('(min-width: 901px)').addEventListener('change', () => close());
   }
   document.querySelectorAll('[data-gallery-src]').forEach(link => {
     link.addEventListener('click', event => {
@@ -127,5 +130,76 @@
     form.querySelectorAll('select').forEach(select => select.addEventListener('change', update));
     // Apply remains a regular submit, providing a reliable fallback on failures.
     form.addEventListener('submit', () => { clearTimeout(timeout); if (controller) controller.abort(); });
+  }
+})();
+
+// Native scroll snapping keeps the featured edit touch-friendly without a slider library.
+(() => {
+  const mobile = matchMedia('(max-width: 900px)');
+  const rail = document.querySelector('.featured-products');
+  const controls = document.querySelector('.collection-rail-controls');
+  if (rail && controls) {
+    const cards = [...rail.querySelectorAll('.product-card')];
+    const previous = controls.querySelector('.rail-prev');
+    const next = controls.querySelector('.rail-next');
+    const position = controls.querySelector('.rail-position');
+    let frame;
+    let selected = -1;
+    rail.tabIndex = 0;
+    const step = () => cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : rail.clientWidth;
+    const update = () => {
+      frame = null;
+      const index = Math.max(0, Math.min(cards.length - 1, Math.round(rail.scrollLeft / step())));
+      previous.disabled = index === 0;
+      next.disabled = index === cards.length - 1;
+      if (index !== selected) {
+        position.textContent = `${index + 1} / ${cards.length}`;
+        selected = index;
+      }
+    };
+    const go = direction => {
+      const index = Math.round(rail.scrollLeft / step());
+      rail.scrollTo({
+        left: Math.max(0, Math.min(cards.length - 1, index + direction)) * step(),
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      });
+    };
+    previous.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    rail.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(update); }, {passive: true});
+    rail.addEventListener('keydown', event => {
+      if (event.target !== rail || !mobile.matches) return;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        go(event.key === 'ArrowRight' ? 1 : -1);
+      }
+    });
+    const resize = () => {
+      controls.hidden = !mobile.matches || cards.length < 2;
+      rail.tabIndex = mobile.matches ? 0 : -1;
+      update();
+    };
+    mobile.addEventListener('change', resize);
+    new ResizeObserver(resize).observe(rail);
+    resize();
+  }
+
+  const options = document.querySelector('.filter-options');
+  if (options) {
+    const color = options.querySelector('[name=color]');
+    const sort = options.querySelector('[name=sort]');
+    const sync = () => {
+      options.open = !mobile.matches || Boolean(color.value) || sort.value !== 'featured';
+    };
+    mobile.addEventListener('change', sync);
+    sync();
+  }
+
+  const header = document.querySelector('.site-header');
+  if (header) {
+    let queued = false;
+    const update = () => { header.classList.toggle('is-scrolled', scrollY > 16); queued = false; };
+    window.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, {passive: true});
+    update();
   }
 })();

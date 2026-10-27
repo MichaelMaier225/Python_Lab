@@ -1,5 +1,24 @@
-{% load static %}<article class="product-card">
-<a class="product-art" href="{{ item.get_absolute_url }}" aria-label="View {{ item.name }}">
-{% if item.primary_image %}<img src="{{ item.primary_image.image.url }}" alt="{{ item.primary_image.alt_text }}" loading="lazy" width="800" height="1000">{% else %}<img src="{% static item.placeholder_art %}" alt="Original Christian T-shirt concept illustration; not product photography or final merchandise" loading="lazy" width="1000" height="1250"><span class="art-caption">{% if item.is_demo %}Concept illustration{% else %}Product photography to come{% endif %}</span>{% endif %}
-{% if item.is_demo %}<span class="product-badge">Demo concept</span>{% endif %}<span class="card-view">Discover the piece {% include 'store/includes/arrow.html' %}</span></a>
-<div class="card-info"><div><span class="card-category">Christian apparel</span><h3><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></h3><p>{% if item.is_demo %}Illustrative price{% else %}USD{% endif %} · ${{ item.price|floatformat:2 }}</p></div><span class="availability">{{ item.get_availability_display }}</span></div></article>
+{% load static %}
+<article class="product-card">
+  <div class="product-art-frame">
+    <a class="product-art" href="{{ item.get_absolute_url }}" aria-label="Discover the piece: {{ item.name }}">
+      {% if item.primary_image %}
+        <img src="{{ item.primary_image.image.url }}" alt="{{ item.primary_image.alt_text }}" loading="lazy" width="800" height="1000">
+      {% else %}
+        <img src="{% static item.placeholder_art %}" alt="Original Christian T-shirt concept illustration; not product photography or final merchandise" loading="lazy" width="1000" height="1250">
+      {% endif %}
+      <span class="card-view">Discover the piece {% include 'store/includes/arrow.html' %}</span>
+    </a>
+    {% if not item.primary_image %}<span class="art-caption">{% if item.is_demo %}Concept artwork{% else %}Photography to come{% endif %}</span>{% endif %}
+    {% if item.is_demo %}<span class="product-badge">Demo concept</span>{% endif %}
+  </div>
+  <div class="card-info">
+    <div>
+      <span class="card-category">Christian apparel</span>
+      <h3><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></h3>
+      <p class="card-price">${{ item.price|floatformat:2 }} <span>USD</span></p>
+      {% if item.is_demo %}<span class="demo-price-note">Illustrative demo price</span>{% endif %}
+    </div>
+    <span class="availability">{{ item.get_availability_display }}</span>
+  </div>
+</article>
