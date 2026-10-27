@@ -69,11 +69,13 @@ Chromium checks covered all four page types at 1440, 768, 390 and 320 CSS pixels
 
 For internal cloud validation, the prepared interpreter is `/workspace/.venvs/sacratissimum/bin/python`. Use that path in place of `python` if not activating your own venv.
 
-## Production is a separate step
+## Free Render preview (prepared, not deployed)
 
-Do not deploy with the local development settings or server. Set `DJANGO_DEBUG=false`, a unique secret in `DJANGO_SECRET_KEY`, and explicit comma-separated `DJANGO_ALLOWED_HOSTS`. The app refuses to start without a secret when debug is false. Keep secrets outside Git; `.env` files are ignored but are not automatically read. Configure the runtime environment directly.
+See [RENDER.md](RENDER.md) for the exact free service settings, build/start commands, environment variables, and validation commands. The repository-root `render.yaml` is an optional Blueprint for a single free web service; it creates no database, cache, persistent disk, or paid resource. It must be reviewed and deployed by you.
 
-Before deployment, choose a WSGI/ASGI server, run migrations against the intended backed-up database, run `collectstatic`, configure HTTPS, and serve static and uploaded media through appropriate servers/storage. Secure cookies and HTTPS redirects are enabled outside debug. Configure proxy trust, CSRF trusted origins, storage permissions/upload limits, email/contact details and HSTS for the actual hosting setup, then run `python manage.py check --deploy`. Store uploads on a non-executable media origin and back up both the database and media. No deployment or purchases are part of this implementation.
+The preview uses Gunicorn, WhiteNoise, `DEBUG=False`, an environment-only secret and Render's exact assigned hostname. Static demo artwork is committed and collected at build time. On every process start, migrations run before the idempotent demo loader and Gunicorn. Preview SQLite lives in `/tmp`; data and uploaded files are disposable. No admin account is created. Local development and optional local demo loading remain unchanged.
+
+This configuration is for sharing a disposable showcase, not a live shop. Real product uploads need durable storage and a production media-serving strategy before real business use. No deployment or paid services are part of this change.
 
 ## Structure
 
