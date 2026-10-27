@@ -1,0 +1,11 @@
+{% load static %}
+<div class="announcement">Rooted in faith. Made for everyday expression.</div>
+<header class="site-header">
+  <a class="wordmark" href="{% url 'store:home' %}" aria-label="Sacratissimum home">SACRATISSIMUM<span>MOST SACRED</span></a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>Menu <span aria-hidden="true">☰</span></button>
+  <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+    <a href="{% url 'store:collection' %}" {% if request.resolver_match.url_name == 'collection' or request.resolver_match.url_name == 'product' %}aria-current="page"{% endif %}>The Collection</a>
+    <a href="{% url 'store:story' %}" {% if request.resolver_match.url_name == 'story' %}aria-current="page"{% endif %}>Our Story</a>
+    <a class="nav-cta" href="{% url 'store:collection' %}">Explore {% include 'store/includes/arrow.html' %}</a>
+  </nav>
+</header>

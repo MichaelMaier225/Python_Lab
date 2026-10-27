@@ -1,0 +1,80 @@
+# Sacratissimum
+
+A Django Christian apparel **showcase**: editorial homepage, collection, product details and brand story. No cart, accounts, payment collection or newsletter. The storefront makes no shipping, manufacturing or donation claims.
+
+## Local setup
+
+Run from `MWS/Websites/Sacratissimum` with Python 3.12 or newer supported by Django 5.2:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+On Windows, activate with `.venv\Scripts\activate` instead. Local development uses an ignored `local.sqlite3` database. The original tracked `db.sqlite3` is retained unchanged. Migrations initialize the product tables. Back up any database containing valuable data before migrating. To use a separate database, set `SACRATISSIMUM_DB_PATH` to an absolute SQLite path before running management commands.
+
+Open the local server in your development browser. `/admin/` is the owner's management interface. There are no public customer accounts.
+
+## Optional demo content
+
+```bash
+# Creates three fictional concepts as UNPUBLISHED drafts:
+python manage.py load_demo_products
+```
+
+To display those drafts, select **Is published** on each product in admin. Alternatively, on a fresh database, explicitly opt into publishing newly created demo concepts:
+
+```bash
+python manage.py load_demo_products --publish
+```
+
+All demo products carry visible “Demo concept” labels and illustrative prices. They are not real merchandise or offered for sale. The command is repeatable and **never overwrites existing products**, including existing drafts: rerunning with `--publish` does not publish drafts created on a previous run. Use admin for subsequent edits and publication. Empty collections have a designed empty state.
+
+## Managing real products
+
+1. Create a product in admin: name, unique slug, description, USD price, availability.
+2. Upload owned/licensed JPG, PNG or WebP product photos in the image inline. Add meaningful alt text. Lowest display order is the cover; additional photos form a gallery. Photos are uploaded to `media/` and not committed to Git.
+3. Add each genuine size/color combination in the variant inline. Inactive variants stay hidden. Variants are descriptive; this version does not track stock. Availability is an owner-managed label, not a live inventory promise.
+4. Select **Is featured** to include it on the homepage (first three by display order), and **Is published** when it is ready. Leave **Is demo** checked for fictional concepts; only uncheck it for actual products.
+
+Prices use decimal fields and are labeled USD. Product/variant IDs and optional SKU references leave space for future stock and order systems without implementing them here.
+
+## Assets and content still needed
+
+- Real product photography (cover plus alternate angles), preferably consistent 4:5 framing.
+- Confirmed product names, designs, USD prices, fabrics, fit, sizing and care information, colors and availability.
+- Approved brand logo if desired; the current wordmark is live text.
+- Real public contact details and approved social links. None have been invented.
+- Business and purchase policies when actual sales are introduced. There is no checkout in this version.
+
+The SVG apparel illustrations are original vector placeholders created for this project. They are labeled illustrations, not photographs. The generic tee does not depict each demo design. No external stock photos, fonts, trackers or CDNs are loaded. Typography uses locally available Georgia and Arial system fonts.
+
+## Validation
+
+```bash
+python manage.py check
+python manage.py makemigrations --check --dry-run
+python manage.py test
+```
+
+The tests cover published/draft behavior, empty states, decimal price validation, safe description rendering, active size/color combinations, unique variants, image galleries, admin access and editing forms, bounded catalog queries, and safe repeatable demo creation.
+
+For internal cloud validation, the prepared interpreter is `/workspace/.venvs/sacratissimum/bin/python`. Use that path in place of `python` if not activating your own venv.
+
+## Production is a separate step
+
+Do not deploy with the local development settings or server. Set `DJANGO_DEBUG=false`, a unique secret in `DJANGO_SECRET_KEY`, and explicit comma-separated `DJANGO_ALLOWED_HOSTS`. The app refuses to start without a secret when debug is false. Keep secrets outside Git; `.env` files are ignored but are not automatically read. Configure the runtime environment directly.
+
+Before deployment, choose a WSGI/ASGI server, run migrations against the intended backed-up database, run `collectstatic`, configure HTTPS, and serve static and uploaded media through appropriate servers/storage. Secure cookies and HTTPS redirects are enabled outside debug. Configure proxy trust, CSRF trusted origins, storage permissions/upload limits, email/contact details and HSTS for the actual hosting setup, then run `python manage.py check --deploy`. Store uploads on a non-executable media origin and back up both the database and media. No deployment or purchases are part of this implementation.
+
+## Structure
+
+- `store/models.py`, `admin.py`: products, uploaded images and variants.
+- `store/templates/store/`: shared layout, header/footer/cards and four page templates.
+- `store/static/store/`: CSS, progressive menu/gallery JavaScript and original SVG art.
+- `store/management/commands/load_demo_products.py`: opt-in fictional content.
+- `store/migrations/`: versioned database schema; `store/tests.py`: behavior tests.

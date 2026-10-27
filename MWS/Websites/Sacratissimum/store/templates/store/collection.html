@@ -1,0 +1,5 @@
+{% extends 'store/base.html' %}
+{% block title %}The Collection — Sacratissimum{% endblock %}
+{% block description %}Explore the Sacratissimum Christian apparel collection. View designs, product details, colors and sizes in our collection showcase.{% endblock %}
+{% block content %}<section class="collection-intro wrap"><span class="eyebrow">Sacratissimum / The Collection</span><h1>Faith in every thread.</h1><p>Thoughtful expressions of belief.<br>Discover the pieces and the meaning behind them.</p></section>
+<section class="wrap collection-section"><div class="collection-toolbar"><span>{{ products|length }} piece{{ products|length|pluralize }}</span><span>Collection showcase · No online purchasing</span></div>{% if products %}<div class="product-grid">{% for item in products %}{% include 'store/includes/product_card.html' %}{% endfor %}</div>{% else %}{% include 'store/includes/empty.html' %}{% endif %}</section>{% endblock %}
