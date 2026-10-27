@@ -1,0 +1,25 @@
+# Optional Blueprint: exactly one FREE web service, no database or persistent disk.
+# This file describes a future deployment; it does not deploy anything by itself.
+services:
+  - type: web
+    name: sacratissimum-preview
+    runtime: python
+    plan: free
+    rootDir: MWS/Websites/Sacratissimum
+    buildCommand: bash build.sh
+    startCommand: bash start.sh
+    healthCheckPath: /
+    autoDeploy: false
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.14
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: SACRATISSIMUM_PREVIEW
+        value: "true"
+      - key: SACRATISSIMUM_DB_PATH
+        value: /tmp/sacratissimum-preview.sqlite3
+# Render automatically supplies PORT, RENDER and RENDER_EXTERNAL_HOSTNAME.
+# The app accepts only that exact hostname; no custom domain is required.

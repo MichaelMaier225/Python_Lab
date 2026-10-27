@@ -171,3 +171,12 @@ class DemoCommandTests(TestCase):
         call_command("load_demo_products", publish=True, stdout=StringIO())
         self.assertEqual(Product.objects.filter(is_published=True, is_demo=True).count(), 3)
         self.assertContains(self.client.get(reverse("store:collection")), "Demo concept", count=3)
+
+    def test_repeated_preview_loading_has_no_duplicates_or_accounts(self):
+        from django.contrib.auth import get_user_model
+        for _ in range(3):
+            call_command("load_demo_products", publish=True, stdout=StringIO())
+        self.assertEqual(Product.objects.count(), 3)
+        self.assertEqual(ProductVariant.objects.count(), 15)
+        self.assertEqual(Product.objects.values("slug").distinct().count(), 3)
+        self.assertEqual(get_user_model().objects.count(), 0)
