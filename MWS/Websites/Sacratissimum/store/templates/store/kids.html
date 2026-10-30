@@ -1,0 +1,6 @@
+{% extends 'store/base.html' %}
+{% block title %}Kids — Sacratissimum{% endblock %}
+{% block content %}
+<section class="collection-intro"><div class="wrap"><span class="eyebrow">Sacratissimum / Kids</span><h1>Little ones.<br><em>A shared faith.</em></h1><p>Everyday T-shirts for the next generation.</p></div></section>
+<section class="wrap section">{% if products %}<div class="product-grid">{% for item in products %}{% include 'store/includes/product_card.html' %}{% endfor %}</div>{% else %}<div class="empty-state"><span class="eyebrow">Room to grow</span><h2>Something little is on the way.</h2><p>Our kids’ pieces are still in development. Designs, sizing and release dates will be shared when confirmed.</p><a class="button" href="{% url 'store:preorders' %}">Explore upcoming releases</a></div>{% endif %}</section>
+{% endblock %}

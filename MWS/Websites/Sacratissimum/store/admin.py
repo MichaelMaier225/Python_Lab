@@ -9,7 +9,7 @@ from django.utils.html import format_html
 from commerce.forms import StockAdjustmentForm
 from commerce.inventory import adjust_stock
 
-from .models import Product, ProductImage, ProductVariant
+from .models import Inquiry, Product, ProductImage, ProductVariant
 
 
 class ProductImageInline(admin.TabularInline):
@@ -26,13 +26,33 @@ class ProductVariantInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "price", "availability", "is_published", "is_featured", "is_demo")
-    list_filter = ("is_published", "is_demo", "availability", "is_featured")
+    list_filter = (
+        "is_published",
+        "is_demo",
+        "availability",
+        "is_featured",
+        "audience",
+        "preorder_interest",
+    )
     search_fields = ("name", "description", "variants__sku")
     prepopulated_fields = {"slug": ("name",)}
     inlines = (ProductImageInline, ProductVariantInline)
     readonly_fields = ("created_at", "updated_at")
     fieldsets = (
-        ("Product", {"fields": ("name", "slug", "description", "price", "availability")}),
+        (
+            "Product",
+            {
+                "fields": (
+                    "name",
+                    "slug",
+                    "description",
+                    "price",
+                    "availability",
+                    "audience",
+                    "preorder_interest",
+                )
+            },
+        ),
         (
             "Website visibility",
             {"fields": ("is_published", "is_featured", "is_demo", "display_order")},
@@ -131,3 +151,11 @@ class ProductVariantAdmin(admin.ModelAdmin):
         if search_term.startswith("SAC") and search_term[3:].isdigit():
             return queryset.filter(pk=int(search_term[3:])), False
         return super().get_search_results(request, queryset, search_term)
+
+
+@admin.register(Inquiry)
+class InquiryAdmin(admin.ModelAdmin):
+    list_display = ("name", "kind", "business_name", "created_at", "reviewed")
+    list_filter = ("kind", "reviewed")
+    search_fields = ("name", "email", "business_name")
+    readonly_fields = ("created_at",)

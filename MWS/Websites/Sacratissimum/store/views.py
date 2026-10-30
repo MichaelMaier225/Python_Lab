@@ -1,6 +1,11 @@
-from django.db.models import Prefetch, Q
-from django.shortcuts import get_object_or_404, render
+import time
 
+from django.conf import settings
+from django.contrib import messages
+from django.db.models import Prefetch, Q
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import InquiryForm
 from .models import Product, ProductVariant
 
 
@@ -61,3 +66,50 @@ def product(request, slug):
 
 def story(request):
     return render(request, "store/story.html")
+
+
+def kids(request):
+    return render(
+        request,
+        "store/kids.html",
+        {
+            "products": published_products().filter(audience=Product.Audience.KIDS),
+        },
+    )
+
+
+def inquiries(request, kind):
+    enabled = settings.STORE_FEATURES_ENABLED
+    form = InquiryForm(request.POST if request.method == "POST" else None, kind=kind)
+    if request.method == "POST":
+        if not enabled:
+            return render(
+                request,
+                "store/inquiry.html",
+                {
+                    "kind": kind,
+                    "inquiries_enabled": False,
+                    "form": form,
+                    "products": published_products().filter(preorder_interest=True, is_demo=False),
+                },
+                status=403,
+            )
+        if request.session.get("last_inquiry_at", 0) > time.time() - 60:
+            form.add_error(None, "Please wait a minute before sending another inquiry.")
+        elif form.is_valid():
+            form.save()
+            request.session["last_inquiry_at"] = time.time()
+            messages.success(
+                request, "Your inquiry was received. No order or payment has been placed."
+            )
+            return redirect("store:" + ("preorders" if kind == "preorder" else "wholesale"))
+    return render(
+        request,
+        "store/inquiry.html",
+        {
+            "kind": kind,
+            "form": form,
+            "inquiries_enabled": enabled,
+            "products": published_products().filter(preorder_interest=True, is_demo=False),
+        },
+    )

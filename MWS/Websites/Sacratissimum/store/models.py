@@ -14,6 +14,15 @@ class Product(models.Model):
         COMING_SOON = "coming_soon", "Coming soon"
         UNAVAILABLE = "unavailable", "Currently unavailable"
 
+    class Audience(models.TextChoices):
+        ADULT = "adult", "Adult"
+        KIDS = "kids", "Kids"
+
+    audience = models.CharField(max_length=10, choices=Audience.choices, default=Audience.ADULT)
+    preorder_interest = models.BooleanField(
+        default=False,
+        help_text="Show on Preorders for interest registration only; no payment or reservation.",
+    )
     name = models.CharField(max_length=160)
     slug = models.SlugField(unique=True)
     description = models.TextField(help_text="Describe the design and confirmed product details.")
@@ -144,3 +153,25 @@ class ProductVariant(models.Model):
     def barcode_value(self):
         # Internal Code 128 identifier, not a purchased GS1/UPC retail number.
         return f"SAC{self.pk:012d}" if self.pk else ""
+
+
+class Inquiry(models.Model):
+    class Kind(models.TextChoices):
+        PREORDER = "preorder", "Preorder interest"
+        WHOLESALE = "wholesale", "Wholesale application"
+
+    kind = models.CharField(max_length=12, choices=Kind.choices)
+    name = models.CharField(max_length=120)
+    email = models.EmailField()
+    business_name = models.CharField(max_length=160, blank=True)
+    website = models.URLField(blank=True)
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL)
+    message = models.TextField(max_length=3000, blank=True)
+    reviewed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.get_kind_display()} — {self.name}"

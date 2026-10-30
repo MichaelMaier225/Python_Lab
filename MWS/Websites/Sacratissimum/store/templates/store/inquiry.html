@@ -1,0 +1,12 @@
+{% extends 'store/base.html' %}
+{% block title %}{% if kind == 'wholesale' %}Wholesale{% else %}Preorders{% endif %} — Sacratissimum{% endblock %}
+{% block content %}
+<section class="collection-intro"><div class="wrap">
+{% if kind == 'wholesale' %}<span class="eyebrow">For boutiques &amp; retailers</span><h1>Shared purpose.<br><em>New possibilities.</em></h1><p>Introduce your store and explore carrying Sacratissimum.</p>
+{% else %}<span class="eyebrow">Upcoming releases</span><h1>Worth the wait.<br><em>Made with purpose.</em></h1><p>Explore upcoming pieces and register your interest.</p>{% endif %}</div></section>
+<section class="wrap inquiry-layout section"><div>
+{% if kind == 'wholesale' %}<h2>Let’s grow together.</h2><p>Tell us about your boutique, where you sell, and the pieces you are looking for.</p><ol class="inquiry-steps"><li>Introduce your business.</li><li>We review your application.</li><li>Discuss availability, pricing and order terms directly.</li></ol><p class="small">Submitting an application does not approve a wholesale account or place an order. Pricing and minimums will be confirmed individually.</p>
+{% else %}<h2>Be part of what’s next.</h2><p>Confirmed upcoming releases will appear here. Sign up to hear about availability.</p><p class="small">This is an interest list. No payment is collected, stock reserved, or shipping date promised. Paid preorders are not open.</p>{% if products %}<div class="product-grid">{% for item in products %}{% include 'store/includes/product_card.html' %}{% endfor %}</div>{% else %}<div class="release-note"><span class="eyebrow">In the making</span><h3>No preorder releases announced yet.</h3><p>Check back for confirmed designs and release details.</p></div>{% endif %}{% endif %}
+</div><div class="inquiry-panel"><h2>{% if kind == 'wholesale' %}Wholesale inquiry{% else %}Register interest{% endif %}</h2>
+{% if inquiries_enabled %}<p class="small">Your details are stored privately for our team to review and respond to this inquiry. They are not displayed on the website.</p><form method="post" class="shop-form">{% csrf_token %}{{ form.as_p }}<button class="button" type="submit">{% if kind == 'wholesale' %}Send application{% else %}Register interest{% endif %}</button></form>{% else %}<p>Inquiries are not open in this showcase. Please check back when registration opens.</p>{% endif %}
+</div></section>{% endblock %}

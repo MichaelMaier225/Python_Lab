@@ -1,0 +1,19 @@
+{
+  "name": "Botanical Tee",
+  "brand": "Sacratissimum",
+  "audience": "adults",
+  "collection": "eternal-bloom",
+  "garment": "regular-t-shirt",
+  "status": "concept",
+  "published": false,
+  "concept": "Botanical frame around the brand on the back; floral chest emblem.",
+  "proposed_colors": [
+    "cream",
+    "faded-olive"
+  ],
+  "sizes": [],
+  "price": null,
+  "release_date": null,
+  "images": [],
+  "notes": "Awaiting owner PNGs and approval. Colors are proposals; size chart and materials TBD."
+}

@@ -442,3 +442,14 @@ p { color: var(--muted); }
   .site-nav .nav-cta { display: none; }
 }
 @media (min-width: 1200px) { body:has(.site-nav a[href='/bag/']) .nav-cta { display: none; } }
+
+/* Upcoming releases and retail partnerships */
+.inquiry-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(28px, 6vw, 90px); align-items: start; }
+.inquiry-layout h2 { margin-bottom: 22px; }
+.inquiry-panel, .release-note { border: 1px solid var(--line); padding: clamp(22px, 4vw, 42px); }
+.release-note { margin-top: 32px; }
+.inquiry-steps { padding-left: 24px; line-height: 2; margin-block: 28px; }
+.shop-form textarea, .shop-form select { width: 100%; border: 1px solid #9da38f; background: var(--paper); color: var(--ink); padding: 12px; font: inherit; }
+.shop-form input[type=checkbox] { width: 20px; min-height: 20px; vertical-align: middle; }
+@media (min-width: 901px) { .site-nav { gap: 16px; } .site-nav .nav-cta { display: none; } .site-nav > a { font-size: 14px; } }
+@media (max-width: 900px) { .inquiry-layout { grid-template-columns: 1fr; } }
