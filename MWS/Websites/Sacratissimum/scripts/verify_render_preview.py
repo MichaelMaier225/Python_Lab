@@ -29,7 +29,7 @@ class Assets(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
-        keys = {"img": ("src",), "script": ("src",), "link": ("href",), "button": ("data-concept",)}
+        keys = {"img": ("src",), "script": ("src",), "link": ("href",)}
         for key in keys.get(tag, ()):
             url = attrs.get(key, "")
             if url.startswith("/static/"):
@@ -85,6 +85,9 @@ def serve_and_check(environment):
                 "/",
                 "/collection/",
                 "/our-story/",
+                "/kids/",
+                "/preorders/",
+                "/wholesale/",
                 "/collection/demo-most-sacred/",
                 "/collection/demo-walk-in-faith/",
                 "/collection/demo-abide/",
@@ -94,7 +97,12 @@ def serve_and_check(environment):
                 parser = Assets()
                 parser.feed(body.decode())
                 urls.update(parser.urls)
-            assert len(urls) >= 8, "Expected demo images and site assets"
+            assert sum("/clothing/faith-edit/" in url for url in urls) == 3, (
+                "All three relocated demo images must be referenced"
+            )
+            assert any("campaign-charcoal" in url for url in urls)
+            assert any("/css/site." in url for url in urls)
+            assert any("/js/site." in url for url in urls)
             for url in sorted(urls):
                 status, headers, body = request(port, url, gzip_enabled=True)
                 assert status == 200 and body, f"Static asset failed: {url}"

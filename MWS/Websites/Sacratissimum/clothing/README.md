@@ -1,19 +1,33 @@
-# Clothing studio — private planning assets
+# Clothing
 
-These files do not publish products or appear in the storefront. All concepts are
-unapproved regular T-shirts; no hoodies. Supply owned PNG artwork later.
+Collections live together here. Kids is a collection, not a second folder tree.
 
-Structure: `audience/collection/product/images/color/front.png` (also `back.png`
-and `detail.png`). Use lowercase hyphenated names. Keep transparent backgrounds
-when appropriate. Do not duplicate artwork for sizes unless the artwork changes;
-use `images/color/size/` only for a genuinely different print. No fake PNG files
-are included. Add final dimensions and descriptive alt text to product.json.
+```
+clothing/
+  faith-edit/              Existing three website demo T-shirts
+    most-sacred-tee/images/ivory/front.svg
+    walk-in-faith-tee/images/charcoal/front.svg
+    abide-tee/images/stone/front.svg
+  kids/
+    star-and-halo-tee/images/cream/
+  sacred-origins/
+    cathedral-tee/images/black/
+  quiet-faith/
+    halo-tee/images/white/
+  eternal-bloom/
+    botanical-tee/images/cream/
+```
 
-Each product.json is a planning record, not an importer. Sizes, prices, fabric,
-stock and release dates remain unconfirmed. Adult and kids' sizing are separate.
+For each garment, add `front.png`, `back.png`, and `detail.png` under
+`images/color/`. Sizes belong in the product's variants, not duplicate folders;
+add a size subfolder only when its artwork differs. PNGs can be transparent.
+Empty folders contain `.gitkeep` so Git preserves them.
 
-To publish later: approve the design, upload images in Django admin, create the
-size/color variants with confirmed stock, set Adult or Kids, and deliberately
-check Published. Enable Preorder interest only to list a real upcoming item on
-the interest page. This does not enable paid preorders or reserve inventory.
-Never put personal customer data or credentials in this directory.
+`product.json` files describe unapproved concepts. They are not imported,
+publicly served, or published automatically. Prices and sizes are unconfirmed.
+Only the three existing Faith Edit demo image directories are exposed as static
+assets, through `STATICFILES_DIRS`. Other planning files stay private.
+
+To launch a real piece: approve its design, create it in Django admin, upload
+owned PNGs, enter confirmed size/color variants, and deliberately publish it.
+Mark the Audience as Kids for children's garments. No hoodies are planned.

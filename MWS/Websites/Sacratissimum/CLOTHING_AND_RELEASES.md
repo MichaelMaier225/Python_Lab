@@ -20,9 +20,9 @@ is basic duplicate prevention, not a replacement for deployment-level abuse cont
 
 ## Private clothing studio
 
-See `clothing/README.md`. Four T-shirt concepts are organized as JSON planning
-records with color image folders. None are imported into the database or exposed
-through static/media routes. No sample collection has been published. Add your PNGs
+See `clothing/README.md`. Four T-shirt concepts are organized by collection alongside Kids, as JSON planning
+records with color image folders. Existing demo artwork lives in `clothing/faith-edit`. None are imported into the database or exposed
+through static/media routes (only the existing Faith Edit demo images are static assets). No sample collection has been published. Add your PNGs
 later, approve each garment, and upload approved images through the product admin.
 An empty folder in Git needs its `.gitkeep`; remove that file when adding images.
 

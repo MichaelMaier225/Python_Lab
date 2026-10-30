@@ -66,14 +66,13 @@ class Product(models.Model):
         # Demo concepts get distinct original artwork. Real products retain a
         # neutral placeholder until the owner uploads genuine photography.
         art = {
-            "demo-most-sacred": "concept-sacred.svg",
-            "demo-walk-in-faith": "concept-walk.svg",
-            "demo-abide": "concept-abide.svg",
+            "demo-most-sacred": "most-sacred-tee/ivory",
+            "demo-walk-in-faith": "walk-in-faith-tee/charcoal",
+            "demo-abide": "abide-tee/stone",
         }
-        filename = (
-            art.get(self.slug, "tee-placeholder.svg") if self.is_demo else "tee-placeholder.svg"
-        )
-        return f"store/images/{filename}"
+        if self.is_demo and self.slug in art:
+            return f"clothing/faith-edit/{art[self.slug]}/front.svg"
+        return "store/images/tee-placeholder.svg"
 
     @property
     def primary_image(self):

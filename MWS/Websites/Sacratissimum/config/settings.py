@@ -169,6 +169,18 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# Serve only existing demo image folders; never expose private clothing plans.
+STATICFILES_DIRS = [
+    (
+        f"clothing/faith-edit/{product}/{color}",
+        BASE_DIR / "clothing" / "faith-edit" / product / "images" / color,
+    )
+    for product, color in (
+        ("most-sacred-tee", "ivory"),
+        ("walk-in-faith-tee", "charcoal"),
+        ("abide-tee", "stone"),
+    )
+]
 
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},

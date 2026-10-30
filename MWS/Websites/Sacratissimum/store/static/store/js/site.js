@@ -1,30 +1,24 @@
 (() => {
   const toggle = document.querySelector('.menu-toggle');
-  const nav = document.querySelector('#site-nav');
-  if (toggle && nav) {
+  const drawer = document.querySelector('#site-nav');
+  if (toggle && drawer && typeof drawer.showModal === 'function') {
     toggle.hidden = false;
-    nav.classList.add('enhanced');
-    const close = (focus = false) => {
-      toggle.setAttribute('aria-expanded', 'false');
-      nav.classList.remove('is-open');
-      if (focus) toggle.focus();
-    };
     toggle.addEventListener('click', () => {
-      const open = toggle.getAttribute('aria-expanded') !== 'true';
-      toggle.setAttribute('aria-expanded', String(open));
-      nav.classList.toggle('is-open', open);
+      drawer.showModal();
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-open');
     });
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') close(true);
+    drawer.querySelector('.menu-close').addEventListener('click', () => drawer.close());
+    drawer.addEventListener('click', event => {
+      const bounds = drawer.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right ||
+          event.clientY < bounds.top || event.clientY > bounds.bottom) drawer.close();
     });
-    document.addEventListener('click', event => {
-      if (!nav.contains(event.target) && !toggle.contains(event.target)) close();
+    drawer.addEventListener('close', () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+      toggle.focus();
     });
-    nav.addEventListener('click', event => { if (event.target.closest('a')) close(); });
-    document.addEventListener('focusin', event => {
-      if (!nav.closest('.site-header').contains(event.target)) close();
-    });
-    window.matchMedia('(min-width: 901px)').addEventListener('change', () => close());
   }
   document.querySelectorAll('[data-gallery-src]').forEach(link => {
     link.addEventListener('click', event => {
@@ -42,21 +36,6 @@
 
 // Progressive enhancements: every route and filter also works without JavaScript.
 (() => {
-  const controls = document.querySelector('.concept-controls');
-  const concept = document.querySelector('#concept-image');
-  if (controls && concept) {
-    controls.hidden = false;
-    controls.querySelectorAll('[data-concept]').forEach(button => {
-      button.addEventListener('click', () => {
-        concept.src = button.dataset.concept;
-        concept.alt = button.dataset.alt;
-        controls.querySelectorAll('[data-concept]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-        document.querySelector('#concept-color').textContent = button.dataset.label;
-        document.querySelector('#concept-status').textContent = `Showing ${button.dataset.label}. Concept artwork, not real merchandise.`;
-      });
-    });
-  }
-
   const topButton = document.querySelector('.back-to-top');
   if (topButton) {
     topButton.hidden = false;

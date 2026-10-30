@@ -65,7 +65,7 @@ The demo loader uses stable unique slugs and preserves existing records, so repe
 
 ## Static artwork and disposable data
 
-- All demo artwork is already in `store/static/store/images/`: `campaign-charcoal.webp` (optimized for phones; original PNG also retained), `campaign-ivory.svg`, `concept-sacred.svg`, `concept-walk.svg`, and `concept-abide.svg`. It is committed, not fetched from a third party or uploaded through admin at deploy time.
+- Campaign artwork stays in `store/static/store/images/`. The three demo T-shirts live in `clothing/faith-edit/<product>/images/<color>/front.svg`; `STATICFILES_DIRS` exposes only those image folders. It is committed, not fetched from a third party or uploaded through admin at deploy time.
 - Demo cards and detail pages refer to these static assets. WhiteNoise serves the collected, hashed files with `DEBUG=False`, including CSS, JavaScript, favicon and Django admin assets.
 - Demo records are labeled fictional concepts with illustrative prices. There is no checkout.
 - SQLite lives at `/tmp/sacratissimum-preview.sqlite3`. Assume all runtime database changes and uploaded files can disappear during restarts/redeploys. Do not store valuable data or customer information in this preview.

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="{% static 'store/css/site.css' %}?v={{ asset_version }}">
   <script src="{% static 'store/js/site.js' %}?v={{ asset_version }}" defer></script>
 </head>
-<body>
+<body{% if request.resolver_match.url_name == 'home' %} class="campaign-home"{% endif %}>
 <a class="skip-link" href="#main">Skip to content</a>
 {% include 'store/includes/header.html' %}
 <main id="main" tabindex="-1">{% if messages %}<div class="site-messages wrap" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}{% block content %}{% endblock %}</main>

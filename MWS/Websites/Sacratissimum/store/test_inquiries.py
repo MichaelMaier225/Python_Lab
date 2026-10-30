@@ -126,3 +126,26 @@ class CollectionExpansionTests(TestCase):
         self.assertContains(
             self.client.get(reverse("store:preorders")), "No preorder releases announced yet"
         )
+
+
+class ClothingAssetTests(TestCase):
+    def test_existing_demo_art_resolves_from_collection_folders(self):
+        from django.contrib.staticfiles import finders
+
+        for slug, product, color in (
+            ("demo-most-sacred", "most-sacred-tee", "ivory"),
+            ("demo-walk-in-faith", "walk-in-faith-tee", "charcoal"),
+            ("demo-abide", "abide-tee", "stone"),
+        ):
+            item = Product(slug=slug, is_demo=True)
+            source = finders.find(item.placeholder_art)
+            self.assertIsNotNone(source)
+            self.assertTrue(
+                str(source).endswith(f"clothing/faith-edit/{product}/images/{color}/front.svg")
+            )
+
+    def test_private_plans_are_not_static_assets(self):
+        from django.contrib.staticfiles import finders
+
+        self.assertIsNone(finders.find("clothing/kids/star-and-halo-tee/product.json"))
+        self.assertIsNone(finders.find("clothing/faith-edit/most-sacred-tee/README.md"))

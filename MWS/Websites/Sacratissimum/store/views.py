@@ -81,19 +81,7 @@ def kids(request):
 def inquiries(request, kind):
     enabled = settings.STORE_FEATURES_ENABLED
     form = InquiryForm(request.POST if request.method == "POST" else None, kind=kind)
-    if request.method == "POST":
-        if not enabled:
-            return render(
-                request,
-                "store/inquiry.html",
-                {
-                    "kind": kind,
-                    "inquiries_enabled": False,
-                    "form": form,
-                    "products": published_products().filter(preorder_interest=True, is_demo=False),
-                },
-                status=403,
-            )
+    if request.method == "POST" and enabled:
         if request.session.get("last_inquiry_at", 0) > time.time() - 60:
             form.add_error(None, "Please wait a minute before sending another inquiry.")
         elif form.is_valid():
@@ -112,4 +100,5 @@ def inquiries(request, kind):
             "inquiries_enabled": enabled,
             "products": published_products().filter(preorder_interest=True, is_demo=False),
         },
+        status=403 if request.method == "POST" and not enabled else 200,
     )

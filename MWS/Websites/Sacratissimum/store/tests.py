@@ -130,7 +130,9 @@ class StorefrontTests(TestCase):
         self.product.slug = "demo-most-sacred"
         self.assertTrue(self.product.placeholder_art.endswith("tee-placeholder.svg"))
         self.product.is_demo = True
-        self.assertTrue(self.product.placeholder_art.endswith("concept-sacred.svg"))
+        self.assertTrue(
+            self.product.placeholder_art == "clothing/faith-edit/most-sacred-tee/ivory/front.svg"
+        )
 
     def test_price_validation(self):
         self.product.price = Decimal("-1")

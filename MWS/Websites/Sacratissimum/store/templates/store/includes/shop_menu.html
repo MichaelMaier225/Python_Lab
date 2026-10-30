@@ -1,0 +1,13 @@
+<nav class="shop-navigation" aria-label="Shop and information">
+  <section class="menu-group"><h2>Shop</h2>
+    <a href="{% url 'store:collection' %}" {% if request.resolver_match.url_name == 'collection' %}aria-current="page"{% endif %}>All clothing <span class="menu-arrow" aria-hidden="true"></span></a>
+    <a href="{% url 'store:kids' %}" {% if request.resolver_match.url_name == 'kids' %}aria-current="page"{% endif %}>Kids <span class="menu-arrow" aria-hidden="true"></span></a>
+    <a href="{% url 'store:preorders' %}" {% if request.resolver_match.url_name == 'preorders' %}aria-current="page"{% endif %}>Preorders <span class="menu-arrow" aria-hidden="true"></span></a>
+  </section>
+  <section class="menu-group"><h2>Discover</h2>
+    <a href="{% url 'store:home' %}">Home</a>
+    <a href="{% url 'store:story' %}" {% if request.resolver_match.url_name == 'story' %}aria-current="page"{% endif %}>Our story</a>
+    <a href="{% url 'store:wholesale' %}" {% if request.resolver_match.url_name == 'wholesale' %}aria-current="page"{% endif %}>Wholesale</a>
+    {% if store_features %}<a href="{% url 'commerce:account' %}">My account</a>{% endif %}
+  </section>
+</nav>
