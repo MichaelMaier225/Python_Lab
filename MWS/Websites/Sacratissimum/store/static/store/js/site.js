@@ -1,25 +1,4 @@
 (() => {
-  const toggle = document.querySelector('.menu-toggle');
-  const drawer = document.querySelector('#site-nav');
-  if (toggle && drawer && typeof drawer.showModal === 'function') {
-    toggle.hidden = false;
-    toggle.addEventListener('click', () => {
-      drawer.showModal();
-      toggle.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('menu-open');
-    });
-    drawer.querySelector('.menu-close').addEventListener('click', () => drawer.close());
-    drawer.addEventListener('click', event => {
-      const bounds = drawer.getBoundingClientRect();
-      if (event.clientX < bounds.left || event.clientX > bounds.right ||
-          event.clientY < bounds.top || event.clientY > bounds.bottom) drawer.close();
-    });
-    drawer.addEventListener('close', () => {
-      toggle.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('menu-open');
-      toggle.focus();
-    });
-  }
   document.querySelectorAll('[data-gallery-src]').forEach(link => {
     link.addEventListener('click', event => {
       const image = document.querySelector('#gallery-image');

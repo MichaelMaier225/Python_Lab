@@ -1,14 +1,8 @@
 <div class="announcement"><span>CHRISTIAN APPAREL</span><span>Rooted in Christ. Worn with purpose.</span><span>MOST SACRED</span></div>
 <header class="site-header">
   <div class="header-inner wrap">
-    <div class="header-navigation"><nav class="quick-nav" aria-label="Main navigation"><a href="{% url 'store:collection' %}">Collection</a><a href="{% url 'store:kids' %}">Kids</a><a href="{% url 'store:story' %}">Our story</a></nav><button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav" hidden><span class="menu-lines" aria-hidden="true"></span><span>Menu</span></button></div>
     <a class="brand" href="{% url 'store:home' %}">{% include 'store/includes/cross.html' %}<span class="wordmark">SACRATISSIMUM<span>MOST SACRED</span></span></a>
     <div class="header-actions">{% if store_features %}<a href="{% url 'commerce:bag' %}" aria-label="Shopping bag, {{ bag_count }} items">Bag ({{ bag_count }})</a>{% endif %}</div>
   </div>
-  <noscript><div class="wrap menu-fallback">{% include 'store/includes/shop_menu.html' %}</div></noscript>
-</header>
-<dialog class="shop-drawer" id="site-nav" aria-labelledby="menu-title">
-  <div class="drawer-heading"><span id="menu-title">Explore Sacratissimum</span><button class="menu-close" type="button" aria-label="Close menu">Close <span aria-hidden="true">×</span></button></div>
   {% include 'store/includes/shop_menu.html' %}
-  <p class="drawer-note">A shared faith.<br>Find your expression.</p>
-</dialog>
+</header>

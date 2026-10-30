@@ -37,7 +37,9 @@ class StorefrontTests(TestCase):
                 response = self.client.get(reverse(f"store:{name}"))
                 self.assertEqual(response.status_code, 200)
                 self.assertContains(response, 'id="main"')
-                self.assertContains(response, 'aria-controls="site-nav"')
+                self.assertContains(response, 'aria-label="Shop and information"')
+                self.assertNotContains(response, 'class="menu-toggle"')
+                self.assertNotContains(response, 'class="shop-drawer"')
                 self.assertContains(response, reverse("store:collection"))
 
     def test_only_published_products_are_visible(self):

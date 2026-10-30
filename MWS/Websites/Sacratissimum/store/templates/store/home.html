@@ -4,7 +4,7 @@
 <section class="campaign" aria-labelledby="campaign-title">
   <img class="campaign-image" src="{% static 'store/images/campaign-charcoal.webp' %}" alt="Charcoal Sacratissimum T-shirt with an ivory cross. AI-generated design concept, not real merchandise." width="1000" height="1250" fetchpriority="high">
   <div class="campaign-shade" aria-hidden="true"></div>
-  <div class="campaign-content"><span class="eyebrow">Rooted in Christ. Worn with purpose.</span><h1 id="campaign-title">Faith, worn<br><em>every day.</em></h1><a class="button campaign-button" href="{% url 'store:collection' %}">Explore the collection</a></div>
+  <div class="campaign-content"><h1 class="sr-only" id="campaign-title">Sacratissimum — Faith, worn every day.</h1><a class="button campaign-button" href="{% url 'store:collection' %}">Explore the collection</a></div>
   <div class="campaign-bottom"><span class="campaign-caption">Concept artwork · not actual merchandise</span><a href="#collection-preview">Discover the pieces <span aria-hidden="true">↓</span></a></div>
 </section>
 <div class="brand-ribbon"><span>ROOTED IN CHRIST</span>{% include 'store/includes/cross.html' %}<span>LED BY FAITH</span>{% include 'store/includes/cross.html' %}<span>WORN WITH PURPOSE</span></div>
