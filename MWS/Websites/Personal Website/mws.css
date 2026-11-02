@@ -54,10 +54,9 @@ button.secondary:hover { background: var(--soft) !important; }
 .muted { font-size: 15px; }
 /* Navigation */
 header { background: #faf9f5; color: var(--ink); border-bottom: 1px solid var(--line); }
-.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 25px; min-height: 92px; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 25px; min-height: 84px; }
 .brand { display: flex; gap: 15px; align-items: center; text-decoration: none; font-size: 23px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
-.brand > img { width: 76px; height: 76px; object-fit: contain; }
-.brand small { display: block; font-size: 11px; letter-spacing: .04em; margin-top: 6px; font-weight: 600; }
+.brand > img { display: block; width: 76px; height: 76px; object-fit: contain; }
 nav { display: flex; align-items: center; gap: 30px; }
 nav a { font-size: 15px; font-weight: 600; text-decoration: none; padding-block: 10px; }
 nav a[aria-current] { text-decoration: underline; text-decoration-thickness: 2px; }
@@ -67,7 +66,7 @@ nav a[aria-current] { text-decoration: underline; text-decoration-thickness: 2px
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
 /* The preferred split hero, with a synchronized working preview. */
 .hero-shell { position: relative; isolation: isolate; overflow: hidden; background: #080d19; }
-.hero { position: relative; display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; gap: 85px; padding-block: 78px 55px; }
+.hero { position: relative; display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; gap: 85px; padding-block: 62px 45px; }
 .hero-copy { min-width: 0; }
 .hero .eyebrow { color: #c2d1f5; font-size: 11px; }
 .hero-dot { width: 6px; height: 6px; display: inline-block; border-radius: 50%; background: var(--accent); margin-right: 8px; vertical-align: middle; }
@@ -414,7 +413,6 @@ td { overflow-wrap: anywhere; }
   .section { padding-block: 60px; }
   .header-inner { min-height: 78px; padding-block: 15px; flex-wrap: wrap; gap: 12px; }
   .brand { font-size: 18px; gap: 10px; }
-  .brand small { font-size: 10px; }
   .brand > img { width: 58px; height: 58px; }
   .hero { padding-block: 40px; }
   .hero h1 { font-size: clamp(42px,10.7vw,64px); }
@@ -529,3 +527,12 @@ td { overflow-wrap: anywhere; }
   body:not(.js-ready) nav { display: flex; }
   body:not(.js-ready) .header-inner > button.menu { display: none; }
 }
+
+/* Optional detail belongs to the same hero, rather than a second repeated opening. */
+.comparison-disclosure { border: 0; padding: 0; }
+.comparison-disclosure > summary { display: flex; justify-content: space-between; align-items: center; gap: 25px; padding-block: 21px; color: #d4e0ff; font-size: 13px; font-weight: 550; list-style: none; }
+.comparison-disclosure > summary::-webkit-details-marker { display: none; }
+.comparison-disclosure > summary > span { font-size: 22px; color: var(--accent); line-height: 1; }
+.comparison-disclosure[open] > summary > span { transform: rotate(45deg); }
+.comparison-disclosure .work-stage { border-top: 1px solid #2b3650; }
+.brand > img { flex-shrink: 0; }

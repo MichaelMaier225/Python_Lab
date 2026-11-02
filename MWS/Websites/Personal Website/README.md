@@ -80,3 +80,7 @@ The contact page offers direct email first. Its optional guided form still prepa
 The main face is **Manrope**, with **Instrument Serif Italic** for accent headings. Latin WOFF subsets are served locally from `assets/fonts/` with `font-display: swap`, so no Google Fonts requests are made at runtime. Font files total approximately 67.5 KB. OFL licenses and source details are included in that directory.
 
 The header/footer image is an unchanged copy of `MWS/MWS Logo/Maier Web Solutions Logo.png`, deployed as `assets/mws-owner-logo.png`. The separate promotional banner describes the former website offering and is not used. Include all new font, license, and logo files when publishing the static directory.
+
+## Single-opening layout
+
+The homepage opens with the preferred dark split hero. Its compact preview shows three selected source records and two selected output records, labeled as subsets of the complete five-row/four-row example. The offer follows the opening directly. The full comparison and downloads remain in a native expandable area inside the same hero rather than a second always-visible section. Links to `#work` open that area; it also works as a native disclosure without JavaScript. The header uses the complete owner logo once, without a second text wordmark next to it.

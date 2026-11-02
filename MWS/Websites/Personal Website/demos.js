@@ -69,10 +69,10 @@
     const renderPreview = cleaned => {
       if (!previewRows) return;
       const records = cleaned
-        ? output.map(row => [row.sku, row.name, row.price === null ? '—' : '$' + row.price.toFixed(2), row.price === null ? 'Needs review' : 'Standardized'])
-        : raw.map((row, i) => [row.sku, row.name, row.price || '—', !row.price ? 'Missing price' : i === 1 ? 'Possible repeat' : 'Formatting']);
+        ? output.filter(row => ['AB-101', 'EF-303'].includes(row.sku)).map(row => [row.sku, row.name, row.price === null ? '—' : '$' + row.price.toFixed(2), row.price === null ? 'Needs review' : 'Standardized'])
+        : raw.filter((row, i) => [0, 1, 3].includes(i)).map((row, i) => [row.sku, row.name, row.price || '—', !row.price ? 'Missing price' : i === 1 ? 'Possible repeat' : 'Formatting']);
       rowsInto(previewRows, records, row => row[2] === '—' ? 'row-issue' : cleaned ? 'row-ready' : '');
-      document.querySelector('[data-preview-count]').textContent = cleaned ? '4 output rows' : '5 source rows';
+      document.querySelector('[data-preview-count]').textContent = cleaned ? '2 of 4 output rows' : '3 of 5 source rows';
       document.querySelector('[data-preview-status]').textContent = cleaned
         ? 'Formats standardized. One exact repeat removed. The missing price still needs review.'
         : 'Inconsistent formatting, an exact repeat, and a missing price.';

@@ -78,3 +78,8 @@ Restored the user-preferred dark split hero, white headline, yellow italic accen
 The header/footer use an unchanged copy of the actual logo at MWS/MWS Logo/Maier Web Solutions Logo.png. A SHA-256 comparison confirmed equality to the source. The old promotional banner was not used because it describes the prior business offering. The compact hero preview and full comparison share the same transformation state; either reset restores both views. All source/output inspection and downloads remain available.
 
 Validation passed for all 35 page/viewport combinations, local font loading, logo references, synchronized preview/run/reset, existing five demos, prices/offer, FAQ, downloads and email preparation. All visible paragraphs were additionally checked for at least 4.5:1 contrast against their solid ancestor backgrounds at desktop/mobile sizes; no failures were reported. This bounded check is not a full accessibility audit. Font checks explicitly load the italic face on policy pages where it is otherwise unused. Mobile contrast issues identified during review were corrected before the passing run.
+
+
+## Unified opening refinement
+
+Confirmed the second supplied screenshot as the layout target. Kept the dark split headline/compact example and removed the repeated full comparison from the normal page flow. The larger source/output view and downloads are an optional native disclosure within that same opening; existing #work links reveal it. Preview counts now explicitly describe the selected subset (three of five source rows, two of four output rows), with the complete dataset and export unchanged. The header displays the owner’s complete logo once, removing the redundant adjacent wordmark. No new dependency or external request was added.

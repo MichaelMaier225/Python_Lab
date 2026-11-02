@@ -2,6 +2,17 @@
 (() => {
   document.body.classList.add('js-ready');
   const config = window.MWS_CONFIG;
+  const comparison = document.querySelector('.comparison-disclosure');
+  if (comparison) {
+    document.querySelectorAll('a[href="#work"]').forEach(link => {
+      link.addEventListener('click', () => { comparison.open = true; });
+    });
+    if (location.hash === '#work') comparison.open = true;
+    window.addEventListener('hashchange', () => {
+      if (location.hash === '#work') comparison.open = true;
+    });
+  }
+
   const make = (tag, text, className) => {
     const node = document.createElement(tag);
     if (text !== undefined) node.textContent = text;
