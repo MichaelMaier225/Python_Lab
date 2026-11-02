@@ -6,6 +6,8 @@
 <title>Smarter Data. Simpler Business. | Maier Web Solutions</title>
 <meta name="description" content="Practical data cleanup, inventory tools, workflow automation, and reporting for small businesses in Baton Rouge, Prairieville, and remotely.">
 <link rel="icon" href="assets/maier-logo-icon.png">
+<link rel="preload" href="assets/fonts/manrope-latin.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/instrument-serif-italic-latin.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="mws.css">
 <script src="site-config.js" defer>
 </script>
@@ -18,14 +20,9 @@
 <a class="skip" href="#main">Skip to content</a>
 <header>
 <div class="wrap header-inner">
-<a class="brand" href="index.html">
-<span class="brand-mark" aria-hidden="true">m<span>
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-<path d="M5 19 19 5M5 5h14v14"/>
-</svg>
-</span>
-</span>
-<span>MAIER<small>WEB SOLUTIONS</small>
+<a class="brand" href="index.html" aria-label="Maier Web Solutions home">
+<img src="assets/mws-owner-logo.png" alt="" width="88" height="88">
+<span>Maier<small>Web Solutions</small>
 </span>
 </a>
 <button class="menu" aria-controls="nav" aria-expanded="false">Menu</button>
@@ -43,25 +40,90 @@
 </div>
 </header>
 <main id="main">
-<section class="wrap opening">
-<div class="opening-label">
-<p class="eyebrow">MAIER WEB SOLUTIONS / DATA & AUTOMATION</p>
-<span>Prairieville, LA · Working locally & remotely</span>
+<section class="hero-shell">
+<div class="hero-art" aria-hidden="true">
+<svg viewBox="0 0 900 900" fill="none">
+<circle cx="450" cy="450" r="345"/>
+<circle cx="450" cy="450" r="260"/>
+<circle cx="450" cy="450" r="175"/>
+<path d="M105 450h690M450 105v690M206 206l488 488M206 694l488-488"/>
+<g>
+<circle cx="450" cy="105" r="8"/>
+<circle cx="710" cy="450" r="7"/>
+<circle cx="206" cy="694" r="8"/>
+</g>
+</svg>
 </div>
-<div class="opening-grid">
-<h1>Stop rebuilding<br>the same spreadsheet<br>
-<em>every week.</em>
+<div class="wrap hero">
+<div class="hero-copy">
+<p class="eyebrow">
+<span class="hero-dot">
+</span> SMALL BUSINESS DATA & AUTOMATION</p>
+<h1>Your business.<br>Your data.<br>
+<em>Less of the mess.</em>
 </h1>
-<div class="opening-copy">
-<p class="lead">I clean up business data, automate repetitive tasks, and build reports that help you understand what’s happening.</p>
-<p>Excel files. Product catalogs. Weekly exports. Let’s make them easier to work with.</p>
-<a class="button" href="contact.html">Get a Free Quote <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<p class="lead">I clean up spreadsheets, automate recurring reports, and help you get useful answers from business data.</p>
+<div class="actions">
+<a class="button light" href="contact.html">Get a Free Quote <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
 <path d="M5 19 19 5M5 5h14v14"/>
 </svg>
 </a>
-<a class="text-link opening-secondary" href="#work">See what I mean <span aria-hidden="true">↓</span>
-</a>
+<a class="hero-link" href="#work">See the full comparison →</a>
 </div>
+<p class="hero-location">Maier Web Solutions · Prairieville, Louisiana<br>Serving Baton Rouge, nearby communities & remote clients.</p>
+</div>
+<div class="hero-demo">
+<div class="preview-caption">
+<span>YOUR DATA, WITH A CLEARER NEXT STEP</span>
+<span>TRY IT LIVE</span>
+</div>
+<div class="hero-preview">
+<div class="preview-titlebar">
+<span class="window-dots" aria-hidden="true">
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+</span>
+<span>product_export.csv</span>
+<span data-preview-count>5 source rows</span>
+</div>
+<div class="preview-intro">
+<p class="eyebrow">A REAL WORKING EXAMPLE · SYNTHETIC DATA</p>
+<h2>A few small problems.<br>One messy file.</h2>
+</div>
+<div class="table-scroll">
+<table>
+<caption class="sr-only">Synthetic catalog preview, synchronized with the full comparison below</caption>
+<thead>
+<tr>
+<th scope="col">SKU</th>
+<th scope="col">Product</th>
+<th scope="col">Price</th>
+<th scope="col">Review</th>
+</tr>
+</thead>
+<tbody data-preview-rows>
+</tbody>
+</table>
+</div>
+<div class="preview-action">
+<p data-preview-status role="status">Inconsistent formatting, an exact repeat, and a missing price.</p>
+<button type="button" data-preview-run>Clean up the example →</button>
+</div>
+<div class="preview-footer">
+<a href="#work">Inspect the changes & download the result</a>
+<button class="quiet" type="button" data-preview-reset>Reset</button>
+</div>
+</div>
+<p class="preview-note">Made-up business data. No uploads or account needed.</p>
+</div>
+</div>
+<div class="wrap hero-bottom">
+<span>Smarter Data. Simpler Business.</span>
+<a href="#services">Find the right starting point ↓</a>
 </div>
 </section>
 <section id="work" class="work-stage">
@@ -166,7 +228,8 @@
 <a href="services.html#offer-terms">Offer details →</a>
 </div>
 </aside>
-<section id="services" class="wrap section problem-section">
+<section class="problem-shell">
+<div id="services" class="wrap section problem-section">
 <div class="section-heading">
 <div>
 <p class="eyebrow">WHERE DO YOU WANT TO START?</p>
@@ -233,6 +296,7 @@
 </div>
 <p class="pricing-note">Starting prices apply to qualifying small projects. You’ll receive a written scope and quote before work begins. <a href="services.html">See all five services and package details →</a>
 </p>
+</div>
 </section>
 <section class="case-section">
 <div class="wrap case-grid">
@@ -387,7 +451,10 @@
 <footer>
 <div class="wrap footer-grid">
 <div>
-<a class="footer-brand" href="index.html">Maier Web Solutions</a>
+<a class="footer-brand" href="index.html">
+<img src="assets/mws-owner-logo.png" alt="" width="64" height="64" loading="lazy">
+<span>Maier Web Solutions</span>
+</a>
 <p>Smarter Data. Simpler Business.</p>
 <small>Prairieville · Baton Rouge · Remote</small>
 </div>

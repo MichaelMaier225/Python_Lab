@@ -10,7 +10,7 @@ Use the existing checkout; cloud tasks are already isolated. From `MWS/Websites/
 python -m http.server 8000 --bind 127.0.0.1
 ```
 
-Request `/index.html` locally and verify it contains “Stop rebuilding”. Python 3.12 was tested. This server is for local development, not production.
+Request `/index.html` locally and verify it contains “Your business.”. Python 3.12 was tested. This server is for local development, not production.
 
 ## Structure
 
@@ -55,7 +55,7 @@ If JavaScript is unavailable, contact fields remain disabled to prevent accident
 
 ## Visual interaction and FAQ behavior
 
-The site uses warm white, ink, cobalt, and restrained yellow to distinguish source records, changed cells, and items needing review. The visual system follows source data → decisions → output; the homepage centers on a working comparison rather than decorative artwork. Service icons are inline SVG. No video, stock-image requests, animation library, or tracking is added.
+The site uses the preferred dark split hero and a consistent navy, cobalt, and yellow treatment across pages, with light surfaces for tables and forms. A compact hero preview stays synchronized with the larger source → decisions → output comparison. Original inline artwork and service icons need no external assets. No video, stock-image requests, animation library, or tracking is added.
 
 FAQ headings are actual buttons controlling labeled answer regions through `aria-expanded` and `aria-controls`. Mouse, Enter, and Space toggle each answer independently. Only the control text suppresses selection and caret display; form fields retain their typing caret. All FAQ answers are readable without JavaScript. A caret visible elsewhere on ordinary page text may be the browser’s F7 caret-browsing mode.
 
@@ -74,3 +74,9 @@ node checks/browser.cjs
 On a machine where Playwright is available through Node’s normal module resolution, omit `MWS_PLAYWRIGHT_MODULE`. Set `MWS_BROWSER` to that machine’s Chromium executable, `MWS_BASE_URL` to another local test server, or `MWS_ARTIFACT_DIR` to select an output directory. By default, screenshots and downloaded sample files are written outside the checkout under a fresh temporary directory.
 
 The contact page offers direct email first. Its optional guided form still prepares an email for the visitor to send; no submission provider has been configured. Do not claim server-side delivery.
+
+## Fonts and owner branding
+
+The main face is **Manrope**, with **Instrument Serif Italic** for accent headings. Latin WOFF subsets are served locally from `assets/fonts/` with `font-display: swap`, so no Google Fonts requests are made at runtime. Font files total approximately 67.5 KB. OFL licenses and source details are included in that directory.
+
+The header/footer image is an unchanged copy of `MWS/MWS Logo/Maier Web Solutions Logo.png`, deployed as `assets/mws-owner-logo.png`. The separate promotional banner describes the former website offering and is not used. Include all new font, license, and logo files when publishing the static directory.

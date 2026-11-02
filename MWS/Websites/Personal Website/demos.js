@@ -65,6 +65,21 @@
       note.replaceChildren(el('strong', row.sku + ' / decision notes'), el('p', describe(row)));
       document.querySelectorAll('[data-inspect-sku]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.inspectSku === row.sku)));
     };
+    const previewRows = document.querySelector('[data-preview-rows]');
+    const renderPreview = cleaned => {
+      if (!previewRows) return;
+      const records = cleaned
+        ? output.map(row => [row.sku, row.name, row.price === null ? '—' : '$' + row.price.toFixed(2), row.price === null ? 'Needs review' : 'Standardized'])
+        : raw.map((row, i) => [row.sku, row.name, row.price || '—', !row.price ? 'Missing price' : i === 1 ? 'Possible repeat' : 'Formatting']);
+      rowsInto(previewRows, records, row => row[2] === '—' ? 'row-issue' : cleaned ? 'row-ready' : '');
+      document.querySelector('[data-preview-count]').textContent = cleaned ? '4 output rows' : '5 source rows';
+      document.querySelector('[data-preview-status]').textContent = cleaned
+        ? 'Formats standardized. One exact repeat removed. The missing price still needs review.'
+        : 'Inconsistent formatting, an exact repeat, and a missing price.';
+      const button = document.querySelector('[data-preview-run]');
+      button.textContent = cleaned ? 'Cleanup applied · 1 item needs review' : 'Clean up the example →';
+      button.disabled = cleaned;
+    };
     const run = document.querySelector('#catalog-run');
     const status = document.querySelector('#catalog-status');
     const reset = () => {
@@ -73,7 +88,7 @@
       document.querySelector('#catalog-findings').hidden = true;
       document.querySelector('#catalog-output').replaceChildren();
       document.querySelector('#catalog-output-count').textContent = 'Your result';
-      run.disabled = false;
+      run.disabled = false; renderPreview(false);
       status.textContent = 'One example rule: only records with the same normalized SKU, name, and price are treated as exact repeats.';
     };
     run.addEventListener('click', () => {
@@ -100,7 +115,7 @@
       document.querySelector('#catalog-output-count').textContent = output.length + ' output rows';
       document.querySelector('#catalog-change-log').textContent = 'Names and SKU formats standardized. One exact repeat removed. One missing price flagged.';
       status.textContent = '5 source rows → 4 output rows. Highlighted cells changed; the amber cell still needs review. Select a SKU to see its decision notes.';
-      run.disabled = true; inspect(output[0]);
+      run.disabled = true; renderPreview(true); inspect(output[0]);
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
         tbody.querySelectorAll('.changed-cell, .review-cell').forEach(cell => {
           if (cell.animate) cell.animate([{ opacity: .25 }, { opacity: 1 }], { duration: 280 });
@@ -108,6 +123,8 @@
       }
     });
     document.querySelector('#catalog-reset').addEventListener('click', reset);
+    document.querySelector('[data-preview-run]')?.addEventListener('click', () => run.click());
+    document.querySelector('[data-preview-reset]')?.addEventListener('click', reset);
     document.querySelector('#catalog-download').addEventListener('click', () => download('mws-example-product-catalog.csv', [['SKU', 'Product', 'Price', 'Review'], ...output.map(row => [row.sku, row.name, row.price === null ? '' : row.price.toFixed(2), row.price === null ? 'Confirm missing price with source' : ''])]));
     document.querySelector('#catalog-notes').addEventListener('click', () => {
       const content = 'MWS synthetic catalog example — review notes\n\n' + output.map(row => row.sku + ': ' + describe(row)).join('\n\n') + '\n\nThis is a demonstration. Do not use it as a production product file.\n';
