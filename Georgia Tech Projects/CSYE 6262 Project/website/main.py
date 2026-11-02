@@ -6,8 +6,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app.database import count_products, search_products
-from app.model import load_model, predict_match
+from .database import count_products, search_products
+from .model import load_model, predict_match
 
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -40,6 +40,11 @@ class ProductPair(BaseModel):
 @app.get("/")
 def home():
     return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/live")
+def live():
+    return {"status": "running"}
 
 
 @app.get("/health")

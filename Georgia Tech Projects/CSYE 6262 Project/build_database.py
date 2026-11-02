@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from app.database import connect, initialize, DB_PATH
+from website.database import connect, initialize, DB_PATH
 
 ROOT = Path(__file__).resolve().parent
 
