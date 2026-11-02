@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ProductMatch</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/script.js" defer></script>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-content">
+        <h2>ProductMatch</h2>
+        <span>SVM Product Matching</span>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="intro">
+        <h1>Find and Compare Products</h1>
+        <p>
+            Search historical product listings, compare product
+            information, and identify matching products using
+            our trained Support Vector Machine.
+        </p>
+    </section>
+
+    <section class="panel">
+
+        <h2>Search Products</h2>
+
+        <p class="muted">
+            Search products from the WDC dataset.
+            These are historical listings, not live retailer prices.
+        </p>
+
+        <form id="search-form" class="search-form">
+            <input
+                id="search-query"
+                type="text"
+                placeholder="Search for a product..."
+                minlength="2"
+                required
+            >
+
+            <button type="submit">Search</button>
+        </form>
+
+        <p id="search-status" class="muted"></p>
+
+        <div id="search-results"></div>
+
+    </section>
+
+    <section class="comparison">
+
+        <h2>Compare Two Products</h2>
+
+        <p class="muted">
+            Select listings from search results or enter
+            product information manually.
+        </p>
+
+        <form id="compare-form">
+
+            <div class="product-grid">
+
+                <div class="panel product-card">
+
+                    <h3>Product A</h3>
+
+                    <label for="a-title">Product Title</label>
+                    <input
+                        id="a-title"
+                        type="text"
+                        placeholder="Product title"
+                        required
+                    >
+
+                    <label for="a-brand">Brand</label>
+                    <input
+                        id="a-brand"
+                        type="text"
+                        placeholder="Brand"
+                    >
+
+                    <label for="a-description">Description</label>
+                    <textarea
+                        id="a-description"
+                        rows="5"
+                        placeholder="Product description"
+                    ></textarea>
+
+                    <label for="a-price">Price (USD)</label>
+                    <input
+                        id="a-price"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="Optional"
+                    >
+
+                </div>
+
+                <div class="panel product-card">
+
+                    <h3>Product B</h3>
+
+                    <label for="b-title">Product Title</label>
+                    <input
+                        id="b-title"
+                        type="text"
+                        placeholder="Product title"
+                        required
+                    >
+
+                    <label for="b-brand">Brand</label>
+                    <input
+                        id="b-brand"
+                        type="text"
+                        placeholder="Brand"
+                    >
+
+                    <label for="b-description">Description</label>
+                    <textarea
+                        id="b-description"
+                        rows="5"
+                        placeholder="Product description"
+                    ></textarea>
+
+                    <label for="b-price">Price (USD)</label>
+                    <input
+                        id="b-price"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="Optional"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button type="submit" id="compare-btn">
+                    <span id="btn-text">Compare Products</span>
+                </button>
+
+                <button type="button" id="example-btn" class="secondary">
+                    Fill Example
+                </button>
+
+                <button type="button" id="clear-btn" class="secondary">
+                    Clear
+                </button>
+            </div>
+
+        </form>
+
+        <div id="error" class="error" hidden></div>
+
+        <div id="result" class="panel result" hidden>
+
+            <div class="result-header">
+                <h2 id="result-title"></h2>
+                <span id="result-pill"></span>
+            </div>
+
+            <p id="result-explanation"></p>
+
+            <div class="result-stats">
+
+                <div>
+                    <span>SVM Decision Score</span>
+                    <strong id="decision-score"></strong>
+                </div>
+
+                <div>
+                    <span>Match Threshold</span>
+                    <strong id="threshold"></strong>
+                </div>
+
+            </div>
+
+            <div id="price-result" hidden>
+                <h3>Price Comparison</h3>
+                <p id="price-message"></p>
+            </div>
+
+            <p class="muted">
+                The SVM decision score is not a probability.
+                Price comparisons are shown only when the model
+                predicts a match and both prices are available.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    ProductMatch | CSE 6242 Project
+</footer>
+
+</body>
+</html>
