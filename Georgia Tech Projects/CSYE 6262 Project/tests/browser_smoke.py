@@ -24,15 +24,18 @@ with sync_playwright() as p:
     page = browser.new_page(viewport={'width':1440,'height':1000})
     errors=[]
     page.on('pageerror',lambda error: errors.append(str(error)))
-    # First exercise the actual missing-artifact page without mocked APIs.
+    # First exercise the actual startup page without mocked APIs.
     page.goto(BASE)
-    expect(page.locator('#model-status')).to_contain_text('not installed')
-    expect(page.locator('#compare-btn')).to_be_disabled()
+    expect(page.locator('#model-status')).not_to_have_text('Checking model availability…')
+    expect(page.locator('#candidate-empty')).to_be_visible()
+    expect(page.locator('#vendor-filter')).to_be_disabled()
+    page.locator('#attributes-btn').click()
+    expect(page.locator('#manual-entry')).to_have_attribute('open', '')
     page.locator('#example-btn').click()
     page.locator('#attributes-btn').click()
     expect(page.locator('#attribute-body tr')).to_have_count(5)
     expect(page.locator('#evaluation-content')).to_contain_text('No verified evaluation')
-    print('PASS: actual missing-model state, manual attributes, evaluation empty state')
+    print('PASS: actual startup state, manual attributes, evaluation empty state')
     def fulfill(route,data): route.fulfill(status=200,content_type='application/json',body=json.dumps(data))
     page.route('**/models',lambda route:fulfill(route,{'active_model':'fixture','models':[MODEL]}))
     page.route('**/search?*',lambda route:fulfill(route,{'count':1,'results':[A]}))
@@ -85,6 +88,7 @@ with sync_playwright() as p:
     expect(page.locator('#feedback-status')).to_contain_text('Review saved')
     assert submissions[0]['model_id']=='fixture'
     assert submissions[0]['product_b']['source_id']=='test-3'
+    page.locator('#manual-entry > summary').click()
     page.locator('#b-title').fill('Changed pair')
     expect(page.locator('#pair-result')).to_be_hidden()
     expect(page.get_by_role('button',name='Unsure',exact=True)).to_be_disabled()
@@ -102,6 +106,8 @@ with sync_playwright() as p:
     print('PASS: label-only model fallback and mobile layout')
     expect(page.locator('#evaluation-content')).to_contain_text('synthetic-browser-fixture-only')
     expect(page.locator('#evaluation-content table')).to_contain_text('Different')
+    page.locator('#evaluation-tab').click()
+    expect(page.locator('#workspace-view')).to_be_hidden()
     page.locator('#evaluation-content input[type=range]').fill('1')
     expect(page.locator('#evaluation-content')).to_contain_text('Threshold 0.5')
     expect(page.locator('#evaluation-content svg circle')).to_have_count(2)

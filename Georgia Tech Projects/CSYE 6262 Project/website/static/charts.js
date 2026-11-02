@@ -75,7 +75,7 @@ function drawCandidates(items, options) {
             .attr("x2", width - margin.right)
             .attr("y1", y(options.threshold))
             .attr("y2", y(options.threshold))
-            .attr("stroke", "#3457d5")
+            .attr("stroke", "#bf522e")
             .attr("stroke-dasharray", "6 4");
         svg.append("text")
             .attr("x", width - margin.right)
@@ -92,7 +92,7 @@ function drawCandidates(items, options) {
         .attr("cy", (item) => y(item.prediction.raw_score))
         .attr("r", 7)
         .attr("fill", (item) => (options.isMatch(item) ? "#167454" : "#a73d39"))
-        .attr("stroke", (item) => (item.product.id === options.selected ? "#192b42" : "white"))
+        .attr("stroke", (item) => (item.product.id === options.selected ? "#272b2a" : "white"))
         .attr("stroke-width", (item) => (item.product.id === options.selected ? 3 : 1.5))
         .attr("tabindex", 0)
         .attr("role", "button")
@@ -136,7 +136,7 @@ function drawPrecisionRecall(container, points) {
     svg.append("path")
         .datum(points.slice().sort((a, b) => a.recall - b.recall))
         .attr("fill", "none")
-        .attr("stroke", "#3457d5")
+        .attr("stroke", "#bf522e")
         .attr("stroke-width", 2)
         .attr(
             "d",
@@ -152,7 +152,7 @@ function drawPrecisionRecall(container, points) {
         .attr("cx", (p) => x(p.recall))
         .attr("cy", (p) => y(p.precision))
         .attr("r", 4)
-        .attr("fill", "#3457d5")
+        .attr("fill", "#bf522e")
         .append("title")
         .text((p) => `Threshold ${p.threshold}: precision ${p.precision}, recall ${p.recall}`);
 }

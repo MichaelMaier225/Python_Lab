@@ -65,14 +65,15 @@ function invalidatePair() {
     get("pair-result").hidden = true;
     get("pair-error").hidden = true;
     get("attribute-body").replaceChildren();
-    get("attribute-summary").textContent =
-        "Compare attributes or run an official prediction for the current fields.";
-    get("feedback-status").textContent =
-        "Run an official prediction for this pair before submitting feedback.";
+    get("attribute-summary").textContent = "Compare this pair to see attribute agreement.";
+    get("feedback-status").textContent = "Run a prediction to submit a review.";
 }
 
 function fillProduct(prefix, product) {
     state.listings[prefix] = product;
+    get(`${prefix}-summary`).textContent =
+        product.title ||
+        (prefix === "a" ? "Choose a reference listing" : "Select a candidate to compare");
     for (const field of ["title", "brand", "description", "price", "currency"]) {
         get(`${prefix}-${field}`).value = product[field] ?? "";
     }
@@ -103,7 +104,7 @@ function showError(message) {
 function showModel(info) {
     state.model = info;
     const status = get("model-status");
-    status.className = info.available ? "notice" : "notice warning";
+    status.className = info.available ? "model-status" : "model-status warning";
     status.textContent = `${info.name} · version ${info.version} — ${
         info.available
             ? "Ready. " +
@@ -127,6 +128,7 @@ function setThreshold() {
     const flags = state.model?.capabilities;
     const slider = get("threshold");
     slider.disabled = !flags?.threshold;
+    get("threshold-box").hidden = !flags?.threshold || !state.reference;
     if (!flags?.threshold) {
         get("threshold-value").textContent = "Unavailable";
         return;
@@ -182,6 +184,11 @@ function visibleCandidates() {
 
 function renderCandidates() {
     const currency = get("currency-filter").value;
+    const hasReference = Boolean(state.reference);
+    get("candidate-empty").hidden = hasReference;
+    get("candidate-chart").hidden = !hasReference;
+    get("chart-context").hidden = !hasReference;
+    get("candidate-filters").disabled = !state.candidates.length;
     get("min-price").disabled = !currency;
     get("max-price").disabled = !currency;
     get("sort-filter").querySelector('option[value="price"]').disabled = !currency;
@@ -199,11 +206,13 @@ function renderCandidates() {
     if (!get("threshold").disabled) {
         get("threshold-value").textContent = Number(get("threshold").value).toFixed(4);
         get("threshold-note").textContent =
-            `Exploration only. Official default: ${state.model.capabilities.default_threshold}. Changing this control does not change saved model predictions or retrain the model.`;
+            `Official default: ${state.model.capabilities.default_threshold}. This slider changes exploration only.`;
     }
     get("candidate-status").textContent = state.candidates.length
-        ? `${items.length} of ${state.candidates.length} retrieved candidates visible. Click a point or Inspect to compare.`
-        : "No candidates retrieved. Try a different reference listing.";
+        ? `${items.length} of ${state.candidates.length} listings · select a point or Inspect`
+        : state.reference
+          ? "No candidates found for this reference."
+          : "Waiting for a reference product.";
     const list = get("candidate-list");
     list.replaceChildren();
     for (const item of items) {
@@ -227,6 +236,10 @@ function renderCandidates() {
         button.addEventListener("click", () => selectCandidate(item));
         row.append(content, button);
         list.append(row);
+    }
+    if (!hasReference) {
+        get("candidate-chart").replaceChildren();
+        return;
     }
     drawCandidates(items, {
         currency,
@@ -260,7 +273,7 @@ function renderAttributes(rows) {
         body.append(tr);
     }
     get("attribute-summary").textContent =
-        `${rows.filter((row) => row.status === "match").length} matching · ${rows.filter((row) => row.status === "conflict").length} conflicting · ${rows.filter((row) => row.status === "unknown").length} unknown attributes. Inspect the original titles and descriptions as well.`;
+        `${rows.filter((row) => row.status === "match").length} matching · ${rows.filter((row) => row.status === "conflict").length} conflicting · ${rows.filter((row) => row.status === "unknown").length} unknown.`;
 }
 
 async function compareAttributes() {
@@ -307,7 +320,7 @@ async function selectReference(product) {
         populateFilter(
             "currency-filter",
             state.candidates.map((item) => (item.product.currency || "").toUpperCase()),
-            "All currencies · candidate position"
+            "All currencies"
         );
         resetFilters();
     } catch (err) {
@@ -332,7 +345,7 @@ get("search-form").addEventListener("submit", async (event) => {
         const data = await api(`/search?q=${encodeURIComponent(get("search-query").value.trim())}`);
         get("search-status").textContent = data.count
             ? `${data.count} listings found. Select a reference to explore.`
-            : "No listings found. Try different terms; the server may not have a populated product database yet.";
+            : "No listings found. Try a different brand or model.";
         for (const product of data.results) {
             const card = node("article", undefined, "listing");
             card.append(
@@ -387,9 +400,20 @@ get("search-form").addEventListener("submit", async (event) => {
     }
 });
 
+get("compare-form").addEventListener(
+    "invalid",
+    () => {
+        get("manual-entry").open = true;
+    },
+    true
+);
 get("compare-form").addEventListener("input", (event) => {
-    delete state.listings[event.target.id.slice(0, 1)];
+    const prefix = event.target.id.slice(0, 1);
+    delete state.listings[prefix];
+    get(`${prefix}-summary`).textContent = get(`${prefix}-title`).value || "No product entered";
+    state.selected = null;
     invalidatePair();
+    renderCandidates();
 });
 get("compare-form").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -430,11 +454,14 @@ get("attributes-btn").addEventListener("click", compareAttributes);
 get("clear-btn").addEventListener("click", () => {
     get("compare-form").reset();
     state.listings = {};
+    fillProduct("a", {});
+    fillProduct("b", {});
     invalidatePair();
     state.selected = null;
     renderCandidates();
 });
 get("example-btn").addEventListener("click", () => {
+    get("manual-entry").open = true;
     invalidatePair();
     fillProduct("a", {
         title: "Samsung 990 PRO 1TB NVMe SSD",
@@ -565,6 +592,21 @@ function renderEvaluation() {
     );
 }
 get("evaluation-model").addEventListener("change", renderEvaluation);
+
+function showView(evaluation) {
+    get("workspace-view").hidden = evaluation;
+    get("evaluation").hidden = !evaluation;
+    for (const [id, active] of [
+        ["workspace-tab", !evaluation],
+        ["evaluation-tab", evaluation]
+    ]) {
+        get(id).classList.toggle("active", active);
+        get(id).setAttribute("aria-pressed", String(active));
+    }
+}
+get("workspace-tab").addEventListener("click", () => showView(false));
+document.querySelector(".logo").addEventListener("click", () => showView(false));
+get("evaluation-tab").addEventListener("click", () => showView(true));
 
 async function initialize() {
     renderCandidates();

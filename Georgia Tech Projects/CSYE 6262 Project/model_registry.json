@@ -3,21 +3,35 @@
   "models": [
     {
       "id": "linear_svc_v3",
-      "name": "Linear SVM · baseline",
+      "name": "Linear SVM \u00b7 baseline",
       "version": "3",
       "algorithm": "LinearSVC",
       "status": "approved",
       "adapter": "tfidf_pair",
       "artifact": "svm_small_v3.joblib",
-      "sha256": null,
+      "sha256": "09531b0b5bf1a069596f40684bf20cd435a895a7d01af5f511d06bae431807c1",
       "score_type": "decision_score",
       "dataset": "WDC V2 / small (verify against original training run)",
       "feature_schema": "title intersection + description intersection + 17 numeric features",
-      "label_mapping": {"0": "different", "1": "match"},
-      "training_config": {"script": "train_svm.py", "seed": 42},
+      "label_mapping": {
+        "0": "different",
+        "1": "match"
+      },
+      "training_config": {
+        "script": "train_svm.py",
+        "seed": 42
+      },
       "library_versions": null,
       "created_at": null,
-      "evaluation": null
+      "evaluation": null,
+      "verified_runtime": {
+        "python": "3.12.14",
+        "scikit-learn": "1.8.0",
+        "numpy": "2.3.5",
+        "pandas": "2.2.3",
+        "scipy": "1.17.0",
+        "joblib": "1.5.3"
+      }
     }
   ]
 }

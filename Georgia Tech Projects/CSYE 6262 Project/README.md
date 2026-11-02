@@ -43,15 +43,15 @@ does not establish that prediction or populated search works.
 
 ## Required data and model
 
-These files are ignored by Git and are not supplied by installing dependencies:
+The v2 and v3 model artifacts are now committed in `models/`. The v3 artifact's
+SHA-256 is pinned in `model_registry.json`; it loads successfully with the current
+requirements. A regression check confirms identical scores from the original
+training feature pipeline and the serving adapter on representative inputs.
+This verifies compatibility, not test-set accuracy.
 
-- `models/svm_small_v3.joblib`: trusted original model and fitted vectorizers.
-- `data/products.db`: populated SQLite product database.
-
-Without them, the page still loads, search returns no listings, `/health`
-returns 503, and `/predict` returns 503. Provision these artifacts on Render
-before claiming the complete application works. No artifact download source is
-configured yet. Do not upload the full WDC corpus to GitHub.
+`data/products.db` is still ignored by Git and must be supplied separately. Without
+a populated database, manual predictions can work but search returns no listings.
+`/health` reports the indexed count, which must be nonzero for a catalog demo.
 
 To build the database locally, place the original
 `offers_corpus_all_v2_non_norm.json.gz` in `data/`, then run:
@@ -66,12 +66,14 @@ The existing training script requires `data/all_train.zip`, `data/all_valid.zip`
 and `data/all_gs.json.gz`. Deployment does not retrain or replace the model.
 
 Only load trusted joblib artifacts. The dependency versions in requirements.txt
-match the inspected development runtime; compatibility with the original trained
-artifact still needs verification against its training environment.
+match the verified development runtime for the committed v3 artifact. The original
+training environment and evaluation results are not fully documented.
 
 ## Interactive dashboard
 
-The website now connects four areas:
+The workspace keeps search, candidate exploration and pair inspection side by side on desktop.
+Model evaluation has its own tab; method details and manual editing can be expanded
+when needed. The website connects four areas:
 
 1. **Explorer:** search the SQLite FTS index, select a reference, and retrieve up
    to 40 lexical candidates. Candidate retrieval uses title tokens without using
@@ -150,7 +152,7 @@ artifacts are never retrained or overwritten by application startup. The old
 feature code is retained, and repeated prediction/loading code was replaced by
 the registry's single batch implementation.
 
-`model_registry.json` keeps metadata outside the ignored artifact directory. Each
+`model_registry.json` keeps version metadata alongside the source. Each
 version gets a unique ID and artifact path within `models/`. Preserve old entries
 and binaries. Record algorithm, adapter, status, dataset, feature schema, labels,
 training configuration, original library versions, creation date, checksum and
@@ -191,26 +193,41 @@ loading. A label-only adapter advertises no continuous-score capabilities.
 
 ## Provision existing artifacts on Render
 
-The website shell is deployable before artifacts arrive. A real demonstration
-requires **both** the original trained bundle and populated database. Neither is
-available in this checkout; do not claim deployed predictions are verified yet.
+The model now deploys from the committed `models/` directory. Only the populated
+product database needs transferring. For this public repository, use a Release asset:
 
-To download your existing files during Render builds, first put trusted copies
-at stable HTTPS download locations you control. Do not include secret URLs in
-Git, and do not publish large research datasets just to deploy the app. Then set:
+1. Open the repository's Releases page and choose **Draft a new release**.
+2. Create tag `productmatch-assets-v1` against `main`.
+3. Attach your existing `data/products.db` using the binary attachment area, then
+   publish the release. The asset will be publicly downloadable. Close any database
+   importer before copying the file.
+4. In Render, set these environment variables:
 
 ```text
-MODEL_URL=<direct HTTPS URL for svm_small_v3.joblib>
-MODEL_SHA256=<SHA-256 of the original trusted model>
-DATABASE_URL=<direct HTTPS URL for products.db>
-DATABASE_SHA256=<SHA-256 of the original database>
+DATABASE_URL=https://github.com/MichaelMaier225/Python_Lab/releases/download/productmatch-assets-v1/products.db
+DATABASE_SHA256=<SHA-256 of the exact original products.db file>
 ```
+
+Get the hash in Windows Command Prompt from your local repository root:
+
+```bat
+certutil -hashfile "Georgia Tech Projects\CSYE 6262 Project\data\products.db" SHA256
+```
+
+Copy only the hexadecimal hash line into `DATABASE_SHA256`. The model's expected
+hash is already committed; no `MODEL_URL` or `MODEL_SHA256` variable is needed for
+the bundled v3 artifact. The helper also supports optional `MODEL_URL` and
+`MODEL_SHA256` if a future version is provisioned from a trusted HTTPS source.
 
 Change the Render build command to:
 
 ```bash
 pip install -r requirements.txt && python prepare_assets.py
 ```
+
+Save the settings, then select **Manual Deploy → Deploy latest commit**. Build logs
+should report `DATABASE: downloaded and verified.` Verify `/health` returns 200
+with a nonzero product count, then try an actual search and prediction.
 
 `prepare_assets.py` streams downloads into temporary files, verifies SHA-256,
 checks the database schema/integrity and atomically installs verified files. An
@@ -289,12 +306,12 @@ node --check website/static/script.js
 node --check website/static/charts.js
 ```
 
-The backend suite trains tiny, explicitly synthetic fixtures in temporary
+The backend suite also checks the actual committed v3 artifact against the training
+feature pipeline. Other tests train tiny, explicitly synthetic fixtures in temporary
 folders, exercises real APIs, and checks training/inference feature parity,
 batch predictions, class-only/probability adapters, checksums, path restrictions,
 validation, missing artifacts, currency safety and feedback persistence. These
-fixtures establish software behavior, not real-world accuracy or parity against
-the absent original trained artifact.
+fixtures establish software behavior, not real-world accuracy.
 
 Optional browser verification uses Python Playwright and an installed Chromium:
 
@@ -307,7 +324,7 @@ python tests/browser_smoke.py
 
 The browser script defaults to `/usr/bin/chromium`; set `CHROMIUM_PATH` to your
 installed Chromium executable and `PRODUCTMATCH_TEST_URL` if using another local
-URL. Run it against a development server **without a production model**. It checks
-the actual missing-artifact states first, then intercepts browser requests with
+URL. Run it against a development server. It checks
+the actual startup state first, then intercepts browser requests with
 synthetic fixtures to test linked interactions. No fixture predictions are stored
 in the production database. Tests do not deploy or change the active model.
