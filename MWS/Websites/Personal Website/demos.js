@@ -29,34 +29,91 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
-  const mini = document.querySelector('[data-mini-lab]');
-  if (mini) {
-    const raw = [['ab-101', 'blue  mug', '$12', 'Formatting'], ['AB-101', 'Blue Mug', '12.00', 'Repeated row'], ['cd-202', 'linen towel', '', 'Missing price']];
-    const clean = [];
-    const seenProducts = new Set();
-    raw.forEach(([sku, name, price]) => {
-      const normalizedSku = sku.toUpperCase();
-      const normalizedName = name.trim().replace(/\s+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-      const numericPrice = price ? Number(price.replace('$', '')) : null;
-      const key = JSON.stringify([normalizedSku, normalizedName, numericPrice]);
-      if (seenProducts.has(key)) return;
-      seenProducts.add(key);
-      clean.push([normalizedSku, normalizedName, numericPrice === null ? '—' : '$' + numericPrice.toFixed(2), numericPrice === null ? 'Needs review' : 'Standardized']);
+  const catalogDemo = document.querySelector('[data-catalog-demo]');
+  if (catalogDemo) {
+    const raw = [
+      { sku: 'ab-101', name: 'blue  mug', price: '$12' },
+      { sku: 'AB101', name: 'Blue Mug', price: '12.00' },
+      { sku: 'cd202', name: 'linen towel', price: '$18' },
+      { sku: 'EF-303', name: 'Cotton Throw', price: '' },
+      { sku: 'gh404', name: 'serving bowl', price: '16.00' }
+    ];
+    const canonicalSku = value => value.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^([A-Z]+)([0-9]+)$/, '$1-$2');
+    const canonicalName = value => value.trim().replace(/\s+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const output = [];
+    raw.forEach((record, index) => {
+      const sku = canonicalSku(record.sku);
+      const name = canonicalName(record.name);
+      const price = record.price ? Number(record.price.replace('$', '')) : null;
+      const existing = output.find(row => row.sku === sku && row.name === name && row.price === price);
+      if (existing) existing.source.push(index);
+      else output.push({ sku, name, price, source: [index] });
     });
-    const body = mini.querySelector('[data-mini-rows]');
-    const button = mini.querySelector('[data-mini-clean]');
-    const status = mini.querySelector('[data-mini-status]');
-    const reset = () => {
-      rowsInto(body, raw, () => 'row-issue');
-      status.textContent = 'Inconsistent names. A repeated product. One missing price.';
-      button.textContent = 'Clean up this file →'; button.disabled = false;
+    rowsInto(document.querySelector('#catalog-source'), raw.map(row => [row.sku, row.name, row.price || 'Missing']));
+    const describe = row => {
+      const originals = row.source.map(index => raw[index]);
+      const changes = [];
+      if (originals.some(original => original.sku !== row.sku)) changes.push('SKU formatting standardized to ' + row.sku + '.');
+      if (originals.some(original => original.name !== row.name)) changes.push('Spacing and capitalization standardized to “' + row.name + '”.');
+      if (row.source.length > 1) changes.push(row.source.length + ' source rows agree on normalized SKU, name, and price; one output row is kept under this example rule.');
+      if (row.price === null) changes.push('The source has no price. It stays blank in the CSV and is listed in the review notes.');
+      else changes.push('Price is formatted as $' + row.price.toFixed(2) + '; its numeric value has not changed.');
+      return changes.join(' ');
     };
-    button.addEventListener('click', () => {
-      rowsInto(body, clean, row => row[3] === 'Needs review' ? 'row-issue' : 'row-fixed');
-      status.textContent = 'Names and SKUs standardized. One duplicate removed after review. Missing price flagged, not guessed.';
-      button.textContent = 'File cleaned · 1 item needs review'; button.disabled = true;
+    const inspect = row => {
+      const note = document.querySelector('#catalog-inspect');
+      note.replaceChildren(el('strong', row.sku + ' / decision notes'), el('p', describe(row)));
+      document.querySelectorAll('[data-inspect-sku]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.inspectSku === row.sku)));
+    };
+    const run = document.querySelector('#catalog-run');
+    const status = document.querySelector('#catalog-status');
+    const reset = () => {
+      document.querySelector('#catalog-empty').hidden = false;
+      document.querySelector('#catalog-output-wrap').hidden = true;
+      document.querySelector('#catalog-findings').hidden = true;
+      document.querySelector('#catalog-output').replaceChildren();
+      document.querySelector('#catalog-output-count').textContent = 'Your result';
+      run.disabled = false;
+      status.textContent = 'One example rule: only records with the same normalized SKU, name, and price are treated as exact repeats.';
+    };
+    run.addEventListener('click', () => {
+      const tbody = document.querySelector('#catalog-output'); tbody.replaceChildren();
+      output.forEach(row => {
+        const original = raw[row.source[0]];
+        const tr = el('tr');
+        const skuCell = el('td');
+        const inspectButton = el('button', row.sku, 'inspect-sku'); inspectButton.type = 'button';
+        inspectButton.dataset.inspectSku = row.sku; inspectButton.setAttribute('aria-label', 'Inspect changes for ' + row.sku);
+        inspectButton.setAttribute('aria-pressed', 'false'); inspectButton.addEventListener('click', () => inspect(row));
+        skuCell.append(inspectButton);
+        const nameCell = el('td', row.name);
+        const priceCell = el('td', row.price === null ? 'Needs review' : '$' + row.price.toFixed(2));
+        if (original.sku !== row.sku) skuCell.className = 'changed-cell';
+        if (original.name !== row.name) nameCell.className = 'changed-cell';
+        if (row.price === null) priceCell.className = 'review-cell';
+        else if (original.price !== '$' + row.price.toFixed(2)) priceCell.className = 'changed-cell';
+        tr.append(skuCell, nameCell, priceCell); tbody.append(tr);
+      });
+      document.querySelector('#catalog-empty').hidden = true;
+      document.querySelector('#catalog-output-wrap').hidden = false;
+      document.querySelector('#catalog-findings').hidden = false;
+      document.querySelector('#catalog-output-count').textContent = output.length + ' output rows';
+      document.querySelector('#catalog-change-log').textContent = 'Names and SKU formats standardized. One exact repeat removed. One missing price flagged.';
+      status.textContent = '5 source rows → 4 output rows. Highlighted cells changed; the amber cell still needs review. Select a SKU to see its decision notes.';
+      run.disabled = true; inspect(output[0]);
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        tbody.querySelectorAll('.changed-cell, .review-cell').forEach(cell => {
+          if (cell.animate) cell.animate([{ opacity: .25 }, { opacity: 1 }], { duration: 280 });
+        });
+      }
     });
-    mini.querySelector('[data-mini-reset]').addEventListener('click', reset);
+    document.querySelector('#catalog-reset').addEventListener('click', reset);
+    document.querySelector('#catalog-download').addEventListener('click', () => download('mws-example-product-catalog.csv', [['SKU', 'Product', 'Price', 'Review'], ...output.map(row => [row.sku, row.name, row.price === null ? '' : row.price.toFixed(2), row.price === null ? 'Confirm missing price with source' : ''])]));
+    document.querySelector('#catalog-notes').addEventListener('click', () => {
+      const content = 'MWS synthetic catalog example — review notes\n\n' + output.map(row => row.sku + ': ' + describe(row)).join('\n\n') + '\n\nThis is a demonstration. Do not use it as a production product file.\n';
+      const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }));
+      const link = el('a'); link.href = url; link.download = 'mws-example-review-notes.txt'; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
     reset();
   }
 
@@ -97,6 +154,7 @@
     [' casey jones ', 'CASEY@example.test'],
     ['Riley Brooks', 'riley@example.test']
   ];
+  rowsInto(document.querySelector('#cleanup-source-rows'), customers.map(([name, email]) => ['“' + name + '”', email || 'Missing']));
   const normalizeName = name => name.trim().replace(/\s+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   let cleanedCustomers = customers.map(row => [...row]);
   const format = document.querySelector('#fix-format');
@@ -104,6 +162,14 @@
   const cleanupBody = document.querySelector('#cleanup-rows');
   const renderCustomers = (records, original) => {
     rowsInto(cleanupBody, records.map(([name, email]) => [original ? '“' + name + '”' : name, email || '—', email ? (original ? 'Not checked' : 'Ready') : 'Missing email']), row => row[2] === 'Missing email' ? 'row-issue' : '');
+    if (!original) {
+      records.forEach(([name, email], index) => {
+        const source = customers.find(([sourceName, sourceEmail]) => normalizeName(sourceName) === name && sourceEmail.trim().toLowerCase() === email);
+        if (!source) return;
+        if (source[0] !== name) cleanupBody.rows[index].cells[0].classList.add('changed-cell');
+        if (source[1] !== email) cleanupBody.rows[index].cells[1].classList.add('changed-cell');
+      });
+    }
   };
   const resetCleanup = () => {
     format.checked = true; duplicates.checked = true;

@@ -10,7 +10,7 @@ Use the existing checkout; cloud tasks are already isolated. From `MWS/Websites/
 python -m http.server 8000 --bind 127.0.0.1
 ```
 
-Request `/index.html` locally and verify it contains “Your business.”. Python 3.12 was tested. This server is for local development, not production.
+Request `/index.html` locally and verify it contains “Stop rebuilding”. Python 3.12 was tested. This server is for local development, not production.
 
 ## Structure
 
@@ -37,7 +37,7 @@ Before publication, verify host HTTPS and security headers, review policies, con
 
 ## The Data Lab
 
-The homepage includes a working catalog cleanup preview. The Data Lab provides five keyboard-accessible examples:
+The homepage includes a side-by-side product catalog cleanup with inspectable decisions and downloadable CSV/review notes. Three problem-based paths lead to all five services. The Data Lab provides five keyboard-accessible examples:
 
 - Customer cleanup: independent formatting and duplicate rules, flagged missing values, reset, and CSV export.
 - Inventory review: normalized SKU grouping, price conflicts, missing prices, and explicit review decisions.
@@ -55,8 +55,22 @@ If JavaScript is unavailable, contact fields remain disabled to prevent accident
 
 ## Visual interaction and FAQ behavior
 
-The site uses charcoal, cobalt, warm white, and yellow for stronger section contrast. The hero artwork is an original inline SVG; service icons are inline SVG as well. No video, stock-image requests, animation library, or tracking is added.
+The site uses warm white, ink, cobalt, and restrained yellow to distinguish source records, changed cells, and items needing review. The visual system follows source data → decisions → output; the homepage centers on a working comparison rather than decorative artwork. Service icons are inline SVG. No video, stock-image requests, animation library, or tracking is added.
 
 FAQ headings are actual buttons controlling labeled answer regions through `aria-expanded` and `aria-controls`. Mouse, Enter, and Space toggle each answer independently. Only the control text suppresses selection and caret display; form fields retain their typing caret. All FAQ answers are readable without JavaScript. A caret visible elsewhere on ordinary page text may be the browser’s F7 caret-browsing mode.
 
-Entrance effects run once as content comes into view, and card/button hover effects are limited to devices with hover support. Content is visible without motion. Reduced-motion preferences disable entrances and decorative transforms; changing that preference while viewing stops active page animations.
+Motion is limited to changed-cell feedback, report bars, and FAQ state changes. General entrance animations and decorative transforms have been removed. The interactions work without motion, and reduced-motion preferences are respected.
+
+## Reusable browser checks
+
+`checks/browser.cjs` runs the site’s meaningful regression checks. Use Node.js and an available Playwright installation with Chromium; neither is a runtime dependency of the site. With the local server running, this cloud environment can run:
+
+```sh
+MWS_PLAYWRIGHT_MODULE=/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright \
+MWS_BROWSER=/usr/bin/chromium \
+node checks/browser.cjs
+```
+
+On a machine where Playwright is available through Node’s normal module resolution, omit `MWS_PLAYWRIGHT_MODULE`. Set `MWS_BROWSER` to that machine’s Chromium executable, `MWS_BASE_URL` to another local test server, or `MWS_ARTIFACT_DIR` to select an output directory. By default, screenshots and downloaded sample files are written outside the checkout under a fresh temporary directory.
+
+The contact page offers direct email first. Its optional guided form still prepares an email for the visitor to send; no submission provider has been configured. Do not claim server-side delivery.

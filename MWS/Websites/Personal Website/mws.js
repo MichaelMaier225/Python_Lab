@@ -27,12 +27,15 @@
   document.querySelectorAll('[data-offer-status]').forEach(node => {
     node.textContent = enabled ? 'Introductory pricing is available subject to confirmed eligibility and offer availability.' : 'The introductory offer is closed. Regular starting prices apply to new quotes.';
   });
+  document.querySelectorAll('[data-service-price]').forEach(node => {
+    const service = config.services.find(item => item.id === node.dataset.servicePrice);
+    if (service) node.textContent = 'from $' + (enabled ? service.intro : service.regular) + (enabled ? ' introductory' : '');
+  });
   document.querySelectorAll('[data-services]').forEach(grid => {
-    const full = grid.dataset.services === 'full';
     config.services.forEach((service, i) => {
       const card = make('article', undefined, 'service-card');
       card.id = service.id;
-      const overview = full ? make('div', undefined, 'service-overview') : card;
+      const overview = make('div', undefined, 'service-overview');
       const top = make('div', undefined, 'service-top');
       const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       icon.setAttribute('viewBox', '0 0 32 32');
@@ -60,23 +63,21 @@
       if (enabled) price.append(make('del', '$' + service.regular));
       price.append(make('strong', '$' + (enabled ? service.intro : service.regular)));
       price.append(make('small', enabled ? 'Founding client price · Regular from $' + service.regular : 'Regular starting price'));
-      const link = make('a', full ? 'Request a Quote →' : 'Explore this service →', 'text-link');
-      link.href = full ? 'contact.html?service=' + encodeURIComponent(service.id) : 'services.html#' + service.id;
+      const link = make('a', 'Request a Quote →', 'text-link');
+      link.href = 'contact.html?service=' + encodeURIComponent(service.id);
       overview.append(price, link);
-      if (full) {
-        const detail = make('div', undefined, 'service-detail');
-        const list = values => {
-          const ul = make('ul');
-          values.forEach(value => ul.append(make('li', value)));
-          return ul;
-        };
-        const uses = make('details');
-        uses.append(make('summary', 'Example uses'), list(service.examples));
-        const extras = make('details');
-        extras.append(make('summary', 'What needs a custom quote?'), make('p', service.custom));
-        detail.append(make('h4', 'Base package'), list(service.scope), uses, extras);
-        card.append(overview, detail);
-      }
+      const detail = make('div', undefined, 'service-detail');
+      const list = values => {
+        const ul = make('ul');
+        values.forEach(value => ul.append(make('li', value)));
+        return ul;
+      };
+      const uses = make('details');
+      uses.append(make('summary', 'Example uses'), list(service.examples));
+      const extras = make('details');
+      extras.append(make('summary', 'What needs a custom quote?'), make('p', service.custom));
+      detail.append(make('h4', 'Base package'), list(service.scope), uses, extras);
+      card.append(overview, detail);
       grid.append(card);
     });
   });
@@ -118,23 +119,4 @@
     });
   });
 
-  // One-time entrances: content is visible by default and motion is never required.
-  if (!reducedMotion.matches && 'IntersectionObserver' in window && Element.prototype.animate) {
-    const entrance = node => node.animate(
-      [{ opacity: .25, transform: 'translateY(22px)' }, { opacity: 1, transform: 'translateY(0)' }],
-      { duration: 460, easing: 'cubic-bezier(.2,.7,.3,1)' }
-    );
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entrance(entry.target); observer.unobserve(entry.target);
-      });
-    }, { threshold: .12 });
-    document.querySelectorAll('.hero-copy, .hero-demo, .section-heading, .service-card, .steps article, .lab-feature .split, .about-band .split, .faq-item, .final-cta').forEach(node => observer.observe(node));
-    reducedMotion.addEventListener('change', event => {
-      if (!event.matches) return;
-      observer.disconnect();
-      document.getAnimations().forEach(animation => animation.cancel());
-    });
-  }
 })();

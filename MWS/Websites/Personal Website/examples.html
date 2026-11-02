@@ -45,9 +45,10 @@
 <main id="main">
 <section class="wrap page-intro">
 <p class="eyebrow">THE DATA LAB</p>
-<h1>Don’t just take<br>my word for it. <em>Try it.</em>
+<h1>Pick a task.<br>
+<em>See how it works.</em>
 </h1>
-<p class="lead">Here are five examples of the work I do. Pick one, change something, and see what happens. I’ll explain the problem, what the tool does, and what still needs a person to check it.</p>
+<p class="lead">Five working examples. Change a rule, run a report, or compare product records. You can check the result against the source data.</p>
 </section>
 <div class="wrap lab-disclosure">
 <span class="status-dot">
@@ -104,6 +105,25 @@
 </div>
 <div class="result-stats" id="cleanup-stats">
 </div>
+<div class="cleanup-compare">
+<section class="cleanup-source">
+<h4>Original records</h4>
+<div class="table-scroll">
+<table>
+<caption>Eight synthetic customer rows · spaces shown in quotes</caption>
+<thead>
+<tr>
+<th scope="col">Name</th>
+<th scope="col">Email</th>
+</tr>
+</thead>
+<tbody id="cleanup-source-rows">
+</tbody>
+</table>
+</div>
+</section>
+<section class="cleanup-result">
+<h4>Your output</h4>
 <div class="table-scroll">
 <table>
 <caption id="cleanup-caption">Original sample records · spaces are visible in quotation marks</caption>
@@ -117,6 +137,8 @@
 <tbody id="cleanup-rows">
 </tbody>
 </table>
+</div>
+</section>
 </div>
 <p class="result-note" id="cleanup-status" role="status">Choose the rules, then apply the cleanup. Missing emails will be flagged for review.</p>
 </div>
@@ -441,9 +463,9 @@
 <a href="tel:+12256787309">(225) 678-7309</a>
 </div>
 <div>
-<a href="terms.html">Service terms (draft)</a>
+<a href="terms.html">Service terms</a>
 <br>
-<a href="privacy.html">Privacy policy (draft)</a>
+<a href="privacy.html">Privacy policy</a>
 <p>© <span id="year">2026</span> Maier Web Solutions</p>
 </div>
 </div>

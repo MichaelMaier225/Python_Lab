@@ -43,220 +43,260 @@
 </div>
 </header>
 <main id="main">
-<section class="hero-shell">
-<div class="hero-art" aria-hidden="true">
-<svg viewBox="0 0 900 900" fill="none">
-<circle cx="450" cy="450" r="345"/>
-<circle cx="450" cy="450" r="260"/>
-<circle cx="450" cy="450" r="175"/>
-<path d="M105 450h690M450 105v690M206 206l488 488M206 694l488-488"/>
-<g class="art-points">
-<circle cx="450" cy="105" r="9"/>
-<circle cx="710" cy="450" r="7"/>
-<circle cx="206" cy="694" r="9"/>
-<circle cx="450" cy="625" r="6"/>
-</g>
-</svg>
+<section class="wrap opening">
+<div class="opening-label">
+<p class="eyebrow">MAIER WEB SOLUTIONS / DATA & AUTOMATION</p>
+<span>Prairieville, LA · Working locally & remotely</span>
 </div>
-<div class="wrap hero">
-<div class="hero-copy">
-<p class="eyebrow">
-<span class="status-dot">
-</span> SMALL BUSINESS DATA & AUTOMATION</p>
-<h1>Your business.<br>Your data.<br>
-<em>Less of the mess.</em>
+<div class="opening-grid">
+<h1>Stop rebuilding<br>the same spreadsheet<br>
+<em>every week.</em>
 </h1>
-<p class="lead">Spreadsheets that don’t line up. Reports you rebuild every week. Product lists that need a cleanup. I help you get those things sorted.</p>
-<div class="actions">
-<a class="button" href="contact.html">Get a Free Quote <span aria-hidden="true">
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<div class="opening-copy">
+<p class="lead">I clean up business data, automate repetitive tasks, and build reports that help you understand what’s happening.</p>
+<p>Excel files. Product catalogs. Weekly exports. Let’s make them easier to work with.</p>
+<a class="button" href="contact.html">Get a Free Quote <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
 <path d="M5 19 19 5M5 5h14v14"/>
 </svg>
-</span>
 </a>
-<a class="hero-link" href="examples.html">See what I mean <span aria-hidden="true">→</span>
+<a class="text-link opening-secondary" href="#work">See what I mean <span aria-hidden="true">↓</span>
 </a>
 </div>
-<p class="location">Maier Web Solutions · Prairieville, Louisiana<br>Serving Baton Rouge, nearby communities & remote clients.</p>
 </div>
-<div class="hero-demo">
-<div class="demo-caption">
-<span class="caption-index">01 — FROM MESS TO MOMENTUM</span>
-<span>CLICK IT. SEE THE DIFFERENCE.</span>
+</section>
+<section id="work" class="work-stage">
+<div class="wrap">
+<div class="stage-top">
+<div>
+<span class="stage-index">01 / A FILE YOU MIGHT RECOGNIZE</span>
+<h2>Same information.<br>
+<span>A more useful file.</span>
+</h2>
 </div>
-<div class="mini-lab" data-mini-lab>
-<div class="window-bar">
-<span class="window-dots" aria-hidden="true">
-<i>
-</i>
-<i>
-</i>
-<i>
-</i>
-</span>
-<span>product_export.csv</span>
-<span class="live-label">TRY IT LIVE</span>
+<p>This is a made-up product export.<br>Run the cleanup. See what changes.<br>No uploads. No customer data.</p>
 </div>
-<div class="mini-heading">
-<span class="eyebrow">THE SPREADSHEET YOU STARTED WITH</span>
-<h2>A few small problems.<br>One messy file.</h2>
+<div class="catalog-demo" data-catalog-demo>
+<div class="compare-grid">
+<section class="compare-pane source-pane">
+<div class="pane-heading">
+<h3>What you started with</h3>
+<span>5 source rows</span>
 </div>
 <div class="table-scroll">
 <table>
-<caption class="sr-only">Synthetic product data, before and after cleanup</caption>
+<caption>Original synthetic product export</caption>
 <thead>
 <tr>
-<th>SKU</th>
-<th>Product</th>
-<th>Price</th>
-<th>Status</th>
+<th scope="col">SKU</th>
+<th scope="col">Product</th>
+<th scope="col">Price</th>
 </tr>
 </thead>
-<tbody data-mini-rows>
+<tbody id="catalog-source">
 </tbody>
 </table>
 </div>
-<div class="mini-action">
-<p data-mini-status role="status">Inconsistent names. A repeated product. One missing price.</p>
-<button type="button" data-mini-clean>Clean up this file <span aria-hidden="true">
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+</section>
+<section class="compare-pane output-pane">
+<div class="pane-heading">
+<h3>What you can work with</h3>
+<span id="catalog-output-count">Your result</span>
+</div>
+<div id="catalog-empty" class="output-empty">
+<span class="transform-mark" aria-hidden="true">→</span>
+<h4>Keep the information.<br>Fix the inconsistencies.</h4>
+<p>Standardize the names and SKUs, remove one exact repeat, and flag the missing price.</p>
+</div>
+<div class="table-scroll" id="catalog-output-wrap" hidden>
+<table>
+<caption>Cleaned output · select a SKU to inspect the changes</caption>
+<thead>
+<tr>
+<th scope="col">SKU / inspect</th>
+<th scope="col">Product</th>
+<th scope="col">Price</th>
+</tr>
+</thead>
+<tbody id="catalog-output">
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<div class="catalog-controls">
+<div class="actions">
+<button id="catalog-run" type="button">Apply the cleanup <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
 <path d="M5 19 19 5M5 5h14v14"/>
 </svg>
-</span>
 </button>
+<button class="secondary" id="catalog-reset" type="button">Reset</button>
 </div>
-<div class="mini-footer">
-<span>Synthetic data · No uploads</span>
-<button class="quiet" data-mini-reset type="button">Reset example</button>
+<p id="catalog-status" role="status">One example rule: only records with the same normalized SKU, name, and price are treated as exact repeats.</p>
+</div>
+<div id="catalog-findings" class="catalog-findings" hidden>
+<div class="change-log">
+<span>WHAT CHANGED</span>
+<p id="catalog-change-log">
+</p>
+</div>
+<div id="catalog-inspect" role="status">
+</div>
+<div class="download-actions">
+<button class="quiet" id="catalog-download" type="button">Download the example CSV ↓</button>
+<button class="quiet" id="catalog-notes" type="button">Download review notes ↓</button>
 </div>
 </div>
-<div class="demo-note">
-<span aria-hidden="true">→</span> A real cleanup example, right here in your browser.</div>
 </div>
-</div>
-<div class="wrap hero-bottom">
-<span>Smarter Data. Simpler Business.</span>
-<a href="#services">FIND THE RIGHT STARTING POINT <span aria-hidden="true">↓</span>
+<noscript>
+<p class="nojs-note">The working example needs JavaScript. Here’s the idea: AB101 becomes AB-101, exact repeats are removed, and a missing price stays flagged.</p>
+</noscript>
+<div class="stage-bottom">
+<span>Demonstration, not a customer project.</span>
+<a href="examples.html">Try all five examples <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
 </a>
+</div>
 </div>
 </section>
 <aside class="offer" data-offer>
 <div class="wrap offer-inner">
 <span class="pill">FOUNDING CLIENT OFFER</span>
 <p>Introductory pricing for my first three qualifying paying customers.</p>
-<a href="services.html#offer-terms">How it works <span aria-hidden="true">→</span>
-</a>
+<a href="services.html#offer-terms">Offer details →</a>
 </div>
 </aside>
-<section class="wrap section services-section">
+<section id="services" class="wrap section problem-section">
 <div class="section-heading">
 <div>
-<p class="eyebrow">WHAT I CAN HELP WITH</p>
-<h2>Less friction.<br>
-<em>More room to work.</em>
+<p class="eyebrow">WHERE DO YOU WANT TO START?</p>
+<h2>You know the problem.<br>
+<em>I’ll help with the technical part.</em>
 </h2>
 </div>
-<p>You don’t need to know which tool to use.<br>Just tell me where the work gets frustrating.</p>
 </div>
 <span id="pricing">
 </span>
-<div id="services" class="service-grid" data-services="preview">
+<div class="problem-list">
+<article class="problem-row">
+<span class="problem-number">01</span>
+<div>
+<h3>“My spreadsheets need fixing.”</h3>
+<p>Duplicates, inconsistent product names, missing fields, or files that won’t import correctly.</p>
+<div class="problem-services">
+<a href="services.html#cleanup">Spreadsheet cleanup <span data-service-price="cleanup">
+</span> →</a>
+<a href="services.html#inventory">Inventory & product data <span data-service-price="inventory">
+</span> →</a>
 </div>
-<noscript>
-<p>
-<a href="contact.html">Contact me for service details and a quote.</a>
+</div>
+<a class="problem-arrow" href="services.html#cleanup" aria-label="Explore spreadsheet and product data services">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</a>
+</article>
+<article class="problem-row">
+<span class="problem-number">02</span>
+<div>
+<h3>“I keep doing the same task.”</h3>
+<p>Combining exports. Renaming columns. Rebuilding a weekly report. I can build a tool for those repeatable steps.</p>
+<div class="problem-services">
+<a href="services.html#automation">Workflow automation <span data-service-price="automation">
+</span> →</a>
+</div>
+</div>
+<a class="problem-arrow" href="services.html#automation" aria-label="Explore workflow automation">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</a>
+</article>
+<article class="problem-row">
+<span class="problem-number">03</span>
+<div>
+<h3>“I need to understand my numbers.”</h3>
+<p>Find out what’s selling, compare products, or test a specific question against your data.</p>
+<div class="problem-services">
+<a href="services.html#reporting">Reports & dashboards <span data-service-price="reporting">
+</span> →</a>
+<a href="services.html#analytics">Custom analytics <span data-service-price="analytics">
+</span> →</a>
+</div>
+</div>
+<a class="problem-arrow" href="services.html#reporting" aria-label="Explore reports and analytics">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</a>
+</article>
+</div>
+<p class="pricing-note">Starting prices apply to qualifying small projects. You’ll receive a written scope and quote before work begins. <a href="services.html">See all five services and package details →</a>
 </p>
-</noscript>
-<p class="pricing-note">Starting prices are for qualifying small projects. I’ll confirm scope and pricing in writing before work begins.</p>
 </section>
-<section id="work" class="lab-feature">
-<div class="section-watermark" aria-hidden="true">MAKE IT MAKE SENSE.</div>
-<div class="wrap split">
-<div>
-<p class="eyebrow">A LITTLE LESS EXPLAINING. A LITTLE MORE SHOWING.</p>
-<h2>See what happens<br>between the file<br>and the finished work.</h2>
-<p>A spreadsheet cleanup means more when you can see the duplicate disappear. A report makes more sense when you can change the filter yourself.</p>
-<p>That’s what the Data Lab is for. Pick an example, try it, and see exactly what changes.</p>
-<a class="button" href="examples.html">Explore the Data Lab <span aria-hidden="true">
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-<path d="M5 19 19 5M5 5h14v14"/>
-</svg>
-</span>
-</a>
-<p class="muted">Made-up business data. Real, working examples.</p>
+<section class="case-section">
+<div class="wrap case-grid">
+<div class="case-intro">
+<p class="eyebrow">INSIDE THE EXAMPLE</p>
+<h2>One product export.<br>
+<em>Three decisions.</em>
+</h2>
+<p>The useful part of a cleanup is knowing what changed—and what still needs your attention.</p>
+<a class="text-link" href="examples.html#inventory">Explore the inventory review →</a>
 </div>
-<a class="lab-preview" href="examples.html#reporting" aria-label="Explore the sales reporting demonstration">
-<div class="preview-heading">
-<span>THE DATA LAB / SALES REPORT</span>
-<span aria-hidden="true">
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-<path d="M5 19 19 5M5 5h14v14"/>
-</svg>
-</span>
-</div>
-<p>Which products<br>are bringing in sales?</p>
-<div class="preview-bars">
-<div>
-<span>Mugs</span>
-<i style="--bar:89%">
-</i>
-<strong>$240</strong>
-</div>
-<div>
-<span>Towels</span>
-<i style="--bar:100%">
-</i>
-<strong>$270</strong>
-</div>
-<div>
-<span>Bowls</span>
-<i style="--bar:59%">
-</i>
-<strong>$160</strong>
-</div>
-</div>
-<div class="preview-foot">A small sample. A question you can actually answer.</div>
-</a>
-</div>
-</section>
-<section class="wrap section">
-<p class="eyebrow">HOW WE’LL WORK TOGETHER</p>
-<h2>Know what you’re getting.<br>Before we get started.</h2>
-<div class="steps">
+<div class="decision-list">
 <article>
-<span>01 / THE CONVERSATION</span>
-<h3>Tell me what’s going on.</h3>
-<p>What are you doing manually? What’s confusing? We’ll talk through the task before you send any sensitive data.</p>
+<span>01 / STANDARDIZE</span>
+<h3>A different format isn’t a different product.</h3>
+<p>For this example, “ab-101” and “AB101” become “AB-101.” That makes records easier to compare.</p>
+<code>ab-101 → AB-101</code>
 </article>
 <article>
-<span>02 / THE PLAN</span>
-<h3>I’ll put it in writing.</h3>
-<p>You’ll get a defined scope, a price, and a description of what I’ll deliver. Work starts after approval and the deposit.</p>
+<span>02 / CHECK BEFORE REMOVING</span>
+<h3>Match the details, not just the name.</h3>
+<p>Two rows have the same SKU, product name, and price after formatting. The example keeps one row under that exact-repeat rule.</p>
+<code>2 matching rows → 1 output row</code>
 </article>
 <article>
-<span>03 / THE HANDOFF</span>
-<h3>We’ll walk through the result.</h3>
-<p>You review the work and use your included revision for agreed requirements. I’ll explain what you received and how to use it.</p>
+<span>03 / FLAG WHAT’S UNKNOWN</span>
+<h3>A missing price is still a missing price.</h3>
+<p>The tool leaves it blank and puts it in the review notes. I’m not going to invent a price to make the file look finished.</p>
+<code>EF-303 → needs a price check</code>
 </article>
 </div>
-</section>
-<section id="about" class="about-band">
-<div class="wrap split">
-<div>
-<p class="eyebrow">THE PERSON BEHIND MWS</p>
-<h2>Hi, I’m Michael.<br>I like solving<br>this kind of problem.</h2>
-<a class="hero-link" href="about.html">A little about my background <span aria-hidden="true">→</span>
-</a>
 </div>
-<div>
+<div class="wrap case-deliverable">
+<span>THE DELIVERABLE</span>
+<p>A standardized CSV, plus notes on the record that still needs review.</p>
+<a href="#work">Run the example & download both ↑</a>
+</div>
+</section>
+<section id="about" class="wrap section owner-section">
+<div class="owner-intro">
+<p class="eyebrow">MICHAEL / THE PERSON DOING THE WORK</p>
+<h2>I like figuring out<br>
+<em>why it doesn’t line up.</em>
+</h2>
 <p>I’ve worked with Shopify operations, product catalogs with more than 19,000 SKUs, and Python tools that process over 400,000 rows.</p>
-<p>That experience is why I focus on the details: what’s in the file, what doesn’t line up, and what needs to happen next. My goal is to build something that makes sense for the way you work.</p>
-<div class="experience-tags">
-<span>Product catalogs</span>
-<span>Python & SQL</span>
-<span>Business reporting</span>
+<p>At MWS, you work directly with me. I’ll ask about the task, explain the approach, and be clear about what I can deliver.</p>
+<a class="text-link" href="about.html">More about my background →</a>
 </div>
-</div>
+<div class="working-agreement">
+<p class="eyebrow">WHAT WORKING WITH ME LOOKS LIKE</p>
+<ol>
+<li>
+<h3>We talk through the problem.</h3>
+<p>Initial consultations and quotes are free.</p>
+</li>
+<li>
+<h3>I put the plan and price in writing.</h3>
+<p>Work starts after approval and the required deposit.</p>
+</li>
+<li>
+<h3>You review the work with me.</h3>
+<p>Your base package includes one revision for agreed requirements.</p>
+</li>
+</ol>
 </div>
 </section>
 <section class="faq-shell">
@@ -334,15 +374,13 @@
 </section>
 <section id="contact" class="wrap final-cta">
 <div>
-<p class="eyebrow">LET’S TALK ABOUT YOUR PROJECT</p>
-<h2>What keeps ending up<br>on your to-do list?</h2>
-<p>Tell me what you’re trying to get done. We’ll start there.</p>
+<p class="eyebrow">LET’S START WITH THE TASK</p>
+<h2>What are you tired<br>of doing manually?</h2>
+<p>Tell me what you have and what you need. I’ll help you work out the next step.</p>
 </div>
-<a class="button light" href="contact.html">Get a Free Quote <span aria-hidden="true">
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<a class="button light" href="contact.html">Get a Free Quote <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
 <path d="M5 19 19 5M5 5h14v14"/>
 </svg>
-</span>
 </a>
 </section>
 </main>
@@ -359,9 +397,9 @@
 <a href="tel:+12256787309">(225) 678-7309</a>
 </div>
 <div>
-<a href="terms.html">Service terms (draft)</a>
+<a href="terms.html">Service terms</a>
 <br>
-<a href="privacy.html">Privacy policy (draft)</a>
+<a href="privacy.html">Privacy policy</a>
 <p>© <span id="year">2026</span> Maier Web Solutions</p>
 </div>
 </div>
