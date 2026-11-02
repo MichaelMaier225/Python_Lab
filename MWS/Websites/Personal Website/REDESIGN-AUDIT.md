@@ -83,3 +83,10 @@ Validation passed for all 35 page/viewport combinations, local font loading, log
 ## Unified opening refinement
 
 Confirmed the second supplied screenshot as the layout target. Kept the dark split headline/compact example and removed the repeated full comparison from the normal page flow. The larger source/output view and downloads are an optional native disclosure within that same opening; existing #work links reveal it. Preview counts now explicitly describe the selected subset (three of five source rows, two of four output rows), with the complete dataset and export unchanged. The header displays the owner’s complete logo once, removing the redundant adjacent wordmark. No new dependency or external request was added.
+
+
+## Balanced section contrast
+
+Preserved the approved dark split hero, compact synchronized preview, owner logo and fonts. Replaced the mostly dark page background with warm white and introduced a deliberate light/dark sequence: warm-white service entry points, pale-blue example explanation, dark owner section, light FAQ, cobalt final CTA and pale footer. Inner pages now use brighter reading surfaces while retaining dark service overviews and light scope/tool panels. Removed dark-only foreground colors from affected sections rather than adding an independent theme layer.
+
+All 35 layout/functional checks passed after the changes. A desktop/mobile contrast sweep across all seven primary pages also passed; that bounded check covers visible paragraphs, headings, links and buttons against solid ancestor backgrounds. The same regression check is now part of checks/browser.cjs, including italic accent text. No application behavior, pricing or external services changed.

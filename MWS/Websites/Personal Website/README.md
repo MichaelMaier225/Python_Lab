@@ -84,3 +84,9 @@ The header/footer image is an unchanged copy of `MWS/MWS Logo/Maier Web Solution
 ## Single-opening layout
 
 The homepage opens with the preferred dark split hero. Its compact preview shows three selected source records and two selected output records, labeled as subsets of the complete five-row/four-row example. The offer follows the opening directly. The full comparison and downloads remain in a native expandable area inside the same hero rather than a second always-visible section. Links to `#work` open that area; it also works as a native disclosure without JavaScript. The header uses the complete owner logo once, without a second text wordmark next to it.
+
+## Light and dark section balance
+
+The preferred dark hero remains the opening. Below it, warm-white service explanations, a pale-blue example section, a dark owner section and a light FAQ give the page a clear reading rhythm. Inner pages use bright reading surfaces with dark service cards and high-contrast tool navigation. Font, logo, pricing and demonstrations are unchanged.
+
+The browser suite now samples visible paragraph, heading, link, button and italic text contrast against solid ancestor backgrounds at every tested viewport. This catches common foreground/background regressions; it is not a substitute for a full accessibility review or a check of every possible dynamic state.

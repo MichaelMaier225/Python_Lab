@@ -23,6 +23,29 @@ const os=require('node:os');
    assert.equal(await page.locator('h1').count(),1);
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),file+' overflow at '+width);
    assert.equal(await page.locator('.menu').isVisible(),width<=650);
+   const contrastFailures=await page.locator('p,h1,h2,h3,h4,em,a,button').evaluateAll(nodes=>{
+    const rgb=value=>value.match(/[\d.]+/g).map(Number);
+    const luminance=color=>{
+     const c=color.slice(0,3).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;});
+     return .2126*c[0]+.7152*c[1]+.0722*c[2];
+    };
+    return nodes.filter(node=>node.getClientRects().length&&node.textContent.trim()&&!node.disabled).flatMap(node=>{
+     let ancestor=node,background;
+     while(ancestor){
+      const color=rgb(getComputedStyle(ancestor).backgroundColor);
+      if(color.length===3||color[3]===1){background=color;break;}
+      ancestor=ancestor.parentElement;
+     }
+     if(!background)return [];
+     const style=getComputedStyle(node);
+     const foreground=luminance(rgb(style.color)),back=luminance(background);
+     const ratio=(Math.max(foreground,back)+.05)/(Math.min(foreground,back)+.05);
+     const large=parseFloat(style.fontSize)>=24||(parseFloat(style.fontSize)>=18.66&&parseFloat(style.fontWeight)>=700);
+     return ratio<(large?3:4.5)?[{text:node.textContent.trim().slice(0,60),ratio:ratio.toFixed(2)}]:[];
+    });
+   });
+   assert.deepEqual(contrastFailures,[],file+' text contrast at '+width);
+
    if(width===1440){
     const links=await page.locator('a[href]').evaluateAll(as=>as.map(a=>a.getAttribute('href')));
     for(const link of links.filter(l=>!l.includes(':')&&!l.startsWith('#'))){
@@ -87,5 +110,5 @@ const os=require('node:os');
   await page.goto(base+'services.html');await page.screenshot({path:path.join(outputDir,`services-${width}.png`),fullPage:true});
  }
  const nojs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const basic=await nojs.newPage();await basic.goto(base);assert(await basic.locator('#nav').isVisible());assert(await basic.locator('.hero a[href=\"contact.html\"]').isVisible());assert(await basic.locator('#faq-answer-1').isVisible());await basic.goto(base+'contact.html');await basic.locator('.guided-quote > summary').click();assert(await basic.locator('button[type=submit]').isDisabled());assert(await basic.locator('noscript a[href^=mailto]').isVisible());await nojs.close();
- await page.setViewportSize({width:1440,height:1000});await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base);await page.locator('[data-preview-run]').click();assert.equal(await page.evaluate(()=>document.getAnimations().length),0);await page.evaluate(()=>document.body.style.zoom='2');assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'200% zoom overflow');assert.deepEqual(errors,[]);await browser.close();console.log(`PASS: ${requests} page/viewport checks, internal links, promotion/pricing, service scopes, side-by-side catalog, decision notes and both downloads, synchronized hero preview, locally loaded fonts and owner logo, three problem paths, FAQ keyboard behavior, five lab demos, alternate cleanup rules, CSV downloads, review decisions, calculated report totals, matching counterexamples, tab keyboard navigation, mobile menu, safe quote preparation, legacy redirects, and no-JS navigation. No browser errors. Artifacts: ${outputDir}`);
+ await page.setViewportSize({width:1440,height:1000});await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base);await page.locator('[data-preview-run]').click();assert.equal(await page.evaluate(()=>document.getAnimations().length),0);await page.evaluate(()=>document.body.style.zoom='2');assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'200% zoom overflow');assert.deepEqual(errors,[]);await browser.close();console.log(`PASS: ${requests} page/viewport checks, internal links, promotion/pricing, service scopes, side-by-side catalog, decision notes and both downloads, synchronized hero preview, locally loaded fonts and owner logo, three problem paths, FAQ keyboard behavior, five lab demos, alternate cleanup rules, CSV downloads, review decisions, calculated report totals, matching counterexamples, tab keyboard navigation, mobile menu, safe quote preparation, legacy redirects, and no-JS navigation. No browser errors or sampled text contrast failures. Artifacts: ${outputDir}`);
 })().catch(e=>{console.error(e);process.exit(1)});
