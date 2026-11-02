@@ -1,17 +1,10 @@
 
 import json
 import re
-from functools import lru_cache
-from pathlib import Path
 
-import joblib
 import numpy as np
-import pandas as pd
 from scipy.sparse import csr_matrix, hstack
 
-
-ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = ROOT / "models" / "svm_small_v3.joblib"
 
 
 def clean(value):
@@ -138,69 +131,3 @@ def pair_features(df, title_vec, desc_vec):
         [title_intersection, desc_intersection, numeric],
         format="csr"
     )
-
-
-@lru_cache(maxsize=1)
-def load_model():
-    if not MODEL_PATH.exists():
-        raise FileNotFoundError(
-            f"SVM model not found: {MODEL_PATH}"
-        )
-
-    return joblib.load(MODEL_PATH)
-
-
-def predict_match(product_a, product_b):
-    saved = load_model()
-
-    model = saved["model"]
-    title_vec = saved["title_vectorizer"]
-    desc_vec = saved["description_vectorizer"]
-    threshold = float(saved["threshold"])
-
-    row = {
-        "title_left": product_a.title,
-        "title_right": product_b.title,
-        "brand_left": product_a.brand,
-        "brand_right": product_b.brand,
-        "description_left": product_a.description,
-        "description_right": product_b.description,
-    }
-
-    df = pd.DataFrame([row])
-
-    X = pair_features(df, title_vec, desc_vec)
-
-    score = float(model.decision_function(X)[0])
-
-    is_match = score >= threshold
-
-    result = {
-        "is_match": bool(is_match),
-        "prediction": "Match" if is_match else "Not a Match",
-        "decision_score": round(score, 4),
-        "threshold": threshold,
-    }
-
-    if (
-        is_match
-        and product_a.price is not None
-        and product_b.price is not None
-    ):
-        difference = abs(
-            product_a.price - product_b.price
-        )
-
-        if product_a.price < product_b.price:
-            cheaper = "Product A"
-        elif product_b.price < product_a.price:
-            cheaper = "Product B"
-        else:
-            cheaper = "Same price"
-
-        result["price_comparison"] = {
-            "price_difference": round(difference, 2),
-            "cheaper_product": cheaper,
-        }
-
-    return result

@@ -1,213 +1,291 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ProductMatch</title>
-
-    <link rel="stylesheet" href="/static/style.css">
-    <script src="/static/script.js" defer></script>
-</head>
-
-<body>
-
-<header>
-    <div class="container header-content">
-        <h2>ProductMatch</h2>
-        <span>SVM Product Matching</span>
-    </div>
-</header>
-
-<main class="container">
-
-    <section class="intro">
-        <h1>Find and Compare Products</h1>
-        <p>
-            Search historical product listings, compare product
-            information, and identify matching products using
-            our trained Support Vector Machine.
-        </p>
-    </section>
-
-    <section class="panel">
-
-        <h2>Search Products</h2>
-
-        <p class="muted">
-            Search products from the WDC dataset.
-            These are historical listings, not live retailer prices.
-        </p>
-
-        <form id="search-form" class="search-form">
-            <input
-                id="search-query"
-                type="text"
-                placeholder="Search for a product..."
-                minlength="2"
-                required
-            >
-
-            <button type="submit">Search</button>
-        </form>
-
-        <p id="search-status" class="muted"></p>
-
-        <div id="search-results"></div>
-
-    </section>
-
-    <section class="comparison">
-
-        <h2>Compare Two Products</h2>
-
-        <p class="muted">
-            Select listings from search results or enter
-            product information manually.
-        </p>
-
-        <form id="compare-form">
-
-            <div class="product-grid">
-
-                <div class="panel product-card">
-
-                    <h3>Product A</h3>
-
-                    <label for="a-title">Product Title</label>
-                    <input
-                        id="a-title"
-                        type="text"
-                        placeholder="Product title"
-                        required
-                    >
-
-                    <label for="a-brand">Brand</label>
-                    <input
-                        id="a-brand"
-                        type="text"
-                        placeholder="Brand"
-                    >
-
-                    <label for="a-description">Description</label>
-                    <textarea
-                        id="a-description"
-                        rows="5"
-                        placeholder="Product description"
-                    ></textarea>
-
-                    <label for="a-price">Price (USD)</label>
-                    <input
-                        id="a-price"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="Optional"
-                    >
-
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ProductMatch · Visual Analytics</title>
+        <link rel="stylesheet" href="/static/style.css" />
+        <script src="/static/vendor/d3.v5.min.js" defer></script>
+        <script src="/static/charts.js" defer></script>
+        <script src="/static/script.js" defer></script>
+    </head>
+    <body>
+        <header>
+            <div class="container header-content">
+                <a class="logo" href="#explorer"
+                    >ProductMatch<span>Visual analytics workspace</span></a
+                >
+                <nav aria-label="Main navigation">
+                    <a href="#explorer">Explorer</a><a href="#comparison">Comparison</a
+                    ><a href="#evaluation">Evaluation</a><a href="#feedback">Feedback</a>
+                </nav>
+            </div>
+        </header>
+        <main class="container">
+            <section class="intro">
+                <p class="eyebrow">CSE 6242 · PRODUCT ENTITY MATCHING</p>
+                <h1>Explore the match.<br />Investigate the differences.</h1>
+                <p>
+                    Find historical listings, inspect predictions, and compare the evidence behind a
+                    possible match.
+                </p>
+            </section>
+            <div id="model-status" class="notice" role="status">Checking model availability…</div>
+            <section id="explorer" class="panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">01 / PRODUCT EXPLORER</p>
+                        <h2>Find your reference product</h2>
+                    </div>
+                    <span class="tag">Historical WDC listings</span>
                 </div>
-
-                <div class="panel product-card">
-
-                    <h3>Product B</h3>
-
-                    <label for="b-title">Product Title</label>
-                    <input
-                        id="b-title"
-                        type="text"
-                        placeholder="Product title"
-                        required
-                    >
-
-                    <label for="b-brand">Brand</label>
-                    <input
-                        id="b-brand"
-                        type="text"
-                        placeholder="Brand"
-                    >
-
-                    <label for="b-description">Description</label>
-                    <textarea
-                        id="b-description"
-                        rows="5"
-                        placeholder="Product description"
-                    ></textarea>
-
-                    <label for="b-price">Price (USD)</label>
-                    <input
-                        id="b-price"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        placeholder="Optional"
-                    >
-
+                <form id="search-form" class="search-form">
+                    <label class="grow" for="search-query"
+                        >Product name<input
+                            id="search-query"
+                            placeholder="Try a brand and model number"
+                            minlength="2"
+                            maxlength="200"
+                            required /></label
+                    ><button id="search-btn">Search listings</button>
+                </form>
+                <p id="search-status" class="muted" role="status">
+                    Choose a reference listing to retrieve and score up to 40 lexical candidates.
+                </p>
+                <div id="search-results" class="listing-grid"></div>
+            </section>
+            <section class="panel" aria-labelledby="candidate-heading">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">LINKED CANDIDATE EXPLORATION</p>
+                        <h2 id="candidate-heading">Match landscape</h2>
+                    </div>
+                    <button id="reset-filters" class="secondary" type="button">
+                        Reset exploration
+                    </button>
                 </div>
-
-            </div>
-
-            <div class="actions">
-                <button type="submit" id="compare-btn">
-                    <span id="btn-text">Compare Products</span>
-                </button>
-
-                <button type="button" id="example-btn" class="secondary">
-                    Fill Example
-                </button>
-
-                <button type="button" id="clear-btn" class="secondary">
-                    Clear
-                </button>
-            </div>
-
-        </form>
-
-        <div id="error" class="error" hidden></div>
-
-        <div id="result" class="panel result" hidden>
-
-            <div class="result-header">
-                <h2 id="result-title"></h2>
-                <span id="result-pill"></span>
-            </div>
-
-            <p id="result-explanation"></p>
-
-            <div class="result-stats">
-
-                <div>
-                    <span>SVM Decision Score</span>
-                    <strong id="decision-score"></strong>
+                <p id="reference-label">
+                    No reference selected. Search above or compare products manually below.
+                </p>
+                <div class="filters">
+                    <label
+                        >Vendor<select id="vendor-filter">
+                            <option value="">All vendors</option>
+                        </select></label
+                    >
+                    <label
+                        >Currency<select id="currency-filter">
+                            <option value="">All currencies · prices plotted separately</option>
+                        </select></label
+                    >
+                    <label
+                        >Match status<select id="match-filter">
+                            <option value="">All candidates</option>
+                            <option value="match">Match</option>
+                            <option value="different">Different</option>
+                            <option value="unscored">Unscored</option>
+                        </select></label
+                    >
+                    <label
+                        >Minimum price<input
+                            id="min-price"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="Any"
+                            disabled
+                    /></label>
+                    <label
+                        >Maximum price<input
+                            id="max-price"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="Any"
+                            disabled
+                    /></label>
+                    <label
+                        >Sort<select id="sort-filter">
+                            <option value="retrieval">Retrieval order</option>
+                            <option value="score">Score: high first</option>
+                            <option value="price">Price: low first</option>
+                        </select></label
+                    >
                 </div>
-
-                <div>
-                    <span>Match Threshold</span>
-                    <strong id="threshold"></strong>
+                <div class="threshold-box">
+                    <label for="threshold"
+                        >Exploratory threshold
+                        <output id="threshold-value">Unavailable</output></label
+                    ><input id="threshold" type="range" min="-1" max="1" step="0.01" disabled />
+                    <p id="threshold-note" class="muted">
+                        Requires a continuous score and configured threshold. This control does not
+                        retrain the model.
+                    </p>
                 </div>
-
-            </div>
-
-            <div id="price-result" hidden>
-                <h3>Price Comparison</h3>
-                <p id="price-message"></p>
-            </div>
-
-            <p class="muted">
-                The SVM decision score is not a probability.
-                Price comparisons are shown only when the model
-                predicts a match and both prices are available.
-            </p>
-
-        </div>
-
-    </section>
-
-</main>
-
-<footer>
-    ProductMatch | CSE 6242 Project
-</footer>
-
-</body>
+                <div class="summary-grid">
+                    <div><span>Visible candidates</span><strong id="visible-count">0</strong></div>
+                    <div><span>Qualifying matches</span><strong id="match-count">—</strong></div>
+                    <div>
+                        <span>Lowest qualifying listed price</span
+                        ><strong id="lowest-price">—</strong>
+                    </div>
+                </div>
+                <p id="chart-note" class="muted">
+                    Select one currency to plot comparable listed prices. Otherwise the chart uses
+                    candidate position.
+                </p>
+                <div class="legend">
+                    <span class="match-dot">Match</span><span class="different-dot">Different</span
+                    ><span class="unknown-dot">Unscored</span
+                    ><span>Outlined point = selected listing</span>
+                </div>
+                <div
+                    id="candidate-chart"
+                    class="chart"
+                    aria-label="Interactive candidate chart"
+                ></div>
+                <p id="candidate-status" class="muted" role="status">No candidates to display.</p>
+                <div id="candidate-list" class="candidate-list"></div>
+                <p class="muted">
+                    Candidates are lexical search results, not an exhaustive set of equivalent
+                    products. Prices are historical; shipping, tax, condition and configuration
+                    equivalence are not verified.
+                </p>
+            </section>
+            <section id="comparison" class="panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">02 / PRODUCT COMPARISON</p>
+                        <h2>Inspect a selected pair</h2>
+                    </div>
+                    <button id="example-btn" type="button" class="secondary">Fill example</button>
+                </div>
+                <p class="muted">
+                    Chart selection fills these fields. Manual examples are input only, not dataset
+                    records or model results.
+                </p>
+                <form id="compare-form">
+                    <div class="product-grid">
+                        <fieldset>
+                            <legend>Product A · reference</legend>
+                            <label
+                                >Product title<input
+                                    id="a-title"
+                                    required
+                                    maxlength="2000" /></label
+                            ><label>Brand<input id="a-brand" maxlength="500" /></label
+                            ><label
+                                >Description<textarea
+                                    id="a-description"
+                                    rows="4"
+                                    maxlength="12000"
+                                ></textarea>
+                            </label>
+                            <div class="product-grid">
+                                <label
+                                    >Listed price<input
+                                        id="a-price"
+                                        type="number"
+                                        min="0"
+                                        max="1000000000"
+                                        step="any" /></label
+                                ><label
+                                    >Currency<input id="a-currency" value="USD" maxlength="30"
+                                /></label>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Product B · candidate</legend>
+                            <label
+                                >Product title<input
+                                    id="b-title"
+                                    required
+                                    maxlength="2000" /></label
+                            ><label>Brand<input id="b-brand" maxlength="500" /></label
+                            ><label
+                                >Description<textarea
+                                    id="b-description"
+                                    rows="4"
+                                    maxlength="12000"
+                                ></textarea>
+                            </label>
+                            <div class="product-grid">
+                                <label
+                                    >Listed price<input
+                                        id="b-price"
+                                        type="number"
+                                        min="0"
+                                        max="1000000000"
+                                        step="any" /></label
+                                ><label
+                                    >Currency<input id="b-currency" value="USD" maxlength="30"
+                                /></label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="actions">
+                        <button id="compare-btn">Run official prediction</button
+                        ><button id="attributes-btn" type="button" class="secondary">
+                            Compare attributes only</button
+                        ><button id="clear-btn" type="button" class="secondary">Clear pair</button>
+                    </div>
+                </form>
+                <p id="pair-error" class="error" role="alert" hidden></p>
+                <div id="pair-result" class="notice" role="status" hidden></div>
+                <h3>Attribute agreement matrix</h3>
+                <p class="muted">
+                    Independent observations, not an explanation of the classifier. Unknown means a
+                    field could not be reliably extracted; a conflict needs human review.
+                </p>
+                <p id="attribute-summary" class="muted">Select or enter two products.</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Attribute</th>
+                                <th>Product A · original value</th>
+                                <th>Product B · original value</th>
+                                <th>Agreement</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attribute-body"></tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="evaluation" class="panel">
+                <p class="eyebrow">03 / MODEL EVALUATION</p>
+                <h2>Evidence before claims</h2>
+                <p class="muted">
+                    Only team-reviewed labeled evaluation results appear here. Search listings and
+                    user feedback are not test labels. Raw scores from different models are not
+                    directly comparable.
+                </p>
+                <label>Model version<select id="evaluation-model"></select></label>
+                <div id="evaluation-content" class="evaluation-content" role="status">
+                    Loading evaluation metadata…
+                </div>
+            </section>
+            <section id="feedback" class="panel">
+                <p class="eyebrow">04 / HUMAN REVIEW</p>
+                <h2>What do you think about this pair?</h2>
+                <p class="muted">
+                    Run an official prediction first. Feedback is separate from test labels and does
+                    not retrain the model. On free Render instances, feedback can be lost on
+                    redeployment.
+                </p>
+                <div class="actions" id="feedback-actions">
+                    <button type="button" data-choice="match" disabled>These listings match</button
+                    ><button type="button" data-choice="different" class="secondary" disabled>
+                        These listings differ</button
+                    ><button type="button" data-choice="unsure" class="secondary" disabled>
+                        Unsure
+                    </button>
+                </div>
+                <p id="feedback-status" role="status">No reviewed prediction selected.</p>
+            </section>
+        </main>
+        <footer class="container">
+            ProductMatch · CSE 6242 · Historical data, predictions, and human review kept distinct.
+        </footer>
+    </body>
 </html>

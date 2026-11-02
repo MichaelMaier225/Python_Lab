@@ -1,13 +1,17 @@
 
 from pathlib import Path
+from typing import Literal
+from uuid import UUID
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
-from .database import count_products, search_products
-from .model import load_model, predict_match
+from .database import candidates, count_products, get_product, search_products
+from .attributes import compare_attributes
+from .feedback import save_feedback
+from .registry import ModelUnavailable, entries, model_entry, model_info, predict_pairs
 
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -26,15 +30,43 @@ app.mount(
 
 
 class Product(BaseModel):
-    title: str = Field(min_length=1)
-    brand: str = ""
-    description: str = ""
-    price: float | None = Field(default=None, ge=0)
+    model_config = ConfigDict(str_strip_whitespace=True, allow_inf_nan=False)
+    title: str = Field(min_length=1, max_length=2000)
+    brand: str = Field(default="", max_length=500)
+    description: str = Field(default="", max_length=12000)
+    price: float | None = Field(default=None, ge=0, le=1e9)
+    currency: str = Field(default="USD", max_length=30)
+    seller: str = Field(default="", max_length=300)
+    source_id: str | None = Field(default=None, max_length=300)
 
 
 class ProductPair(BaseModel):
     product_a: Product
     product_b: Product
+
+
+class Batch(BaseModel):
+    pairs: list[ProductPair] = Field(min_length=1, max_length=50)
+
+
+class Feedback(ProductPair):
+    choice: Literal["match", "different", "unsure"]
+    request_id: UUID
+    model_id: str = Field(min_length=1, max_length=100)
+    model_version: str = Field(min_length=1, max_length=100)
+
+
+def prediction(a, b):
+    return predictions([(a, b)])[0]
+
+
+def predictions(pairs):
+    try:
+        return predict_pairs(pairs)
+    except ModelUnavailable as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    except Exception:
+        raise HTTPException(status_code=503, detail="Model prediction failed. Check the server's artifact compatibility.")
 
 
 @app.get("/")
@@ -49,26 +81,16 @@ def live():
 
 @app.get("/health")
 def health():
-    try:
-        load_model()
-
-        return {
-            "status": "healthy",
-            "model": "SVM Version 3",
-            "model_loaded": True,
-            "indexed_products": count_products()
-        }
-
-    except Exception as exc:
-        raise HTTPException(
-            status_code=503,
-            detail=str(exc)
-        )
+    info = model_info()
+    if not info["available"]:
+        raise HTTPException(status_code=503, detail=info["message"])
+    return {"status": "healthy", "model": info["name"], "model_loaded": True,
+            "indexed_products": count_products()}
 
 
 @app.get("/search")
 def search(
-    q: str = Query(min_length=2),
+    q: str = Query(min_length=2, max_length=200),
     limit: int = Query(default=20, ge=1, le=50)
 ):
     try:
@@ -89,14 +111,63 @@ def search(
 
 @app.post("/predict")
 def predict(pair: ProductPair):
-    try:
-        return predict_match(
-            pair.product_a,
-            pair.product_b
-        )
+    a, b = pair.product_a.model_dump(), pair.product_b.model_dump()
+    result = prediction(a, b)
+    result["attributes"] = compare_attributes(a, b)
+    if (result["is_match"] and a["price"] is not None and b["price"] is not None
+            and a["currency"] and a["currency"].upper() == b["currency"].upper()):
+        result["price_comparison"] = {
+            "price_difference": round(abs(a["price"] - b["price"]), 2),
+            "cheaper_product": "Same price" if a["price"] == b["price"] else (
+                "Product A" if a["price"] < b["price"] else "Product B"),
+            "currency": a["currency"].upper(),
+        }
+    return result
 
-    except Exception as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Prediction failed: {exc}"
-        )
+
+@app.get("/models")
+def models():
+    return {"active_model": model_entry()["id"], "models": [model_info(entry) for entry in entries()]}
+
+
+@app.get("/candidates/{product_id}")
+def product_candidates(product_id: int, limit: int = Query(default=40, ge=1, le=50)):
+    reference = get_product(product_id)
+    if reference is None:
+        raise HTTPException(status_code=404, detail="Reference product not found.")
+    products = candidates(reference, limit)
+    info = model_info()
+    results = predictions([(reference, item) for item in products]) if products and info["available"] else [None] * len(products)
+    return {"reference": reference, "model": info,
+            "retrieval": "Top lexical candidates; not an exhaustive search or verified matches.",
+            "candidates": [{"product": item, "prediction": result} for item, result in zip(products, results)]}
+
+
+@app.post("/predict/batch")
+def batch_predict(batch: Batch):
+    pairs = [(pair.product_a.model_dump(), pair.product_b.model_dump()) for pair in batch.pairs]
+    return {"results": predictions(pairs)}
+
+
+@app.post("/compare")
+def compare(pair: ProductPair):
+    return {"attributes": compare_attributes(pair.product_a.model_dump(), pair.product_b.model_dump())}
+
+
+@app.post("/feedback")
+def feedback(item: Feedback):
+    a, b = item.product_a.model_dump(), item.product_b.model_dump()
+    result = prediction(a, b)  # Original prediction comes from the server, never the browser.
+    if result["model_id"] != item.model_id or result["model_version"] != item.model_version:
+        raise HTTPException(status_code=409, detail="The active model changed. Run a new official prediction before reviewing it.")
+    try:
+        return save_feedback(a, b, result, item.choice, str(item.request_id))
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc))
+
+
+@app.get("/evaluation")
+def evaluation():
+    # Versioned, team-reviewed metrics only. No inferred metrics from search results.
+    return {"models": [{"id": entry["id"], "name": entry["name"], "version": entry["version"],
+                        "evaluation": entry.get("evaluation")} for entry in entries()]}

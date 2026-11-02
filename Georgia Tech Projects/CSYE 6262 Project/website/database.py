@@ -1,10 +1,11 @@
 
 import re
+import os
 import sqlite3
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = ROOT / "data" / "products.db"
+DB_PATH = Path(os.getenv("PRODUCTMATCH_DATA_DIR", ROOT / "data")) / "products.db"
 
 
 def connect():
@@ -112,3 +113,27 @@ def count_products():
         return conn.execute(
             "SELECT COUNT(*) FROM products"
         ).fetchone()[0]
+
+
+def get_product(product_id):
+    with connect() as conn:
+        initialize(conn)
+        row = conn.execute("SELECT * FROM products WHERE id = ?", (product_id,)).fetchone()
+        return dict(row) if row else None
+
+
+def candidates(product, limit=40):
+    words = list(dict.fromkeys(re.findall(r"\w+", product["title"].lower())))[:8]
+    if not words:
+        return []
+    expression = " OR ".join('"' + word + '"' for word in words)
+    with connect() as conn:
+        initialize(conn)
+        rows = conn.execute("""
+            SELECT p.* FROM product_search
+            JOIN products p ON p.id = product_search.rowid
+            WHERE product_search MATCH ? AND p.id != ?
+            ORDER BY bm25(product_search, 5.0, 3.0, 0.5), p.id
+            LIMIT ?
+        """, (expression, product["id"], limit)).fetchall()
+        return [dict(row) for row in rows]
