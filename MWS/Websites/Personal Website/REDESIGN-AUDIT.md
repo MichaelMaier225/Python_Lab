@@ -33,3 +33,16 @@ Browser checks passed for seven primary pages at 1440px and 390px, internal link
 Owner must verify contact details, offer eligibility records and switch, finalize draft policies and adopt data retention procedures. Existing Client_Agreement_Template.txt is a legacy website agreement; do not use it for new data services. Prepare a reviewed data-services agreement separately. Live email delivery, secure transfer providers, host HTTPS/security headers and production redirects must be tested on the actual deployment. No site deployment or environment publication was performed.
 
 A bounded common-credential-pattern scan also covered available Git history for this website path (`git log --all -p -- <target>`), completing successfully with zero matching pattern categories. This is not an exhaustive secret detector or a repository-wide security clearance. Final browser rerun passed after documentation and legacy-anchor updates.
+
+
+## Readability and demonstration revision
+
+Replaced the initial visual treatment with a navy hero, warm light backgrounds, mint accents, larger body text, stronger contrast, and distinct editorial sections. Copy uses the owner’s approved first-person voice. Services retain all prices and scopes, with optional examples/exclusions behind native disclosure controls.
+
+The homepage now contains a functioning catalog cleanup preview. The examples page is a focused five-tab Data Lab with independent cleanup rules and CSV downloads, inventory review decisions, calculated automation outputs, linked sales filters/source rows, and matching/conflicting/incomplete product comparisons. Demonstrations remain isolated from customer data. Keyboard navigation supports arrow keys, Home, and End. No animation is required to understand results.
+
+Removed 12 unused legacy stylesheet/script files and two unused full-logo duplicates. Retained old demo page addresses as minimal forwarding pages. No primary page references removed resources. No deployment configuration or unrelated application was changed.
+
+The quote form now remains disabled until its JavaScript handler is installed. With JavaScript unavailable, a visitor uses direct email/phone instead of accidentally submitting form fields in a URL. No backend, upload, payment integration, or tracking was added.
+
+Revision validation passed: 35 page/viewport combinations (seven primary pages at 320, 390, 768, 1024 and 1440 pixels); no horizontal page overflow or browser errors. Also verified introductory/regular price switching, visible base scopes, interactive homepage reset, independent cleanup rules, actual CSV contents, inventory review state, automation input/output totals, filtered report rows, all matching scenarios, keyboard tab controls, legacy forwarding pages, disabled no-JavaScript form with direct contact fallback, and the enlarged homepage layout. Static resource inspection found zero missing local HTML references. These are development checks, not a complete accessibility or security certification.

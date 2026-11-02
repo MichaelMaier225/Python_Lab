@@ -10,16 +10,17 @@ Use the existing checkout; cloud tasks are already isolated. From `MWS/Websites/
 python -m http.server 8000 --bind 127.0.0.1
 ```
 
-Request `/index.html` locally and verify it contains “Less busywork.”. Python 3.12 was tested. This server is for local development, not production.
+Request `/index.html` locally and verify it contains “Your business.”. Python 3.12 was tested. This server is for local development, not production.
 
 ## Structure
 
 - `index.html`, `services.html`, `examples.html`, `about.html`, `contact.html`: primary pages.
 - `site-config.js`: all five prices, base scopes, exclusions, and `foundingOffer.enabled`. Set this flag to `false` to close promotional pricing across primary pages. Track qualification in real business records; no automated spot count exists.
-- `mws.js`, `mws.css`: shared behavior and responsive visual design.
+- `mws.js`, `mws.css`: navigation, centralized pricing, quote preparation, and the responsive design system.
+- `demos.js`: isolated synthetic-data demonstrations, tab navigation, transformations, and CSV downloads.
 - `terms.html`, `privacy.html`: drafts requiring owner/legal review before publication.
 - `REDESIGN-AUDIT.md`: inspection, architecture, validation and limitations.
-- `demo-*.html`, legacy CSS/scripts and assets: retained for old URLs; no longer loaded by primary pages.
+- `demo-*.html`: small forwarding pages preserving old links to the current Data Lab. Legacy theme, calculator, slideshow and portfolio code, plus two unused logo duplicates, have been removed.
 - `Client_Agreement_Template.txt`: legacy website-services draft, not suitable for the new data-services work.
 
 ## Contact and data
@@ -34,6 +35,20 @@ Upload the entire website directory to the existing static site root, including 
 
 Before publication, verify host HTTPS and security headers, review policies, confirm promotion status and contact details, and test deployed navigation and actual email handoff. There is no verified payment processor or secure upload service.
 
+## The Data Lab
+
+The homepage includes a working catalog cleanup preview. The Data Lab provides five keyboard-accessible examples:
+
+- Customer cleanup: independent formatting and duplicate rules, flagged missing values, reset, and CSV export.
+- Inventory review: normalized SKU grouping, price conflicts, missing prices, and explicit review decisions.
+- Automation: transform two differently named input formats into calculated product totals, with source records and downloadable summary.
+- Reporting: filter two months and two categories; totals, top product, chart, and source rows update together.
+- Matching: compare matching attributes, conflicting sizes, and incomplete records. Candidates require human review.
+
+These examples use only fixed synthetic records and do not accept customer files. Data and rules are in `demos.js`. They run locally without services or tracking.
+
 ## Validation
 
-Playwright with installed system Chromium exercised seven pages at desktop/mobile widths, internal links, pricing and promotion disabled behavior, all five examples, mobile menu, form validation and safe email preparation. No browser errors or horizontal page overflow at 1440px/390px. No live emails, customer data, or payments were used. The external audit report and screenshots are in `/workspace/mws-review` in the current instance.
+Playwright with installed system Chromium exercises seven pages at 320, 390, 768, 1024, and 1440 pixels. Checks cover internal links, pricing and promotion closing, service scope visibility, all interactive state changes, alternate cleanup rules, CSV contents, calculated totals, review decisions, matching counterexamples, keyboard tab navigation, safe email preparation, legacy forwarding pages, and no-JavaScript navigation. No live emails, customer data, or payments are used. The validation script and screenshots are in `/workspace/mws-review` in this instance.
+
+If JavaScript is unavailable, contact fields remain disabled to prevent accidental query-string submission; direct email/phone alternatives and navigation remain available.

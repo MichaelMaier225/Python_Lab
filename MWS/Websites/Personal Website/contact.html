@@ -11,36 +11,50 @@
 </script>
 <script src="mws.js" defer>
 </script>
+
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header>
 <div class="wrap header-inner">
 <a class="brand" href="index.html">
-<span class="brand-mark">M<span> / </span>W</span>
+<span class="brand-mark" aria-hidden="true">m<span>
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
+</span>
 <span>MAIER<small>WEB SOLUTIONS</small>
 </span>
 </a>
 <button class="menu" aria-controls="nav" aria-expanded="false">Menu</button>
 <nav id="nav" aria-label="Main navigation">
 <a href="services.html">Services</a>
-<a href="examples.html">Examples</a>
+<a href="examples.html">The Data Lab</a>
 <a href="about.html">About</a>
-<a class="button small" href="contact.html">Get a Free Quote <span aria-hidden="true">↗</span>
+<a class="button small" href="contact.html">Get a Free Quote <span aria-hidden="true">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
 </a>
 </nav>
 </div>
 </header>
 <main id="main">
+
 <section class="page-intro wrap">
 <p class="eyebrow">LET’S START WITH THE PROBLEM</p>
-<h1>What would make<br>your workday simpler?</h1>
-<p class="lead">Tell us about the spreadsheet, recurring task, or business question you need help with. Initial consultations and quotes are free.</p>
+<h1>What’s the task<br>
+<em>you’re tired of doing?</em>
+</h1>
+<p class="lead">Tell me what you’re working with and what you’d like to change. You don’t need a technical brief. Initial consultations and quotes are free.</p>
 </section>
 <section class="wrap contact-layout">
 <form id="quote-form" class="panel">
+<fieldset id="quote-fields" disabled>
 <h2>Prepare your quote request</h2>
-<p>This form prepares an email in your email app. It does not submit or store your request on this website. You’ll review and send it yourself.</p>
+<p>Fill this out to prepare an email. You’ll review it in your email app and send it yourself. This website doesn’t submit or store your request.</p>
 <div class="form-grid">
 <label>Your name<input name="name" required maxlength="100" autocomplete="name">
 </label>
@@ -69,7 +83,10 @@
 </label>
 </div>
 <p class="notice">No file uploads. Please don’t include passwords, personal records, payment details, or sensitive business data. Sample data can be shared later through an agreed secure method.</p>
-<button class="button" type="submit">Prepare Email ↗</button>
+<button class="button" type="submit">Prepare Email <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</button>
 <p id="quote-status" role="status">
 </p>
 <div id="email-result" hidden>
@@ -77,11 +94,18 @@
 </textarea>
 </label>
 <div class="actions">
-<a class="button" id="open-email">Open Email App ↗</a>
+<a class="button" id="open-email">Open Email App <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</a>
 <button type="button" id="copy-request">Copy Request</button>
 </div>
 <p>Nothing has been sent. If an email app doesn’t open, copy this request and email it to maierwebsolutions@gmail.com.</p>
 </div>
+</fieldset>
+<noscript>
+<p class="notice">To request a quote without JavaScript, email <a href="mailto:maierwebsolutions@gmail.com">maierwebsolutions@gmail.com</a> or call <a href="tel:+12256787309">(225) 678-7309</a>.</p>
+</noscript>
 </form>
 <aside>
 <p class="eyebrow">DIRECT CONTACT</p>
@@ -92,7 +116,7 @@
 <a href="tel:+12256787309">(225) 678-7309</a>
 <hr>
 <h3>What happens next?</h3>
-<p>We clarify the task and review an appropriate sample if needed. You receive a written quote before deciding whether to proceed.</p>
+<p>I’ll ask about the task and review an appropriate sample if needed. You’ll receive a written quote before deciding whether to proceed.</p>
 <p>Work starts after scope approval and the required deposit. No payment is collected on this website.</p>
 <a href="terms.html">Read the draft service terms →</a>
 </aside>
@@ -111,9 +135,9 @@
 <a href="tel:+12256787309">(225) 678-7309</a>
 </div>
 <div>
-<a href="terms.html">Draft service terms</a>
+<a href="terms.html">Service terms (draft)</a>
 <br>
-<a href="privacy.html">Draft privacy policy</a>
+<a href="privacy.html">Privacy policy (draft)</a>
 <p>© <span id="year">2026</span> Maier Web Solutions</p>
 </div>
 </div>

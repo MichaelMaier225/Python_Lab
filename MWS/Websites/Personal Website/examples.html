@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Interactive Examples | Maier Web Solutions</title>
+<title>The Data Lab | Maier Web Solutions</title>
 <meta name="description" content="Practical data cleanup, inventory tools, workflow automation, and reporting for small businesses in Baton Rouge, Prairieville, and remotely.">
 <link rel="icon" href="assets/maier-logo-icon.png">
 <link rel="stylesheet" href="mws.css">
@@ -11,135 +11,358 @@
 </script>
 <script src="mws.js" defer>
 </script>
+<script src="demos.js" defer>
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header>
 <div class="wrap header-inner">
 <a class="brand" href="index.html">
-<span class="brand-mark">M<span> / </span>W</span>
+<span class="brand-mark" aria-hidden="true">m<span>
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
+</span>
 <span>MAIER<small>WEB SOLUTIONS</small>
 </span>
 </a>
 <button class="menu" aria-controls="nav" aria-expanded="false">Menu</button>
 <nav id="nav" aria-label="Main navigation">
 <a href="services.html">Services</a>
-<a href="examples.html">Examples</a>
+<a href="examples.html">The Data Lab</a>
 <a href="about.html">About</a>
-<a class="button small" href="contact.html">Get a Free Quote <span aria-hidden="true">↗</span>
+<a class="button small" href="contact.html">Get a Free Quote <span aria-hidden="true">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
 </a>
 </nav>
 </div>
 </header>
 <main id="main">
-<section class="page-intro wrap">
-<p class="eyebrow">REALISTIC EXAMPLES. SYNTHETIC DATA.</p>
-<h1>See what a clearer<br>workflow could look like.</h1>
-<p class="lead">These are demonstrations, not completed customer projects or measured business outcomes. All examples run locally using fixed synthetic records.</p>
+<section class="wrap page-intro">
+<p class="eyebrow">THE DATA LAB</p>
+<h1>Don’t just take<br>my word for it. <em>Try it.</em>
+</h1>
+<p class="lead">Here are five examples of the work I do. Pick one, change something, and see what happens. I’ll explain the problem, what the tool does, and what still needs a person to check it.</p>
 </section>
-<section class="wrap demo-grid section">
-<article class="panel">
-<p class="eyebrow">01 / SPREADSHEET CLEANUP</p>
-<h2>From inconsistent to organized.</h2>
-<p>Normalize names and email casing, then remove an exact duplicate after normalization. Missing values stay flagged.</p>
+<div class="wrap lab-disclosure">
+<span class="status-dot">
+</span> Every example uses made-up data. Nothing here is a customer project. No uploads or account needed.</div>
+<section class="wrap lab" id="data-lab">
+<div class="lab-tabs" role="tablist" aria-label="Choose a business example">
+<button id="tab-cleanup" role="tab" aria-controls="panel-cleanup" aria-selected="true" tabindex="0" data-demo-tab="cleanup">
+<span>01</span>Spreadsheet cleanup</button>
+<button id="tab-inventory" role="tab" aria-controls="panel-inventory" aria-selected="false" tabindex="-1" data-demo-tab="inventory">
+<span>02</span>Inventory review</button>
+<button id="tab-automation" role="tab" aria-controls="panel-automation" aria-selected="false" tabindex="-1" data-demo-tab="automation">
+<span>03</span>Workflow automation</button>
+<button id="tab-reporting" role="tab" aria-controls="panel-reporting" aria-selected="false" tabindex="-1" data-demo-tab="reporting">
+<span>04</span>Sales reporting</button>
+<button id="tab-matching" role="tab" aria-controls="panel-matching" aria-selected="false" tabindex="-1" data-demo-tab="matching">
+<span>05</span>Product matching</button>
+</div>
+<section id="panel-cleanup" class="lab-panel" role="tabpanel" aria-labelledby="tab-cleanup" tabindex="0" >
+<div class="lab-explanation">
+<p class="eyebrow">THE PROBLEM / MESSY CUSTOMER RECORDS</p>
+<h2>One customer.<br>Two entries.</h2>
+<p>Someone enters “Jamie Lee.” Someone else adds the same person with extra spaces and a capitalized email. Now your customer list has two records for the same person.</p>
+<div class="takeaway">
+<h3>Why this matters</h3>
+<p>A cleaner contact list is easier to search and less likely to include repeated messages. This example only removes exact duplicates under the rules you choose. It doesn’t guess missing information.</p>
+</div>
+<a class="text-link" href="contact.html?service=cleanup">Have a task like this? Let’s talk <span aria-hidden="true">→</span>
+</a>
+</div>
+<div class="workspace">
+<div class="workspace-head">
+<div>
+<span class="file-tag">CUSTOMERS.CSV</span>
+<h3>Same file. Your cleanup rules.</h3>
+</div>
+<span class="data-label">8 sample rows</span>
+</div>
+<fieldset class="cleanup-options">
+<legend>Choose what to fix</legend>
+<label>
+<input type="checkbox" id="fix-format" checked> Standardize names & email</label>
+<label>
+<input type="checkbox" id="fix-duplicates" checked> Remove exact duplicates</label>
+</fieldset>
+<div class="workspace-toolbar">
+<button id="clean-data" type="button">Apply cleanup <span aria-hidden="true">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
+</button>
+<button id="reset-data" class="secondary" type="button">Reset</button>
+<button id="download-cleanup" class="quiet" type="button">Download example CSV ↓</button>
+</div>
+<div class="result-stats" id="cleanup-stats">
+</div>
 <div class="table-scroll">
 <table>
-<caption id="cleanup-caption">Original synthetic records</caption>
+<caption id="cleanup-caption">Original sample records · spaces are visible in quotation marks</caption>
 <thead>
 <tr>
-<th>Name</th>
-<th>Email</th>
-<th>Review</th>
+<th scope="col">Name</th>
+<th scope="col">Email</th>
+<th scope="col">Review</th>
 </tr>
 </thead>
 <tbody id="cleanup-rows">
 </tbody>
 </table>
 </div>
-<button id="clean-data" type="button">Apply Example Cleanup</button>
-<button id="reset-data" type="button">Reset</button>
-<p id="cleanup-status" role="status">
-</p>
-</article>
-<article class="panel">
-<p class="eyebrow">02 / INVENTORY REVIEW</p>
-<h2>Find records worth a second look.</h2>
+<p class="result-note" id="cleanup-status" role="status">Choose the rules, then apply the cleanup. Missing emails will be flagged for review.</p>
+</div>
+</section>
+<section id="panel-inventory" class="lab-panel" role="tabpanel" aria-labelledby="tab-inventory" tabindex="0" hidden>
+<div class="lab-explanation">
+<p class="eyebrow">THE PROBLEM / AN INCONSISTENT CATALOG</p>
+<h2>Catch the details<br>before an import.</h2>
+<p>A supplier sends “ab101.” Your store uses “AB-101.” Another item has two different prices. A quick check can find the records you need to look at before importing them.</p>
+<div class="takeaway">
+<h3>Why this matters</h3>
+<p>Standardizing a SKU is straightforward. Deciding which price is correct takes context. The tool flags those differences, and you decide what to do. Nothing is silently merged or deleted.</p>
+</div>
+<a class="text-link" href="contact.html?service=inventory">Have a task like this? Let’s talk <span aria-hidden="true">→</span>
+</a>
+</div>
+<div class="workspace">
+<div class="workspace-head">
+<div>
+<span class="file-tag">PRODUCT_CATALOG.CSV</span>
+<h3>A repeated SKU isn’t the whole story.</h3>
+</div>
+</div>
 <div class="table-scroll">
 <table>
-<caption>Synthetic product catalog</caption>
+<caption>Five synthetic product records</caption>
 <thead>
 <tr>
-<th>SKU</th>
-<th>Product</th>
-<th>Price</th>
+<th scope="col">SKU</th>
+<th scope="col">Product</th>
+<th scope="col">Price</th>
+</tr>
+</thead>
+<tbody id="inventory-rows">
+</tbody>
+</table>
+</div>
+<button id="inventory-check" type="button">Check the catalog <span aria-hidden="true">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
+</button>
+<div id="inventory-results" class="inventory-results" hidden>
+</div>
+<p id="inventory-result" class="result-note" role="status">Run the check to see which records need attention.</p>
+</div>
+</section>
+<section id="panel-automation" class="lab-panel" role="tabpanel" aria-labelledby="tab-automation" tabindex="0" hidden>
+<div class="lab-explanation">
+<p class="eyebrow">THE PROBLEM / THE SAME REPORT, EVERY WEEK</p>
+<h2>You’ve already<br>done this once.</h2>
+<p>Download the store export. Download the online export. Rename the columns, combine the rows, calculate the totals. Next week, do it all again. This example runs those repeatable steps on two sample files.</p>
+<div class="takeaway">
+<h3>Why this matters</h3>
+<p>The useful part is repeating the agreed steps consistently when the next files arrive. You still review the output and handle exceptions. Time savings depend on your actual process; this demo doesn’t measure them.</p>
+</div>
+<a class="text-link" href="contact.html?service=automation">Have a task like this? Let’s talk <span aria-hidden="true">→</span>
+</a>
+</div>
+<div class="workspace">
+<div class="workspace-head">
+<div>
+<span class="file-tag">THE WEEKLY SALES REPORT</span>
+<h3>Two exports in. One summary out.</h3>
+</div>
+</div>
+<div class="pipeline-inputs">
+<div>
+<span class="file-icon" aria-hidden="true">↳</span>
+<strong>store_sales.csv</strong>
+<small>3 rows · “Product”, “Quantity”, “Price”</small>
+</div>
+<div>
+<span class="file-icon" aria-hidden="true">↳</span>
+<strong>online_sales.csv</strong>
+<small>3 rows · “Item”, “Units”, “Unit price”</small>
+</div>
+</div>
+<details class="workflow-input-details">
+<summary>See what’s in the two sample exports</summary>
+<div class="table-scroll">
+<table>
+<caption>store_sales.csv</caption>
+<thead>
+<tr>
+<th scope="col">Product</th>
+<th scope="col">Quantity</th>
+<th scope="col">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>AB-101</td>
-<td>Blue Mug 12 oz</td>
+<td>Mugs</td>
+<td>12</td>
 <td>$12</td>
 </tr>
 <tr>
-<td>ab101</td>
-<td>Mug, Blue, 12oz</td>
-<td>$12</td>
-</tr>
-<tr>
-<td>CD-202</td>
-<td>Linen Towel</td>
+<td>Towels</td>
+<td>8</td>
 <td>$18</td>
+</tr>
+<tr>
+<td>Bowls</td>
+<td>6</td>
+<td>$16</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>online_sales.csv</caption>
+<thead>
+<tr>
+<th scope="col">Item</th>
+<th scope="col">Units</th>
+<th scope="col">Unit price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mugs</td>
+<td>8</td>
+<td>$12</td>
+</tr>
+<tr>
+<td>Towels</td>
+<td>7</td>
+<td>$18</td>
+</tr>
+<tr>
+<td>Throws</td>
+<td>5</td>
+<td>$40</td>
 </tr>
 </tbody>
 </table>
 </div>
-<button id="inventory-check" type="button">Review SKU Consistency</button>
-<p id="inventory-result" role="status">No records have been removed.</p>
-</article>
-<article class="panel">
-<p class="eyebrow">03 / WORKFLOW AUTOMATION</p>
-<h2>Fewer manual handoffs.</h2>
-<p>Manual: download exports → open each file → standardize columns → combine rows → calculate totals → save report.</p>
-<button id="workflow-toggle" type="button" aria-pressed="false">Show Automated Workflow</button>
-<div id="workflow-result" hidden>
-<h3>Export → Run utility → Review report</h3>
-<p>A small utility could standardize columns, combine compatible exports, calculate totals, and write a report. You still review exceptions and confirm the output. Savings depend on the actual workflow; no measured time savings are claimed.</p>
+</details>
+<ol class="pipeline" id="pipeline">
+<li>Read both exports</li>
+<li>Align column names</li>
+<li>Combine & calculate sales</li>
+<li>Create the summary</li>
+</ol>
+<div class="workspace-toolbar">
+<button id="run-workflow" type="button">Run the example <span aria-hidden="true">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
+</button>
+<button id="reset-workflow" class="secondary" type="button">Reset</button>
 </div>
-</article>
-<article class="panel">
-<p class="eyebrow">04 / REPORTS & DASHBOARDS</p>
-<h2>Give raw sales a useful shape.</h2>
-<label>Product category<select id="sales-filter">
+<div id="workflow-result" hidden>
+<div class="result-stats" id="workflow-stats">
+</div>
+<div class="table-scroll">
+<table>
+<caption>Generated summary from both sample exports</caption>
+<thead>
+<tr>
+<th scope="col">Product</th>
+<th scope="col">Units</th>
+<th scope="col">Sales</th>
+</tr>
+</thead>
+<tbody id="workflow-rows">
+</tbody>
+</table>
+</div>
+<button id="download-report" class="quiet" type="button">Download generated summary ↓</button>
+</div>
+<p id="workflow-status" class="result-note" role="status">Without a utility, you’d repeat these steps each time the exports arrive.</p>
+</div>
+</section>
+<section id="panel-reporting" class="lab-panel" role="tabpanel" aria-labelledby="tab-reporting" tabindex="0" hidden>
+<div class="lab-explanation">
+<p class="eyebrow">THE PROBLEM / ROWS WITHOUT ANSWERS</p>
+<h2>What’s selling?<br>Start with that.</h2>
+<p>A list of transactions doesn’t immediately tell you which products bring in the most sales. Change the period or category and watch the report answer a narrower question.</p>
+<div class="takeaway">
+<h3>Why this matters</h3>
+<p>You can see the totals and check the rows behind them. Sales here mean units multiplied by price; they don’t account for costs or returns, and they aren’t profit or a forecast.</p>
+</div>
+<a class="text-link" href="contact.html?service=reporting">Have a task like this? Let’s talk <span aria-hidden="true">→</span>
+</a>
+</div>
+<div class="workspace">
+<div class="workspace-head">
+<div>
+<span class="file-tag">SALES OVERVIEW</span>
+<h3>Ask a more useful question.</h3>
+</div>
+<span class="data-label">Synthetic sales</span>
+</div>
+<div class="report-filters">
+<label>Period<select id="month-filter">
+<option value="all">Both months</option>
+<option value="October">October</option>
+<option value="November">November</option>
+</select>
+</label>
+<label>Category<select id="sales-filter">
 <option value="all">All products</option>
 <option value="Home">Home</option>
 <option value="Kitchen">Kitchen</option>
 </select>
 </label>
-<div class="metrics">
+</div>
+<div class="result-stats" aria-live="polite">
 <div>
-<small>Sales total</small>
+<span>Total sales</span>
 <strong id="sales-total">
 </strong>
 </div>
 <div>
-<small>Units sold</small>
+<span>Units sold</span>
 <strong id="sales-units">
 </strong>
 </div>
+<div>
+<span>Top product by sales</span>
+<strong id="sales-top" class="stat-word">
+</strong>
+</div>
+</div>
+<div class="chart-title">
+<h4>Sales by product</h4>
+<span>USD · same scale across filters</span>
 </div>
 <div id="sales-chart" class="sales-chart">
 </div>
+<p id="sales-insight" class="result-note" role="status">
+</p>
 <details>
-<summary>View synthetic source data</summary>
+<summary>See the rows behind this report</summary>
 <div class="table-scroll">
 <table>
-<caption>Fixed example sales records</caption>
+<caption>Rows included in the current view</caption>
 <thead>
 <tr>
-<th>Product</th>
-<th>Category</th>
-<th>Units</th>
-<th>Sales</th>
+<th scope="col">Month</th>
+<th scope="col">Product</th>
+<th scope="col">Category</th>
+<th scope="col">Units</th>
+<th scope="col">Sales</th>
 </tr>
 </thead>
 <tbody id="sales-rows">
@@ -147,34 +370,62 @@
 </table>
 </div>
 </details>
-<p>Sales are units × listed price. No profit or forecast is implied.</p>
-</article>
-<article class="panel wide">
-<p class="eyebrow">05 / PRODUCT MATCHING</p>
-<h2>Different names. A possible match.</h2>
-<div class="match-pair">
-<div>
-<small>SUPPLIER A</small>
-<h3>Blue Ceramic Mug — 12 oz</h3>
 </div>
-<span aria-hidden="true">↔</span>
-<div>
-<small>SUPPLIER B</small>
-<h3>Mug, Ceramic, Blue, 12oz</h3>
-</div>
-</div>
-<button id="match-products" type="button">Compare Product Attributes</button>
-<p id="match-result" role="status">Compare normalized material, color, type, and size.</p>
-<p>Matching attributes can suggest candidates. Brand, identifiers, and specifications still need human review. This is a simple rule-based demonstration, not a trained model or accuracy claim.</p>
-</article>
 </section>
-<section class="wrap final-cta">
-<div>
-<p class="eyebrow">LET’S MAKE WORK SIMPLER</p>
-<h2>Start with the task that slows you down.</h2>
-<p>Tell us what you’re working with. We’ll help define a practical next step.</p>
+<section id="panel-matching" class="lab-panel" role="tabpanel" aria-labelledby="tab-matching" tabindex="0" hidden>
+<div class="lab-explanation">
+<p class="eyebrow">THE PROBLEM / DIFFERENT SUPPLIER NAMES</p>
+<h2>A name is only<br>part of the match.</h2>
+<p>“Blue Ceramic Mug — 12 oz” and “Mug, Ceramic, Blue, 12oz” look different at first. Compare the details and they could describe the same item. Change the pair to see why a similar name can also be misleading.</p>
+<div class="takeaway">
+<h3>Why this matters</h3>
+<p>This small rule-based example compares type, material, color, and size. Matching attributes suggest a candidate, not a confirmed identity. Brands, identifiers, and specifications still need review. It isn’t a trained machine learning model.</p>
 </div>
-<a class="button" href="contact.html">Get a Free Quote ↗</a>
+<a class="text-link" href="contact.html?service=analytics">Have a task like this? Let’s talk <span aria-hidden="true">→</span>
+</a>
+</div>
+<div class="workspace">
+<div class="workspace-head">
+<div>
+<span class="file-tag">SUPPLIER CATALOG COMPARISON</span>
+<h3>Similar names. Same product?</h3>
+</div>
+</div>
+<label>Choose a pair<select id="match-example">
+<option value="same">Same attributes, different wording</option>
+<option value="size">Similar name, different size</option>
+<option value="missing">Missing information</option>
+</select>
+</label>
+<div class="match-pair" id="match-pair">
+</div>
+<button id="match-products" type="button">Compare these records <span aria-hidden="true">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
+</button>
+<div id="match-attributes">
+</div>
+<p id="match-result" class="result-note" role="status">Compare the actual attributes before deciding what belongs together.</p>
+</div>
+</section>
+</section>
+<noscript>
+<div class="wrap notice">The interactive examples need JavaScript. You can still read the service descriptions or <a href="contact.html">contact me directly</a>.</div>
+</noscript>
+<section id="contact" class="wrap final-cta">
+<div>
+<p class="eyebrow">LET’S TALK ABOUT YOUR PROJECT</p>
+<h2>What keeps ending up<br>on your to-do list?</h2>
+<p>Tell me what you’re trying to get done. We’ll start there.</p>
+</div>
+<a class="button light" href="contact.html">Get a Free Quote <span aria-hidden="true">
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+<path d="M5 19 19 5M5 5h14v14"/>
+</svg>
+</span>
+</a>
 </section>
 </main>
 <footer>
@@ -190,9 +441,9 @@
 <a href="tel:+12256787309">(225) 678-7309</a>
 </div>
 <div>
-<a href="terms.html">Draft service terms</a>
+<a href="terms.html">Service terms (draft)</a>
 <br>
-<a href="privacy.html">Draft privacy policy</a>
+<a href="privacy.html">Privacy policy (draft)</a>
 <p>© <span id="year">2026</span> Maier Web Solutions</p>
 </div>
 </div>

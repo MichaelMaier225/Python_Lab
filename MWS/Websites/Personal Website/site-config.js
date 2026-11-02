@@ -10,7 +10,7 @@ window.MWS_CONFIG = {
       "name": "Spreadsheet & Data Cleanup",
       "regular": 99,
       "intro": 69,
-      "summary": "Turn inconsistent spreadsheets into records you can actually use.",
+      "summary": "Duplicates, inconsistent names, and files that don’t line up. I’ll clean up the records and give you an organized output file.",
       "examples": [
         "Remove duplicate records",
         "Standardize formatting and validate inconsistencies",
@@ -30,7 +30,7 @@ window.MWS_CONFIG = {
       "name": "Inventory & Product Data Management",
       "regular": 199,
       "intro": 149,
-      "summary": "Give your product catalog a consistent, dependable structure.",
+      "summary": "Repeated SKUs, inconsistent attributes, or a product import that needs attention. I’ll help get your catalog into shape.",
       "examples": [
         "Identify duplicate SKUs",
         "Standardize product names and attributes",
@@ -50,7 +50,7 @@ window.MWS_CONFIG = {
       "name": "Business Workflow Automation",
       "regular": 299,
       "intro": 229,
-      "summary": "Make recurring reports and repetitive admin easier to handle.",
+      "summary": "If you’re rebuilding the same report or moving the same data every week, I can build a small tool for the repeatable steps.",
       "examples": [
         "Automate spreadsheet processing",
         "Combine recurring reports",
@@ -70,7 +70,7 @@ window.MWS_CONFIG = {
       "name": "Reports & Dashboards",
       "regular": 249,
       "intro": 189,
-      "summary": "See what matters in your sales, inventory, and business data.",
+      "summary": "Turn your sales or inventory records into a report that answers a few specific business questions.",
       "examples": [
         "Sales summaries and business KPIs",
         "Inventory performance reports",
@@ -90,7 +90,7 @@ window.MWS_CONFIG = {
       "name": "Custom Algorithms & Business Analytics",
       "regular": 399,
       "intro": 299,
-      "summary": "Explore a specific business question with a focused proof of concept.",
+      "summary": "Need to match product records or test a business idea with data? Start with a small proof of concept and an honest evaluation.",
       "examples": [
         "Product similarity matching and duplicate detection",
         "Customer or product segmentation",
