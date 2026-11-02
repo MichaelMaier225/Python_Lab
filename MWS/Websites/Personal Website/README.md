@@ -52,3 +52,11 @@ These examples use only fixed synthetic records and do not accept customer files
 Playwright with installed system Chromium exercises seven pages at 320, 390, 768, 1024, and 1440 pixels. Checks cover internal links, pricing and promotion closing, service scope visibility, all interactive state changes, alternate cleanup rules, CSV contents, calculated totals, review decisions, matching counterexamples, keyboard tab navigation, safe email preparation, legacy forwarding pages, and no-JavaScript navigation. No live emails, customer data, or payments are used. The validation script and screenshots are in `/workspace/mws-review` in this instance.
 
 If JavaScript is unavailable, contact fields remain disabled to prevent accidental query-string submission; direct email/phone alternatives and navigation remain available.
+
+## Visual interaction and FAQ behavior
+
+The site uses charcoal, cobalt, warm white, and yellow for stronger section contrast. The hero artwork is an original inline SVG; service icons are inline SVG as well. No video, stock-image requests, animation library, or tracking is added.
+
+FAQ headings are actual buttons controlling labeled answer regions through `aria-expanded` and `aria-controls`. Mouse, Enter, and Space toggle each answer independently. Only the control text suppresses selection and caret display; form fields retain their typing caret. All FAQ answers are readable without JavaScript. A caret visible elsewhere on ordinary page text may be the browser’s F7 caret-browsing mode.
+
+Entrance effects run once as content comes into view, and card/button hover effects are limited to devices with hover support. Content is visible without motion. Reduced-motion preferences disable entrances and decorative transforms; changing that preference while viewing stops active page animations.

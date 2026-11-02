@@ -44,6 +44,20 @@
 </header>
 <main id="main">
 <section class="hero-shell">
+<div class="hero-art" aria-hidden="true">
+<svg viewBox="0 0 900 900" fill="none">
+<circle cx="450" cy="450" r="345"/>
+<circle cx="450" cy="450" r="260"/>
+<circle cx="450" cy="450" r="175"/>
+<path d="M105 450h690M450 105v690M206 206l488 488M206 694l488-488"/>
+<g class="art-points">
+<circle cx="450" cy="105" r="9"/>
+<circle cx="710" cy="450" r="7"/>
+<circle cx="206" cy="694" r="9"/>
+<circle cx="450" cy="625" r="6"/>
+</g>
+</svg>
+</div>
 <div class="wrap hero">
 <div class="hero-copy">
 <p class="eyebrow">
@@ -64,6 +78,11 @@
 </a>
 </div>
 <p class="location">Maier Web Solutions · Prairieville, Louisiana<br>Serving Baton Rouge, nearby communities & remote clients.</p>
+</div>
+<div class="hero-demo">
+<div class="demo-caption">
+<span class="caption-index">01 — FROM MESS TO MOMENTUM</span>
+<span>CLICK IT. SEE THE DIFFERENCE.</span>
 </div>
 <div class="mini-lab" data-mini-lab>
 <div class="window-bar">
@@ -111,6 +130,9 @@
 <button class="quiet" data-mini-reset type="button">Reset example</button>
 </div>
 </div>
+<div class="demo-note">
+<span aria-hidden="true">→</span> A real cleanup example, right here in your browser.</div>
+</div>
 </div>
 <div class="wrap hero-bottom">
 <span>Smarter Data. Simpler Business.</span>
@@ -126,11 +148,13 @@
 </a>
 </div>
 </aside>
-<section class="wrap section">
+<section class="wrap section services-section">
 <div class="section-heading">
 <div>
 <p class="eyebrow">WHAT I CAN HELP WITH</p>
-<h2>Start with the thing<br>that needs fixing.</h2>
+<h2>Less friction.<br>
+<em>More room to work.</em>
+</h2>
 </div>
 <p>You don’t need to know which tool to use.<br>Just tell me where the work gets frustrating.</p>
 </div>
@@ -146,6 +170,7 @@
 <p class="pricing-note">Starting prices are for qualifying small projects. I’ll confirm scope and pricing in writing before work begins.</p>
 </section>
 <section id="work" class="lab-feature">
+<div class="section-watermark" aria-hidden="true">MAKE IT MAKE SENSE.</div>
 <div class="wrap split">
 <div>
 <p class="eyebrow">A LITTLE LESS EXPLAINING. A LITTLE MORE SHOWING.</p>
@@ -234,7 +259,8 @@
 </div>
 </div>
 </section>
-<section class="wrap section faq-section">
+<section class="faq-shell">
+<div class="wrap section faq-section">
 <div>
 <p class="eyebrow">BEFORE YOU REACH OUT</p>
 <h2>A few fair questions.</h2>
@@ -243,26 +269,67 @@
 </p>
 </div>
 <div>
-<details>
-<summary>I know what’s annoying me, but not what I need. Is that enough?</summary>
+<article class="faq-item">
+<h3>
+<button class="faq-question" type="button" id="faq-question-1" aria-expanded="true" aria-controls="faq-answer-1">
+<span>I know what’s annoying me, but not what I need. Is that enough?</span>
+<span class="faq-symbol" aria-hidden="true">
+</span>
+</button>
+</h3>
+<div class="faq-answer" id="faq-answer-1" role="region" aria-labelledby="faq-question-1">
 <p>Yes. Tell me what you’re doing now and what you wish was easier. You don’t need a technical plan to start the conversation. Initial consultations and quotes are free.</p>
-</details>
-<details>
-<summary>Can you work with Excel and Shopify exports?</summary>
+</div>
+</article>
+<article class="faq-item">
+<h3>
+<button class="faq-question" type="button" id="faq-question-2" aria-expanded="true" aria-controls="faq-answer-2">
+<span>Can you work with Excel and Shopify exports?</span>
+<span class="faq-symbol" aria-hidden="true">
+</span>
+</button>
+</h3>
+<div class="faq-answer" id="faq-answer-2" role="region" aria-labelledby="faq-question-2">
 <p>Yes. Excel files, CSV exports, and product catalogs are a good place to start. I’ll review the format and confirm what can be done before quoting the work.</p>
-</details>
-<details>
-<summary>Will the project cost exactly the starting price?</summary>
+</div>
+</article>
+<article class="faq-item">
+<h3>
+<button class="faq-question" type="button" id="faq-question-3" aria-expanded="true" aria-controls="faq-answer-3">
+<span>Will the project cost exactly the starting price?</span>
+<span class="faq-symbol" aria-hidden="true">
+</span>
+</button>
+</h3>
+<div class="faq-answer" id="faq-answer-3" role="region" aria-labelledby="faq-question-3">
 <p>Only if it fits the base package. File size, data quality, and the work involved all affect the quote. You’ll know the agreed price before work begins.</p>
-</details>
-<details>
-<summary>How do payment and revisions work?</summary>
+</div>
+</article>
+<article class="faq-item">
+<h3>
+<button class="faq-question" type="button" id="faq-question-4" aria-expanded="true" aria-controls="faq-answer-4">
+<span>How do payment and revisions work?</span>
+<span class="faq-symbol" aria-hidden="true">
+</span>
+</button>
+</h3>
+<div class="faq-answer" id="faq-answer-4" role="region" aria-labelledby="faq-question-4">
 <p>The default is 50% after scope approval and 50% before final delivery. Base packages include one revision for agreed requirements. Fixing something that fails the agreed specifications doesn’t use up that revision.</p>
-</details>
-<details>
-<summary>Should I email my spreadsheet right away?</summary>
+</div>
+</article>
+<article class="faq-item">
+<h3>
+<button class="faq-question" type="button" id="faq-question-5" aria-expanded="true" aria-controls="faq-answer-5">
+<span>Should I email my spreadsheet right away?</span>
+<span class="faq-symbol" aria-hidden="true">
+</span>
+</button>
+</h3>
+<div class="faq-answer" id="faq-answer-5" role="region" aria-labelledby="faq-question-5">
 <p>Start with a description. Please don’t send passwords, payment information, or sensitive business records. If I need a sample, we’ll agree on an appropriate secure way to share it.</p>
-</details>
+</div>
+</article>
+</div>
 </div>
 </section>
 <section id="contact" class="wrap final-cta">

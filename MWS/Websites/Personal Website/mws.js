@@ -33,8 +33,25 @@
       const card = make('article', undefined, 'service-card');
       card.id = service.id;
       const overview = full ? make('div', undefined, 'service-overview') : card;
+      const top = make('div', undefined, 'service-top');
+      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      icon.setAttribute('viewBox', '0 0 32 32');
+      icon.setAttribute('fill', 'none');
+      icon.setAttribute('stroke', 'currentColor');
+      icon.setAttribute('stroke-width', '1.6');
+      icon.setAttribute('aria-hidden', 'true');
+      const paths = [
+        'M5 7h22v19H5zM5 13h22M13 7v19M18 19l3 3 6-7',
+        'M16 3 28 9v14l-12 6-12-6V9zM4 9l12 6 12-6M16 15v14',
+        'M5 10h19l-4-4m4 4-4 4M27 22H8l4 4m-4-4 4-4',
+        'M5 27h23M8 22v-7h4v7M16 22V9h4v13M24 22V4h4v18',
+        'M8 9h16M9 10l7 13m7-13-7 13M5 6h6v6H5zM21 6h6v6h-6zM13 22h6v6h-6z'
+      ];
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', paths[i]); icon.append(path);
+      top.append(make('span', String(i + 1).padStart(2, '0'), 'service-number'), icon);
       overview.append(
-        make('span', String(i + 1).padStart(2, '0') + ' / MWS', 'service-number'),
+        top,
         make('h3', service.name),
         make('p', service.summary)
       );
@@ -84,5 +101,40 @@
       catch { output.focus(); output.select(); document.querySelector('#quote-status').textContent = 'Select and copy the request below, then paste it into your email.'; }
     });
     form.querySelector('#quote-fields').disabled = false;
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('.faq-question').forEach(button => {
+    const answer = document.getElementById(button.getAttribute('aria-controls'));
+    button.setAttribute('aria-expanded', 'false');
+    answer.hidden = true;
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      button.setAttribute('aria-expanded', String(open));
+      answer.hidden = !open;
+      if (open && !reducedMotion.matches && answer.animate) {
+        answer.animate([{ opacity: .3, transform: 'translateY(-5px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 180, easing: 'ease-out' });
+      }
+    });
+  });
+
+  // One-time entrances: content is visible by default and motion is never required.
+  if (!reducedMotion.matches && 'IntersectionObserver' in window && Element.prototype.animate) {
+    const entrance = node => node.animate(
+      [{ opacity: .25, transform: 'translateY(22px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 460, easing: 'cubic-bezier(.2,.7,.3,1)' }
+    );
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entrance(entry.target); observer.unobserve(entry.target);
+      });
+    }, { threshold: .12 });
+    document.querySelectorAll('.hero-copy, .hero-demo, .section-heading, .service-card, .steps article, .lab-feature .split, .about-band .split, .faq-item, .final-cta').forEach(node => observer.observe(node));
+    reducedMotion.addEventListener('change', event => {
+      if (!event.matches) return;
+      observer.disconnect();
+      document.getAnimations().forEach(animation => animation.cancel());
+    });
   }
 })();

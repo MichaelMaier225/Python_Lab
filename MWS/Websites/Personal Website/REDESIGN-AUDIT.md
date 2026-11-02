@@ -46,3 +46,14 @@ Removed 12 unused legacy stylesheet/script files and two unused full-logo duplic
 The quote form now remains disabled until its JavaScript handler is installed. With JavaScript unavailable, a visitor uses direct email/phone instead of accidentally submitting form fields in a URL. No backend, upload, payment integration, or tracking was added.
 
 Revision validation passed: 35 page/viewport combinations (seven primary pages at 320, 390, 768, 1024 and 1440 pixels); no horizontal page overflow or browser errors. Also verified introductory/regular price switching, visible base scopes, interactive homepage reset, independent cleanup rules, actual CSV contents, inventory review state, automation input/output totals, filtered report rows, all matching scenarios, keyboard tab controls, legacy forwarding pages, disabled no-JavaScript form with direct contact fallback, and the enlarged homepage layout. Static resource inspection found zero missing local HTML references. These are development checks, not a complete accessibility or security certification.
+
+
+## Contrast, movement, and FAQ revision
+
+Replaced the muted mint treatment with charcoal/cobalt/yellow contrast, original inline hero artwork, illustrated service headers, a dark featured service, a cobalt examples section, and dark FAQ controls. Short one-time entrance effects and pointer hover feedback respect reduced motion; content has no animation dependency. No runtime packages or external assets were added.
+
+Converted the five FAQ headings to actual button controls with explicit expanded state and labeled answer regions. Control-only caret/selection styling avoids a text-insertion appearance while preserving visible keyboard focus and normal form carets. A browser-wide caret-browsing preference cannot be diagnosed from a screenshot; F7 can toggle it in browsers that support it.
+
+The provided Lounge Lizard URLs could not be inspected: the configured HTTP proxy returned CONNECT 403. Their two hostnames were added to the environment configuration draft, preserving existing custom domains and presets; draft persistence does not apply runtime networking. The implementation follows the requested stronger visual character without claiming a direct comparison against those inaccessible pages.
+
+Validation: the existing 35 page/viewport and functional checks passed. Additional checks passed for FAQ click/Enter/Space, independent open states, focus retention, control-only transparent caret, visible contact-input caret, correct hero nesting, mobile FAQ, and disabled animation under reduced motion. Browser-wide F7 behavior is not simulated by these tests.
