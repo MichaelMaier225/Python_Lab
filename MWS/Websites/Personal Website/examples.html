@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Interactive Examples | Maier Web Solutions</title>
+<meta name="description" content="Practical data cleanup, inventory tools, workflow automation, and reporting for small businesses in Baton Rouge, Prairieville, and remotely.">
+<link rel="icon" href="assets/maier-logo-icon.png">
+<link rel="stylesheet" href="mws.css">
+<script src="site-config.js" defer>
+</script>
+<script src="mws.js" defer>
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+<div class="wrap header-inner">
+<a class="brand" href="index.html">
+<span class="brand-mark">M<span> / </span>W</span>
+<span>MAIER<small>WEB SOLUTIONS</small>
+</span>
+</a>
+<button class="menu" aria-controls="nav" aria-expanded="false">Menu</button>
+<nav id="nav" aria-label="Main navigation">
+<a href="services.html">Services</a>
+<a href="examples.html">Examples</a>
+<a href="about.html">About</a>
+<a class="button small" href="contact.html">Get a Free Quote <span aria-hidden="true">↗</span>
+</a>
+</nav>
+</div>
+</header>
+<main id="main">
+<section class="page-intro wrap">
+<p class="eyebrow">REALISTIC EXAMPLES. SYNTHETIC DATA.</p>
+<h1>See what a clearer<br>workflow could look like.</h1>
+<p class="lead">These are demonstrations, not completed customer projects or measured business outcomes. All examples run locally using fixed synthetic records.</p>
+</section>
+<section class="wrap demo-grid section">
+<article class="panel">
+<p class="eyebrow">01 / SPREADSHEET CLEANUP</p>
+<h2>From inconsistent to organized.</h2>
+<p>Normalize names and email casing, then remove an exact duplicate after normalization. Missing values stay flagged.</p>
+<div class="table-scroll">
+<table>
+<caption id="cleanup-caption">Original synthetic records</caption>
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Review</th>
+</tr>
+</thead>
+<tbody id="cleanup-rows">
+</tbody>
+</table>
+</div>
+<button id="clean-data" type="button">Apply Example Cleanup</button>
+<button id="reset-data" type="button">Reset</button>
+<p id="cleanup-status" role="status">
+</p>
+</article>
+<article class="panel">
+<p class="eyebrow">02 / INVENTORY REVIEW</p>
+<h2>Find records worth a second look.</h2>
+<div class="table-scroll">
+<table>
+<caption>Synthetic product catalog</caption>
+<thead>
+<tr>
+<th>SKU</th>
+<th>Product</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AB-101</td>
+<td>Blue Mug 12 oz</td>
+<td>$12</td>
+</tr>
+<tr>
+<td>ab101</td>
+<td>Mug, Blue, 12oz</td>
+<td>$12</td>
+</tr>
+<tr>
+<td>CD-202</td>
+<td>Linen Towel</td>
+<td>$18</td>
+</tr>
+</tbody>
+</table>
+</div>
+<button id="inventory-check" type="button">Review SKU Consistency</button>
+<p id="inventory-result" role="status">No records have been removed.</p>
+</article>
+<article class="panel">
+<p class="eyebrow">03 / WORKFLOW AUTOMATION</p>
+<h2>Fewer manual handoffs.</h2>
+<p>Manual: download exports → open each file → standardize columns → combine rows → calculate totals → save report.</p>
+<button id="workflow-toggle" type="button" aria-pressed="false">Show Automated Workflow</button>
+<div id="workflow-result" hidden>
+<h3>Export → Run utility → Review report</h3>
+<p>A small utility could standardize columns, combine compatible exports, calculate totals, and write a report. You still review exceptions and confirm the output. Savings depend on the actual workflow; no measured time savings are claimed.</p>
+</div>
+</article>
+<article class="panel">
+<p class="eyebrow">04 / REPORTS & DASHBOARDS</p>
+<h2>Give raw sales a useful shape.</h2>
+<label>Product category<select id="sales-filter">
+<option value="all">All products</option>
+<option value="Home">Home</option>
+<option value="Kitchen">Kitchen</option>
+</select>
+</label>
+<div class="metrics">
+<div>
+<small>Sales total</small>
+<strong id="sales-total">
+</strong>
+</div>
+<div>
+<small>Units sold</small>
+<strong id="sales-units">
+</strong>
+</div>
+</div>
+<div id="sales-chart" class="sales-chart">
+</div>
+<details>
+<summary>View synthetic source data</summary>
+<div class="table-scroll">
+<table>
+<caption>Fixed example sales records</caption>
+<thead>
+<tr>
+<th>Product</th>
+<th>Category</th>
+<th>Units</th>
+<th>Sales</th>
+</tr>
+</thead>
+<tbody id="sales-rows">
+</tbody>
+</table>
+</div>
+</details>
+<p>Sales are units × listed price. No profit or forecast is implied.</p>
+</article>
+<article class="panel wide">
+<p class="eyebrow">05 / PRODUCT MATCHING</p>
+<h2>Different names. A possible match.</h2>
+<div class="match-pair">
+<div>
+<small>SUPPLIER A</small>
+<h3>Blue Ceramic Mug — 12 oz</h3>
+</div>
+<span aria-hidden="true">↔</span>
+<div>
+<small>SUPPLIER B</small>
+<h3>Mug, Ceramic, Blue, 12oz</h3>
+</div>
+</div>
+<button id="match-products" type="button">Compare Product Attributes</button>
+<p id="match-result" role="status">Compare normalized material, color, type, and size.</p>
+<p>Matching attributes can suggest candidates. Brand, identifiers, and specifications still need human review. This is a simple rule-based demonstration, not a trained model or accuracy claim.</p>
+</article>
+</section>
+<section class="wrap final-cta">
+<div>
+<p class="eyebrow">LET’S MAKE WORK SIMPLER</p>
+<h2>Start with the task that slows you down.</h2>
+<p>Tell us what you’re working with. We’ll help define a practical next step.</p>
+</div>
+<a class="button" href="contact.html">Get a Free Quote ↗</a>
+</section>
+</main>
+<footer>
+<div class="wrap footer-grid">
+<div>
+<a class="footer-brand" href="index.html">Maier Web Solutions</a>
+<p>Smarter Data. Simpler Business.</p>
+<small>Prairieville · Baton Rouge · Remote</small>
+</div>
+<div>
+<a href="mailto:maierwebsolutions@gmail.com">maierwebsolutions@gmail.com</a>
+<br>
+<a href="tel:+12256787309">(225) 678-7309</a>
+</div>
+<div>
+<a href="terms.html">Draft service terms</a>
+<br>
+<a href="privacy.html">Draft privacy policy</a>
+<p>© <span id="year">2026</span> Maier Web Solutions</p>
+</div>
+</div>
+</footer>
+</body>
+</html>

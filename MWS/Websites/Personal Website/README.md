@@ -1,48 +1,39 @@
 # Maier Web Solutions
 
-Static marketing website for a Louisiana-based small-business web design service.
+Static small-business data services website. No build step, package installation, API keys, backend, database, or payment integration is needed.
 
-## Local preview
+## Local development
 
-From this directory, run:
+Use the existing checkout; cloud tasks are already isolated. From `MWS/Websites/Personal Website`:
 
-```bash
-python -m http.server 8000
+```sh
+python -m http.server 8000 --bind 127.0.0.1
 ```
 
-Then open `http://localhost:8000` in a browser. No build step or package installation is required.
+Request `/index.html` locally and verify it contains “Less busywork.”. Python 3.12 was tested. This server is for local development, not production.
 
-## Project structure
+## Structure
 
-- `index.html` — homepage, sections, and pricing estimator markup.
-- `styles.css` — core site styles.
-- `script.js` — navigation, pricing, portfolio preview, and page interactions.
-- `theme-light.css`, `theme-contrast.css`, `scale-refinement.css` — visual theme refinements.
-- `pricing-readable.css`, `readability-fix.css` — pricing and text contrast improvements.
-- `portfolio-upgrade.css`, `portfolio-navigation-polish.css`, `portfolio-upgrade.js` — interactive portfolio styling and behavior.
-- `hero-slideshow.css`, `hero-slideshow.js` — rotating website demo in the hero.
-- `demo-*.html` — fictional website examples, **not actual client work**.
-- `terms.html`, `privacy.html` — public-facing policies.
-- `Client_Agreement_Template.txt` — agreement draft; seek local legal review before use.
+- `index.html`, `services.html`, `examples.html`, `about.html`, `contact.html`: primary pages.
+- `site-config.js`: all five prices, base scopes, exclusions, and `foundingOffer.enabled`. Set this flag to `false` to close promotional pricing across primary pages. Track qualification in real business records; no automated spot count exists.
+- `mws.js`, `mws.css`: shared behavior and responsive visual design.
+- `terms.html`, `privacy.html`: drafts requiring owner/legal review before publication.
+- `REDESIGN-AUDIT.md`: inspection, architecture, validation and limitations.
+- `demo-*.html`, legacy CSS/scripts and assets: retained for old URLs; no longer loaded by primary pages.
+- `Client_Agreement_Template.txt`: legacy website-services draft, not suitable for the new data-services work.
 
-## Pricing
+## Contact and data
 
-| Package | Setup | Required managed care | Included minor edits |
-| --- | --- | --- | --- |
-| Starter launch offer (first three qualifying clients) | $100 | $20/month or $200/year | Up to 1 hour/month |
-| Starter regular | $130 | $20/month or $200/year | Up to 1 hour/month |
-| Business | From $349 | $30/month or $300/year | Up to 2 hours/month |
+The form validates and prepares an email, with a manual copy fallback. It does not send, upload, store, or collect payments. A visitor must send the prepared email. Email/telephone are preserved from the original website and need owner confirmation. Agree on secure sample transfer after initial contact.
 
-The first month of care is paid at launch. Setup requires a 50% deposit, with the remainder due after approval and before launch. Customers can cancel managed care and request transfer of their paid site files; hosted service ends after the paid period and appropriate notice. New pages and major changes are separately quoted.
+Services and demos require JavaScript for their dynamic detail. Direct contact and core static page copy remain available without JavaScript.
 
-## Publishing checklist
+## Deployment
 
-1. Upload all files together to the site root, including any existing `assets/` directory.
-2. Verify the domain, contact links, images, pricing estimator, and demo links.
-3. Check desktop and mobile layouts and the expanded FAQ text.
-4. Confirm the latest terms and agreement match your actual hosting, billing, and cancellation practices.
-5. Test the deployed site before directing customers to it.
+Upload the entire website directory to the existing static site root, including new pages, config, scripts, stylesheet and existing assets. Preserve relative paths and existing legacy demo URLs. Do not change root `render.yaml`: it belongs to Sacratissimum. Existing signed website agreements are not amended by this redesign.
 
-**Assets:** This archive does not include the original `assets/` directory. Preserve the existing branding and image files from your deployed project. Some backgrounds and demo photos require an internet connection.
+Before publication, verify host HTTPS and security headers, review policies, confirm promotion status and contact details, and test deployed navigation and actual email handoff. There is no verified payment processor or secure upload service.
 
-**Billing:** The pricing calculator is informational; it does not collect payments or create subscriptions.
+## Validation
+
+Playwright with installed system Chromium exercised seven pages at desktop/mobile widths, internal links, pricing and promotion disabled behavior, all five examples, mobile menu, form validation and safe email preparation. No browser errors or horizontal page overflow at 1440px/390px. No live emails, customer data, or payments were used. The external audit report and screenshots are in `/workspace/mws-review` in the current instance.
