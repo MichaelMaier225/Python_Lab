@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get a Free Quote | Maier Web Solutions</title>
+<meta name="description" content="Practical data cleanup, inventory tools, workflow automation, and reporting for small businesses in Baton Rouge, Prairieville, and remotely.">
+<link rel="icon" href="assets/maier-logo-icon.png">
+<link rel="stylesheet" href="mws.css">
+<script src="site-config.js" defer>
+</script>
+<script src="mws.js" defer>
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+<div class="wrap header-inner">
+<a class="brand" href="index.html">
+<span class="brand-mark">M<span> / </span>W</span>
+<span>MAIER<small>WEB SOLUTIONS</small>
+</span>
+</a>
+<button class="menu" aria-controls="nav" aria-expanded="false">Menu</button>
+<nav id="nav" aria-label="Main navigation">
+<a href="services.html">Services</a>
+<a href="examples.html">Examples</a>
+<a href="about.html">About</a>
+<a class="button small" href="contact.html">Get a Free Quote <span aria-hidden="true">↗</span>
+</a>
+</nav>
+</div>
+</header>
+<main id="main">
+<section class="page-intro wrap">
+<p class="eyebrow">LET’S START WITH THE PROBLEM</p>
+<h1>What would make<br>your workday simpler?</h1>
+<p class="lead">Tell us about the spreadsheet, recurring task, or business question you need help with. Initial consultations and quotes are free.</p>
+</section>
+<section class="wrap contact-layout">
+<form id="quote-form" class="panel">
+<h2>Prepare your quote request</h2>
+<p>This form prepares an email in your email app. It does not submit or store your request on this website. You’ll review and send it yourself.</p>
+<div class="form-grid">
+<label>Your name<input name="name" required maxlength="100" autocomplete="name">
+</label>
+<label>Business name <small>(optional)</small>
+<input name="business" maxlength="150" autocomplete="organization">
+</label>
+</div>
+<label>Email<input name="email" type="email" required maxlength="254" autocomplete="email">
+</label>
+<label>Service needed<select name="service" required>
+<option value="">Choose a service</option>
+<option>Not sure yet</option>
+</select>
+</label>
+<label>What do you need help with?<textarea name="description" required minlength="10" maxlength="2000" rows="5" placeholder="Describe the task and the result you’re hoping for. Please leave out sensitive information.">
+</textarea>
+</label>
+<div class="form-grid">
+<label>Approximate dataset size <small>(optional)</small>
+<input name="size" maxlength="100" placeholder="For example: 2,000 rows, two files">
+</label>
+<label>Preferred contact method<select name="contact">
+<option>Email</option>
+<option>Arrange a phone call by email</option>
+</select>
+</label>
+</div>
+<p class="notice">No file uploads. Please don’t include passwords, personal records, payment details, or sensitive business data. Sample data can be shared later through an agreed secure method.</p>
+<button class="button" type="submit">Prepare Email ↗</button>
+<p id="quote-status" role="status">
+</p>
+<div id="email-result" hidden>
+<label>Your prepared request<textarea id="email-copy" rows="10" readonly>
+</textarea>
+</label>
+<div class="actions">
+<a class="button" id="open-email">Open Email App ↗</a>
+<button type="button" id="copy-request">Copy Request</button>
+</div>
+<p>Nothing has been sent. If an email app doesn’t open, copy this request and email it to maierwebsolutions@gmail.com.</p>
+</div>
+</form>
+<aside>
+<p class="eyebrow">DIRECT CONTACT</p>
+<h3>A conversation comes first.</h3>
+<p>
+<a href="mailto:maierwebsolutions@gmail.com">maierwebsolutions@gmail.com</a>
+</p>
+<a href="tel:+12256787309">(225) 678-7309</a>
+<hr>
+<h3>What happens next?</h3>
+<p>We clarify the task and review an appropriate sample if needed. You receive a written quote before deciding whether to proceed.</p>
+<p>Work starts after scope approval and the required deposit. No payment is collected on this website.</p>
+<a href="terms.html">Read the draft service terms →</a>
+</aside>
+</section>
+</main>
+<footer>
+<div class="wrap footer-grid">
+<div>
+<a class="footer-brand" href="index.html">Maier Web Solutions</a>
+<p>Smarter Data. Simpler Business.</p>
+<small>Prairieville · Baton Rouge · Remote</small>
+</div>
+<div>
+<a href="mailto:maierwebsolutions@gmail.com">maierwebsolutions@gmail.com</a>
+<br>
+<a href="tel:+12256787309">(225) 678-7309</a>
+</div>
+<div>
+<a href="terms.html">Draft service terms</a>
+<br>
+<a href="privacy.html">Draft privacy policy</a>
+<p>© <span id="year">2026</span> Maier Web Solutions</p>
+</div>
+</div>
+</footer>
+</body>
+</html>
