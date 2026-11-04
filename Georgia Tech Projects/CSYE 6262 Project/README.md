@@ -10,6 +10,7 @@ models/                        Algorithm source code
     svm/
         train.py               Train the existing SVM
         features.py            Shared SVM preprocessing and pair features
+        scoring.py             Shared batch scoring for experiments/evaluation
     logistic_regression/       Teammate source goes here (still pending)
     decision_tree/             Teammate source goes here (not supplied yet)
 trained_models/                Saved models, grouped by algorithm
@@ -491,6 +492,8 @@ Each run creates a fresh timestamped folder under
 - `results.json`: selected settings, row/duplicate counts, source archive hashes,
   runtime versions, validation-based recommendation and completion status.
 - `validation_pairs.csv`: the common holdout IDs.
+- `quarantined_gold_overlap.csv` and `split_audit.json`: excluded test-overlap
+  pairs, their source sizes, exclusion counts and original archive hashes.
 - `errors_<size>.csv`: incorrect gold-test decisions for each model.
 
 Generated experiments are Git-ignored. Existing runs are not overwritten. Copy an
@@ -518,9 +521,12 @@ partial run folder if interrupted.
   This differs from the old single-size command's final train+validation refit.
 - Duplicate and reversed product pairs count once in training/validation.
   Inconsistent duplicate labels or modeled input features stop the run.
-- Training/test pair overlap, including reversed pairs, stops the run. This does
-  not establish product/cluster-disjoint generalization; shared individual products
-  across different pairs still need separate investigation.
+- Training/test pair overlap, including reversed pairs, is quarantined from
+  every training set and the validation holdout before fitting. The gold test
+  stays unchanged. Counts and excluded pairs are saved for audit. To stop instead,
+  add `--overlap-policy error`. This does not establish product/cluster-disjoint
+  generalization; shared individual products across different pairs still need
+  separate investigation.
 - All models and thresholds are fixed before gold-test results are calculated.
   The recommendation uses validation F1 (precision breaks ties), not gold-test F1.
 - If subsets overlap completely, the combined union may equal XL. This is reported

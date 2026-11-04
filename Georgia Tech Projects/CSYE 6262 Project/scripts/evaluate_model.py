@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 
-from models.svm.features import pair_features
+from models.svm.scoring import decision_scores
 from website.registry import load_bundle, model_entry
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -35,14 +35,8 @@ def evaluate(data_path, model_id="linear_svc_v3", batch_size=256):
     threshold = float(bundle["threshold"])
     if not np.isfinite(threshold):
         raise ValueError("The saved model threshold must be finite.")
-    scores = []
-    for start in range(0, len(frame), batch_size):
-        features = pair_features(frame.iloc[start:start + batch_size],
-                                 bundle["title_vectorizer"], bundle["description_vectorizer"])
-        scores.extend(bundle["model"].decision_function(features).tolist())
-    scores = np.asarray(scores)
-    if not np.isfinite(scores).all():
-        raise ValueError("The model returned non-finite scores.")
+    scores = decision_scores(bundle["model"], bundle["title_vectorizer"],
+                             bundle["description_vectorizer"], frame, batch_size)
     labels = frame["label"].to_numpy(dtype=int)
     predictions = (scores >= threshold).astype(int)
     with data_path.open("rb") as file:

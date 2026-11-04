@@ -1,5 +1,6 @@
 """Small synthetic archives exercise the full loop, not real benchmark performance."""
 import gzip
+import hashlib
 import io
 import json
 import tempfile
@@ -7,12 +8,14 @@ import unittest
 import zipfile
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 import joblib
 import pandas as pd
 
 from models.svm.train import read_validation_ids
 from models.svm.train_sizes import SIZES, deduplicate, prepare_pairs, run
+from models.svm import train_sizes
 
 
 def pair(number, label):
@@ -87,8 +90,44 @@ class SizeExperimentTests(unittest.TestCase):
             original['pair_id']=f"{original['id_left']}#{original['id_right']}"
             pd.DataFrame([original]).to_json(root/'all_gs.json.gz',orient='records',lines=True,compression='gzip')
             with self.assertRaisesRegex(ValueError,'overlapping or reversed'):
-                run(root,root/'runs')
+                run(root,root/'runs',overlap_policy='error')
             self.assertFalse((root/'runs').exists())
+
+    def test_gold_overlap_is_quarantined_from_every_fit(self):
+        with tempfile.TemporaryDirectory() as folder, redirect_stdout(io.StringIO()):
+            root=Path(folder);archives(root)
+            reversed_pair=pair(0,0)
+            reversed_pair['id_left'],reversed_pair['id_right']=reversed_pair['id_right'],reversed_pair['id_left']
+            reversed_pair['pair_id']=f"{reversed_pair['id_left']}#{reversed_pair['id_right']}"
+            gold=pd.DataFrame([reversed_pair,pair(100,1)])
+            gold.to_json(root/'all_gs.json.gz',orient='records',lines=True,compression='gzip')
+            gold_keys=set(prepare_pairs(gold)['_key'])
+            before={name:hashlib.sha256((root/name).read_bytes()).hexdigest()
+                    for name in ['all_train.zip','all_valid.zip','all_gs.json.gz']}
+            original_fit=train_sizes.fit_model
+            calls=[]
+            def checked_fit(train,valid):
+                self.assertTrue(set(train['_key']).isdisjoint(gold_keys))
+                self.assertTrue(set(valid['_key']).isdisjoint(gold_keys))
+                self.assertTrue(set(train['_key']).isdisjoint(valid['_key']))
+                calls.append(len(train))
+                return original_fit(train,valid)
+            with patch.object(train_sizes,'fit_model',side_effect=checked_fit):
+                output,report=run(root,root/'runs')
+            self.assertEqual(calls,[3,5,7,9,9])
+            self.assertEqual(report['audit']['gold_overlap']['unique_pairs_removed'],2)
+            self.assertEqual(report['audit']['gold_overlap']['validation_pairs_removed'],1)
+            self.assertEqual(report['common_validation_pairs'],2)
+            self.assertEqual(report['test_pairs'],2)
+            quarantined=pd.read_csv(output/'quarantined_gold_overlap.csv')
+            self.assertEqual(set(quarantined['_key']),gold_keys)
+            audit=json.loads((output/'split_audit.json').read_text())
+            self.assertEqual(audit['audit']['gold_overlap'],report['audit']['gold_overlap'])
+            for item in report['results']:
+                bundle=joblib.load(output/item['artifact'])
+                self.assertEqual(bundle['gold_overlap_exclusions']['unique_pairs_removed'],2)
+            for name,digest in before.items():
+                self.assertEqual(hashlib.sha256((root/name).read_bytes()).hexdigest(),digest)
 
 
 if __name__=='__main__': unittest.main()

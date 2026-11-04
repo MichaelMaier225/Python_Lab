@@ -15,7 +15,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 
-from .features import clean, pair_features
+from .features import clean
+from .scoring import decision_scores
 from .train import DATA, MODELS, fit_model, read_gold, read_train, read_validation_ids
 
 SIZES = ("small", "medium", "large", "xlarge")
@@ -96,17 +97,9 @@ def metrics(labels, scores, threshold):
             "confusion_matrix": confusion_matrix(labels, predicted, labels=[0, 1]).tolist()}
 
 
-def score_frame(model, title, description, frame):
-    output = []
-    for start in range(0, len(frame), 256):
-        features = pair_features(frame.iloc[start:start + 256], title, description)
-        output.extend(model.decision_function(features).tolist())
-    if not np.isfinite(output).all():
-        raise ValueError("The model produced non-finite scores.")
-    return np.asarray(output)
-
-
-def run(data_dir=DATA, output_root=None, sizes=SIZES):
+def run(data_dir=DATA, output_root=None, sizes=SIZES, overlap_policy="quarantine"):
+    if overlap_policy not in {"quarantine", "error"}:
+        raise ValueError("Choose overlap policy quarantine or error.")
     data_dir = Path(data_dir)
     for name in ["all_train.zip", "all_valid.zip", "all_gs.json.gz"]:
         if not (data_dir / name).is_file():
@@ -114,8 +107,32 @@ def run(data_dir=DATA, output_root=None, sizes=SIZES):
     print("Sizes:", ", ".join(sizes), "+ combined. Models train sequentially; larger sizes may take substantial time and RAM.", flush=True)
     combined, membership, validation, validation_keys, audit = collect_data(data_dir, sizes)
     gold = prepare_pairs(read_gold(data_dir))
-    if set(combined["_key"]) & set(gold["_key"]):
+    gold_keys = set(gold["_key"])
+    overlap = set(combined["_key"]) & gold_keys
+    if overlap and overlap_policy == "error":
         raise ValueError("Training/validation and gold test contain overlapping or reversed product pairs.")
+    quarantined = combined.loc[combined["_key"].isin(overlap)].copy()
+    quarantined["source_sizes"] = [",".join(size for size in sizes if key in membership[size])
+                                   for key in quarantined["_key"]]
+    quarantined["was_validation"] = quarantined["_key"].isin(validation_keys)
+    exclusions = {
+        "policy": overlap_policy, "unique_pairs_removed": len(overlap),
+        "validation_pairs_removed": int(quarantined["was_validation"].sum()),
+        "by_size": {size: len(membership[size] & gold_keys) for size in sizes}
+    }
+    audit["gold_overlap"] = exclusions
+    if overlap:
+        print(f"Quarantining {len(overlap):,} gold-test pairs from training/validation (including reversed pairs). Gold test is unchanged.", flush=True)
+        for size in sizes:
+            print(f"  {size}: {exclusions['by_size'][size]:,} excluded pairs", flush=True)
+    combined = combined.loc[~combined["_key"].isin(gold_keys)].copy()
+    validation = validation.loc[~validation["_key"].isin(gold_keys)].copy()
+    validation_keys -= gold_keys
+    for size in sizes:
+        membership[size] -= gold_keys
+    audit["combined"]["usable_unique_pairs"] = len(combined)
+    if validation["label"].nunique() != 2:
+        raise ValueError("After gold-test quarantine the common validation set needs both labels.")
     # Fixed holdout is shared across sizes. No final refit on these held-out pairs.
     pool = combined.loc[~combined["_key"].isin(validation_keys)].copy()
     if pool.empty:
@@ -138,23 +155,28 @@ def run(data_dir=DATA, output_root=None, sizes=SIZES):
     runtime = {"python": platform.python_version(), "scikit-learn": version("scikit-learn")}
     results = []
     validation[["pair_id", "_key", "label"]].to_csv(output / "validation_pairs.csv", index=False)
+    quarantined.to_csv(output / "quarantined_gold_overlap.csv", index=False)
+    (output / "split_audit.json").write_text(json.dumps({"source_hashes": provenance, "audit": audit}, indent=2) + "\n")
 
     for size in (*sizes, "combined"):
         print(f"\n=== {size.upper()} ===", flush=True)
         train = pool if size == "combined" else pool.loc[pool["_key"].isin(membership[size])]
         if train["label"].nunique() != 2:
             raise ValueError(f"{size}: training needs both match and non-match labels.")
+        if train["_key"].isin(gold_keys | validation_keys).any():
+            raise ValueError(f"{size}: protected validation/test pairs remain in training.")
         started = time.perf_counter()
         model, title, description, settings = fit_model(train, validation)
         training_seconds = time.perf_counter() - started
-        scores = score_frame(model, title, description, validation)
+        scores = decision_scores(model, title, description, validation)
         validation_metrics = metrics(validation["label"].to_numpy(), scores, settings["threshold"])
         artifact = output / f"svm_{size}.joblib"
         joblib.dump({"model": model, "title_vectorizer": title,
                      "description_vectorizer": description, **settings, "size": size,
                      "training_pairs": len(train), "validation_pairs": len(validation),
                      "validation_metrics": validation_metrics, "source_hashes": provenance,
-                     "runtime": runtime, "validation_refit": False}, artifact)
+                     "runtime": runtime, "validation_refit": False,
+                     "gold_overlap_exclusions": exclusions}, artifact)
         results.append({"size": size, "training_pairs": len(train), "artifact": artifact.name,
                         "settings": settings, "training_seconds": training_seconds, "validation": validation_metrics})
         (output / "results.json").write_text(json.dumps({"status": "training", "results": results}, indent=2) + "\n")
@@ -165,7 +187,7 @@ def run(data_dir=DATA, output_root=None, sizes=SIZES):
     # All configurations are fixed before looking at any final test results.
     for result in results:
         bundle = joblib.load(output / result["artifact"])
-        scores = score_frame(bundle["model"], bundle["title_vectorizer"], bundle["description_vectorizer"], gold)
+        scores = decision_scores(bundle["model"], bundle["title_vectorizer"], bundle["description_vectorizer"], gold)
         result["test"] = metrics(gold["label"].to_numpy(), scores, bundle["threshold"])
         errors = gold[["pair_id", "title_left", "title_right", "label"]].copy()
         errors["score"] = scores
@@ -194,11 +216,13 @@ def main():
     parser.add_argument("--data-dir", type=Path, default=DATA)
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--sizes", nargs="+", choices=SIZES, default=list(SIZES))
+    parser.add_argument("--overlap-policy", choices=["quarantine", "error"], default="quarantine",
+                        help="Remove gold-test pairs from training/validation and audit them (default), or stop on any overlap.")
     args = parser.parse_args()
     if len(args.sizes) != len(set(args.sizes)):
         parser.error("Choose each size once.")
     try:
-        run(args.data_dir, args.output_root, tuple(args.sizes))
+        run(args.data_dir, args.output_root, tuple(args.sizes), args.overlap_policy)
     except (ValueError, OSError) as exc:
         parser.error(str(exc))
 
