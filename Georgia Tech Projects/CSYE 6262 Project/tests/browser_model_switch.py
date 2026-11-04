@@ -1,0 +1,52 @@
+"""Real SVM/RF browser check against a local server seeded with Samsung listings.
+Uses a temporary test catalog; never point this feedback-writing check at production.
+"""
+import os
+
+from playwright.sync_api import expect, sync_playwright
+
+BASE = os.getenv('PRODUCTMATCH_TEST_URL', 'http://127.0.0.1:8011')
+if not BASE.startswith('http://127.0.0.1:'):
+    raise ValueError('Run model-switch checks only against a local test server.')
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(executable_path=os.getenv('CHROMIUM_PATH', '/usr/bin/chromium'),
+                                headless=True, args=['--no-sandbox'])
+    page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+    errors = []
+    page.on('pageerror', lambda error: errors.append(str(error)))
+    page.goto(BASE)
+    expect(page.locator('#prediction-model')).to_be_enabled(timeout=15000)
+    page.locator('#search-query').fill('Samsung')
+    page.locator('#search-btn').click()
+    page.get_by_role('button', name='Explore matches', exact=True).first.click()
+    expect(page.locator('#candidate-chart circle')).to_have_count(2, timeout=15000)
+    expect(page.locator('#candidate-chart')).to_contain_text('Decision score')
+    expect(page.locator('#threshold-value')).to_have_text('-0.2500')
+    page.locator('#prediction-model').select_option('random_forest_v1')
+    expect(page.locator('#candidate-chart circle')).to_have_count(2, timeout=15000)
+    expect(page.locator('#candidate-chart')).to_contain_text('Model probability')
+    expect(page.locator('#threshold-value')).to_have_text('0.5000')
+    expect(page.locator('#model-status')).to_contain_text('computers only')
+    page.locator('#candidate-chart circle').first.focus()
+    page.keyboard.press('Enter')
+    page.locator('#compare-btn').click()
+    expect(page.locator('#pair-result')).to_contain_text('Model random_forest_v1', timeout=15000)
+    expect(page.locator('#pair-result')).to_contain_text('Probability')
+    page.get_by_role('button', name='Unsure', exact=True).click()
+    expect(page.locator('#feedback-status')).to_contain_text('Review saved', timeout=15000)
+    page.locator('#prediction-model').select_option('linear_svc_v3')
+    expect(page.locator('#pair-result')).to_be_hidden()
+    expect(page.get_by_role('button', name='Unsure', exact=True)).to_be_disabled()
+    expect(page.locator('#candidate-chart circle')).to_have_count(2, timeout=15000)
+    expect(page.locator('#candidate-chart')).to_contain_text('Decision score')
+    expect(page.locator('#threshold-value')).to_have_text('-0.2500')
+    page.locator('#candidate-chart circle').first.focus()
+    page.keyboard.press('Enter')
+    page.locator('#compare-btn').click()
+    expect(page.locator('#pair-result')).to_contain_text('Model linear_svc_v3', timeout=15000)
+    page.set_viewport_size({'width': 390, 'height': 844})
+    assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+    assert not errors, errors
+    print('PASS: actual SVM → RF → SVM candidates, graph, thresholds, official predictions, feedback, stale-result clearing, mobile layout')
+    browser.close()

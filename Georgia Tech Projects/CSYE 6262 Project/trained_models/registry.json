@@ -69,6 +69,31 @@
       "evaluation": null,
       "integration_note": "Original feature adapter is implemented. Predictions are not enabled yet: LR requires scikit-learn 1.9.1 while the active SVM requires 1.8.0. Neither original artifact has been changed.",
       "default_threshold": 0.5
+    },
+    {
+      "id": "random_forest_v1",
+      "name": "Random Forest \u00b7 Computers XL",
+      "version": "1",
+      "algorithm": "RandomForestClassifier",
+      "status": "approved",
+      "adapter": "random_forest_pair_v1",
+      "artifact": "RF/random_forest_v1.joblib",
+      "sha256": "b02e11e11a706573181abe41bff7f7f1c7a6f0debc8edb26d2bd1209e82e0791",
+      "score_type": "probability",
+      "default_threshold": 0.5,
+      "dataset": "WDC Computers XL",
+      "feature_schema": "14 notebook-defined string similarity features",
+      "library_versions": {
+        "scikit-learn": "1.9.1"
+      },
+      "evaluation": null,
+      "integration_note": "Trained on computers only. Other categories have not been evaluated. Existing catalog listings lack specification-table text; this feature is treated as missing. Notebook reports test F1 0.644567 on 1,100 computer pairs; not independently reproduced.",
+      "training_config": {
+        "notebook": "models/RF/random_forest.ipynb",
+        "train": "computers_train_xlarge.json.gz",
+        "validation": "computers_valid_xlarge.csv",
+        "test": "computers_gs.json.gz"
+      }
     }
   ]
 }

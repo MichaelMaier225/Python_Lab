@@ -38,7 +38,7 @@ with sync_playwright() as p:
     def fulfill(route,data): route.fulfill(status=200,content_type='application/json',body=json.dumps(data))
     page.route('**/models',lambda route:fulfill(route,{'active_model':'fixture','models':[MODEL]}))
     page.route('**/search?*',lambda route:fulfill(route,{'count':1,'results':[A]}))
-    page.route('**/candidates/1',lambda route:fulfill(route,{'reference':A,'model':MODEL,'candidates':[
+    page.route('**/candidates/1*',lambda route:fulfill(route,{'reference':A,'model':MODEL,'candidates':[
         {'product':B,'prediction':result(0.8)},{'product':C,'prediction':result(0.1)},{'product':D,'prediction':result(-0.3)}]}))
     official=dict(result(0.8),attributes=[{'attribute':'RAM','a':'16GB','b':'8GB','status':'conflict'}])
     page.route('**/predict',lambda route:fulfill(route,official))
@@ -94,7 +94,7 @@ with sync_playwright() as p:
     print('PASS: filter reset, official prediction, feedback payload, stale-result invalidation')
     # Label-only models still permit selection, without invented scores or threshold controls.
     label_model=dict(MODEL,capabilities={'continuous_score':False,'threshold':False,'probability':False,'score_type':None,'default_threshold':None})
-    page.route('**/candidates/1',lambda route:fulfill(route,{'reference':A,'model':label_model,'candidates':[
+    page.route('**/candidates/1*',lambda route:fulfill(route,{'reference':A,'model':label_model,'candidates':[
         {'product':B,'prediction':dict(result(0.8),raw_score=None,score_type=None,threshold=None)}]}))
     page.get_by_role('button',name='Explore matches',exact=True).click()
     expect(page.locator('#threshold')).to_be_disabled()

@@ -4,6 +4,7 @@ const state = {
     candidates: [],
     selected: null,
     model: null,
+    models: [],
     reviewed: null,
     requestId: null,
     evaluation: [],
@@ -89,12 +90,13 @@ function getProduct(prefix) {
         currency: get(`${prefix}-currency`).value.trim().toUpperCase(),
         seller: state.listings[prefix]?.seller || "",
         source_id: state.listings[prefix]?.source_id || null,
+        specTableContent: state.listings[prefix]?.specTableContent || "",
         category: state.listings[prefix]?.category || null
     };
 }
 
 function pair() {
-    return { product_a: getProduct("a"), product_b: getProduct("b") };
+    return { product_a: getProduct("a"), product_b: getProduct("b"), model_id: state.model?.id };
 }
 
 function showError(message) {
@@ -110,10 +112,11 @@ function showModel(info) {
         info.available
             ? "Ready. " +
               (info.capabilities.probability
-                  ? "Probability output."
+                  ? "Model probability estimate; calibration has not been verified."
                   : "Scores are not probabilities.")
             : info.message + " You can still compare attributes manually."
     }`;
+    if (info.integration_note) status.textContent += " " + info.integration_note;
     get("compare-btn").disabled = !info.available;
 }
 
@@ -311,7 +314,8 @@ async function selectReference(product) {
     renderCandidates();
     get("candidate-status").textContent = "Retrieving and scoring candidates…";
     try {
-        const data = await api(`/candidates/${product.id}`);
+        const modelId = state.model?.id;
+        const data = await api(`/candidates/${product.id}${modelId ? "?model_id=" + encodeURIComponent(modelId) : ""}`);
         if (request !== state.referenceRequest) return;
         state.candidates = data.candidates;
         showModel(data.model);
@@ -614,10 +618,32 @@ get("workspace-tab").addEventListener("click", () => showView(false));
 document.querySelector(".logo").addEventListener("click", () => showView(false));
 get("evaluation-tab").addEventListener("click", () => showView(true));
 
+get("prediction-model").addEventListener("change", async () => {
+    const model = state.models.find((item) => item.id === get("prediction-model").value);
+    if (!model) return;
+    state.referenceRequest++;
+    invalidatePair();
+    state.candidates = [];
+    state.selected = null;
+    showModel(model);
+    setThreshold();
+    renderCandidates();
+    if (state.reference) await selectReference(state.reference);
+});
+
 async function initialize() {
     renderCandidates();
     try {
         const data = await api("/models");
+        state.models = data.models;
+        const picker = get("prediction-model");
+        for (const model of data.models) {
+            const option = new Option(`${model.name}${model.available ? "" : " (unavailable)"}`, model.id);
+            option.disabled = !model.available;
+            picker.add(option);
+        }
+        picker.value = data.active_model;
+        picker.disabled = false;
         showModel(data.models.find((item) => item.id === data.active_model));
         setThreshold();
     } catch (err) {

@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 from sklearn.exceptions import InconsistentVersionWarning
 
+from models.RF.runtime import run as run_rf
+
 from models.svm.features import pair_features
 from models.logistic_regression.features import FEATURE_COLUMNS, pair_features as logistic_features
 
@@ -83,6 +85,25 @@ def load_bundle(entry=None):
     return bundle
 
 
+@lru_cache(maxsize=4)
+def check_rf(path, checksum, modified, entry_json):
+    return run_rf(json.loads(entry_json), path, checksum)
+
+
+def rf_info(entry):
+    if entry['status'] != 'approved':
+        raise ModelUnavailable('Experimental models cannot serve predictions until approved.')
+    path = artifact_path(entry)
+    checksum = entry['sha256']
+    try:
+        check_rf(str(path), checksum, path.stat().st_mtime_ns, json.dumps(entry, sort_keys=True))
+    except (ValueError, OSError) as exc:
+        raise ModelUnavailable(str(exc)) from exc
+    return {'continuous_score': True, 'threshold': True, 'probability': True,
+            'score_type': 'probability', 'score_direction': 'higher_is_match',
+            'default_threshold': 0.5}
+
+
 def capabilities(entry, bundle):
     kind = entry.get("score_type")
     model = bundle["model"]
@@ -108,8 +129,11 @@ def model_info(entry=None):
     entry = entry or model_entry()
     info = {key: value for key, value in entry.items() if key not in {"artifact", "sha256"}}
     try:
-        bundle = load_bundle(entry)
-        info.update(available=True, capabilities=capabilities(entry, bundle), message=None)
+        if entry['adapter'] == 'random_forest_pair_v1':
+            flags = rf_info(entry)
+        else:
+            flags = capabilities(entry, load_bundle(entry))
+        info.update(available=True, capabilities=flags, message=None)
     except ModelUnavailable as exc:
         info.update(available=False, capabilities=None, message=str(exc))
     except Exception:
@@ -120,6 +144,12 @@ def model_info(entry=None):
 
 def predict_pairs(pairs, model_id=None):
     entry = model_entry(model_id)
+    if entry['adapter'] == 'random_forest_pair_v1':
+        try:
+            rf_info(entry)
+            return run_rf(entry, artifact_path(entry), entry['sha256'], pairs)
+        except (ValueError, OSError) as exc:
+            raise ModelUnavailable(str(exc)) from exc
     bundle = load_bundle(entry)
     flags = capabilities(entry, bundle)
     rows = []

@@ -533,3 +533,19 @@ partial run folder if interrupted.
   explicitly; combining repeated pairs does not create extra independent data.
 - No benchmark performance is claimed from synthetic test fixtures. Full training
   archives were not available in the cloud workspace for a genuine five-model run.
+
+
+### Switching SVM and Random Forest
+
+The workspace's **Matching model** dropdown selects the actual feature pipeline and classifier. Switching re-scores the reference's candidates, resets the exploratory threshold, and clears stale pair predictions/reviews. Search retrieval and independent attribute comparisons remain shared. Each browser chooses its model independently; SVM is still the default. LR remains disabled pending its integration.
+
+From the project folder, install the RF runtime once:
+
+```bat
+python -m scripts.setup_rf_runtime
+python -m uvicorn website.main:app --reload
+```
+
+The existing Render build command (`pip install -r requirements.txt && python prepare_assets.py`) now installs RF's isolated runtime too. The start command stays the same. RF's original artifact is committed at `trained_models/RF/random_forest_v1.joblib`; its notebook is `models/RF/random_forest.ipynb`. Training inputs belong in `data/`. See `models/RF/README.md` for scope and missing-specification limitations. No model has been retrained.
+
+API callers can pass `model_id` on `/predict` and `/predict/batch`, or as a query parameter on `/candidates/{id}`. `/feedback` recomputes the selected model's official prediction and stores its ID/version.

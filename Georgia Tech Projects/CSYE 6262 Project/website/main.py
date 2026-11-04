@@ -18,7 +18,7 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 app = FastAPI(
     title="Product Matching API",
-    description="SVM product matching and product search",
+    description="Product matching with selectable SVM and Random Forest models",
     version="2.0.0"
 )
 
@@ -39,14 +39,17 @@ class Product(BaseModel):
     seller: str = Field(default="", max_length=300)
     source_id: str | None = Field(default=None, max_length=300)
     category: str | None = Field(default=None, max_length=300)
+    specTableContent: str = Field(default="", max_length=12000)
 
 
 class ProductPair(BaseModel):
     product_a: Product
     product_b: Product
+    model_id: str | None = Field(default=None, max_length=100)
 
 
 class Batch(BaseModel):
+    model_id: str | None = Field(default=None, max_length=100)
     pairs: list[ProductPair] = Field(min_length=1, max_length=50)
 
 
@@ -57,13 +60,13 @@ class Feedback(ProductPair):
     model_version: str = Field(min_length=1, max_length=100)
 
 
-def prediction(a, b):
-    return predictions([(a, b)])[0]
+def prediction(a, b, model_id=None):
+    return predictions([(a, b)], model_id)[0]
 
 
-def predictions(pairs):
+def predictions(pairs, model_id=None):
     try:
-        return predict_pairs(pairs)
+        return predict_pairs(pairs, model_id)
     except ModelUnavailable as exc:
         raise HTTPException(status_code=503, detail=str(exc))
     except Exception:
@@ -113,7 +116,7 @@ def search(
 @app.post("/predict")
 def predict(pair: ProductPair):
     a, b = pair.product_a.model_dump(), pair.product_b.model_dump()
-    result = prediction(a, b)
+    result = prediction(a, b, pair.model_id)
     result["attributes"] = compare_attributes(a, b)
     if (result["is_match"] and a["price"] is not None and b["price"] is not None
             and a["currency"] and a["currency"].upper() == b["currency"].upper()):
@@ -132,13 +135,17 @@ def models():
 
 
 @app.get("/candidates/{product_id}")
-def product_candidates(product_id: int, limit: int = Query(default=40, ge=1, le=50)):
+def product_candidates(product_id: int, limit: int = Query(default=40, ge=1, le=50),
+                       model_id: str | None = Query(default=None, max_length=100)):
     reference = get_product(product_id)
     if reference is None:
         raise HTTPException(status_code=404, detail="Reference product not found.")
     products = candidates(reference, limit)
-    info = model_info()
-    results = predictions([(reference, item) for item in products]) if products and info["available"] else [None] * len(products)
+    try:
+        info = model_info(model_entry(model_id))
+    except ModelUnavailable as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    results = predictions([(reference, item) for item in products], model_id) if products and info["available"] else [None] * len(products)
     return {"reference": reference, "model": info,
             "retrieval": "Top lexical candidates; not an exhaustive search or verified matches.",
             "candidates": [{"product": item, "prediction": result} for item, result in zip(products, results)]}
@@ -147,7 +154,7 @@ def product_candidates(product_id: int, limit: int = Query(default=40, ge=1, le=
 @app.post("/predict/batch")
 def batch_predict(batch: Batch):
     pairs = [(pair.product_a.model_dump(), pair.product_b.model_dump()) for pair in batch.pairs]
-    return {"results": predictions(pairs)}
+    return {"results": predictions(pairs, batch.model_id)}
 
 
 @app.post("/compare")
@@ -158,7 +165,7 @@ def compare(pair: ProductPair):
 @app.post("/feedback")
 def feedback(item: Feedback):
     a, b = item.product_a.model_dump(), item.product_b.model_dump()
-    result = prediction(a, b)  # Original prediction comes from the server, never the browser.
+    result = prediction(a, b, item.model_id)  # Original prediction comes from the server, never the browser.
     if result["model_id"] != item.model_id or result["model_version"] != item.model_version:
         raise HTTPException(status_code=409, detail="The active model changed. Run a new official prediction before reviewing it.")
     try:
