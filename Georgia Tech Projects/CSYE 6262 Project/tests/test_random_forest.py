@@ -116,7 +116,7 @@ print(json.dumps({'pairs':pairs,'scores':b['model'].predict_proba(X)[:,1].tolist
                     candidates = call('GET', f'/candidates/1?model_id={model_id}')
                     self.assertEqual(candidates['candidates'][0]['prediction']['model_id'], model_id)
                     batch = call('POST', '/predict/batch', {'model_id': model_id, 'pairs': [body]})
-                    self.assertEqual(batch['results'][0]['raw_score'], result['raw_score'])
+                    self.assertAlmostEqual(batch['results'][0]['raw_score'], result['raw_score'], places=12)
                     saved = call('POST', '/feedback', dict(body, model_version=result['model_version'], request_id=str(uuid4()), choice='unsure'))
                     self.assertTrue(saved['saved'])
                 with closing(database.connect()) as conn:

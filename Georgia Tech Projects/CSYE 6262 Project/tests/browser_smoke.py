@@ -33,7 +33,7 @@ with sync_playwright() as p:
     page.locator('#example-btn').click()
     page.locator('#attributes-btn').click()
     expect(page.locator('#attribute-body tr')).to_have_count(5)
-    expect(page.locator('#evaluation-content')).to_contain_text('Evaluation results haven’t been added yet.')
+    expect(page.locator('#evaluation-content')).to_contain_text('Confusion matrix')
     print('PASS: actual startup state, manual attributes, evaluation empty state')
     def fulfill(route,data): route.fulfill(status=200,content_type='application/json',body=json.dumps(data))
     page.route('**/models',lambda route:fulfill(route,{'active_model':'fixture','models':[MODEL]}))

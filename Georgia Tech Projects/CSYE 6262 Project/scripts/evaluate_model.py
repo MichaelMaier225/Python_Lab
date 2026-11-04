@@ -15,7 +15,7 @@ from website.registry import load_bundle, model_entry
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def evaluate(data_path, model_id="linear_svc_v3", batch_size=256):
+def evaluate(data_path, model_id=None, batch_size=256):
     entry = model_entry(model_id)
     if entry["adapter"] != "tfidf_pair":
         raise ValueError("This model needs its original preprocessing adapter before evaluation.")
@@ -67,7 +67,7 @@ def evaluate(data_path, model_id="linear_svc_v3", batch_size=256):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", type=Path, default=ROOT / "data" / "all_gs.json.gz")
-    parser.add_argument("--model", default="linear_svc_v3")
+    parser.add_argument("--model", default=None, help="Registry model ID; defaults to the configured active model")
     parser.add_argument("--output", type=Path, default=ROOT / "reports" / "evaluation")
     args = parser.parse_args()
     if not args.data.is_file():

@@ -1,0 +1,41 @@
+{
+  "source_hashes": {
+    "all_train.zip": "41b1989363f9ee3d09975cea49d21075d16e4d201aa2b65ce19dd6753024dc33",
+    "all_valid.zip": "2ad0f8f3f4ecdf60b0a93a6f78e2c2977d10751f1ad2d4b7c0b1b48bc545e863",
+    "all_gs.json.gz": "4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b"
+  },
+  "audit": {
+    "small": {
+      "source_rows": 9038,
+      "unique_pairs": 9038
+    },
+    "medium": {
+      "source_rows": 25567,
+      "unique_pairs": 25567
+    },
+    "large": {
+      "source_rows": 103397,
+      "unique_pairs": 103397
+    },
+    "xlarge": {
+      "source_rows": 214661,
+      "unique_pairs": 214661
+    },
+    "combined": {
+      "source_rows": 352663,
+      "unique_pairs": 268228,
+      "usable_unique_pairs": 268226
+    },
+    "gold_overlap": {
+      "policy": "quarantine",
+      "unique_pairs_removed": 2,
+      "validation_pairs_removed": 0,
+      "by_size": {
+        "small": 0,
+        "medium": 0,
+        "large": 1,
+        "xlarge": 2
+      }
+    }
+  }
+}

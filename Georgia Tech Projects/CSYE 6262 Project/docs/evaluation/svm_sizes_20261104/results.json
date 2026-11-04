@@ -1,0 +1,268 @@
+{
+  "status": "complete",
+  "runtime": {
+    "python": "3.13.14",
+    "scikit-learn": "1.8.0"
+  },
+  "source_hashes": {
+    "all_train.zip": "41b1989363f9ee3d09975cea49d21075d16e4d201aa2b65ce19dd6753024dc33",
+    "all_valid.zip": "2ad0f8f3f4ecdf60b0a93a6f78e2c2977d10751f1ad2d4b7c0b1b48bc545e863",
+    "all_gs.json.gz": "4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b"
+  },
+  "audit": {
+    "small": {
+      "source_rows": 9038,
+      "unique_pairs": 9038
+    },
+    "medium": {
+      "source_rows": 25567,
+      "unique_pairs": 25567
+    },
+    "large": {
+      "source_rows": 103397,
+      "unique_pairs": 103397
+    },
+    "xlarge": {
+      "source_rows": 214661,
+      "unique_pairs": 214661
+    },
+    "combined": {
+      "source_rows": 352663,
+      "unique_pairs": 268228,
+      "usable_unique_pairs": 268226
+    },
+    "gold_overlap": {
+      "policy": "quarantine",
+      "unique_pairs_removed": 2,
+      "validation_pairs_removed": 0,
+      "by_size": {
+        "small": 0,
+        "medium": 0,
+        "large": 1,
+        "xlarge": 2
+      }
+    }
+  },
+  "common_validation_pairs": 66769,
+  "test_pairs": 4398,
+  "recommended_by_validation": "combined",
+  "combined_equivalent_to": [],
+  "results": [
+    {
+      "size": "small",
+      "training_pairs": 5484,
+      "artifact": "svm_small.joblib",
+      "settings": {
+        "C": 10,
+        "class_weight": "balanced",
+        "threshold": 0.25
+      },
+      "training_seconds": 17.88503609993495,
+      "validation": {
+        "accuracy": 0.9138222827959083,
+        "precision": 0.7097323370850279,
+        "recall": 0.7364805182059083,
+        "f1": 0.7228590694538098,
+        "confusion_matrix": [
+          [
+            53511,
+            3069
+          ],
+          [
+            2685,
+            7504
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.810368349249659,
+        "precision": 0.6154822335025381,
+        "recall": 0.8096828046744574,
+        "f1": 0.6993511175198269,
+        "confusion_matrix": [
+          [
+            2594,
+            606
+          ],
+          [
+            228,
+            970
+          ]
+        ]
+      }
+    },
+    {
+      "size": "medium",
+      "training_pairs": 16264,
+      "artifact": "svm_medium.joblib",
+      "settings": {
+        "C": 10,
+        "class_weight": "balanced",
+        "threshold": 0.25
+      },
+      "training_seconds": 26.406254099914804,
+      "validation": {
+        "accuracy": 0.9242462819571957,
+        "precision": 0.755961289035219,
+        "recall": 0.7436451074688389,
+        "f1": 0.7497526222046309,
+        "confusion_matrix": [
+          [
+            54134,
+            2446
+          ],
+          [
+            2612,
+            7577
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.8317417007730786,
+        "precision": 0.6543126684636119,
+        "recall": 0.8105175292153589,
+        "f1": 0.7240865026099925,
+        "confusion_matrix": [
+          [
+            2687,
+            513
+          ],
+          [
+            227,
+            971
+          ]
+        ]
+      }
+    },
+    {
+      "size": "large",
+      "training_pairs": 71075,
+      "artifact": "svm_large.joblib",
+      "settings": {
+        "C": 10,
+        "class_weight": "balanced",
+        "threshold": 0.25
+      },
+      "training_seconds": 116.3839787999168,
+      "validation": {
+        "accuracy": 0.9405712231724304,
+        "precision": 0.8093485827946295,
+        "recall": 0.7987044852291687,
+        "f1": 0.8039913060659949,
+        "confusion_matrix": [
+          [
+            54663,
+            1917
+          ],
+          [
+            2051,
+            8138
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.869031377899045,
+        "precision": 0.7240634005763689,
+        "recall": 0.83889816360601,
+        "f1": 0.777262180974478,
+        "confusion_matrix": [
+          [
+            2817,
+            383
+          ],
+          [
+            193,
+            1005
+          ]
+        ]
+      }
+    },
+    {
+      "size": "xlarge",
+      "training_pairs": 159207,
+      "artifact": "svm_xlarge.joblib",
+      "settings": {
+        "C": 10,
+        "class_weight": null,
+        "threshold": -0.25
+      },
+      "training_seconds": 163.8495883999858,
+      "validation": {
+        "accuracy": 0.9495873833665324,
+        "precision": 0.8870986043345058,
+        "recall": 0.7672980665423496,
+        "f1": 0.8228607514998422,
+        "confusion_matrix": [
+          [
+            55585,
+            995
+          ],
+          [
+            2371,
+            7818
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.8776716689404275,
+        "precision": 0.7682926829268293,
+        "recall": 0.7888146911519198,
+        "f1": 0.7784184514003295,
+        "confusion_matrix": [
+          [
+            2915,
+            285
+          ],
+          [
+            253,
+            945
+          ]
+        ]
+      }
+    },
+    {
+      "size": "combined",
+      "training_pairs": 201457,
+      "artifact": "svm_combined.joblib",
+      "settings": {
+        "C": 10,
+        "class_weight": "balanced",
+        "threshold": 0.25
+      },
+      "training_seconds": 229.42726389993913,
+      "validation": {
+        "accuracy": 0.9487187167697584,
+        "precision": 0.852233676975945,
+        "recall": 0.803219157915399,
+        "f1": 0.8270008084074374,
+        "confusion_matrix": [
+          [
+            55161,
+            1419
+          ],
+          [
+            2005,
+            8184
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.8974533879035925,
+        "precision": 0.793401413982718,
+        "recall": 0.8430717863105175,
+        "f1": 0.8174828004856334,
+        "confusion_matrix": [
+          [
+            2937,
+            263
+          ],
+          [
+            188,
+            1010
+          ]
+        ]
+      }
+    }
+  ],
+  "note": "Gold test was not used for tuning or model selection. Combined is a deduplicated union, not extra independent data. No model was automatically deployed."
+}

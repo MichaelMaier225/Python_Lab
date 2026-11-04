@@ -1,0 +1,69 @@
+{
+  "note": "Manually inspected examples, not a representative evaluation set. Both original and combined models still predict Match. No threshold was tuned against these examples.",
+  "pairs": [
+    {
+      "a": {
+        "id": 3952,
+        "source_id": "16149949",
+        "cluster_id": "8793796",
+        "category": "Cellphones_and_Accessories",
+        "identifiers": "[{\"/productID\": \"[28729244216]\"}, {\"/sku\": \"[mobuniwslv01]\"}]",
+        "title": "\"Apple iPhone SE - Waterproof Bag\" Bag | CellularOutfitter\"",
+        "brand": "\"Apple iPhone SE - \"",
+        "description": "",
+        "price": null,
+        "currency": "",
+        "seller": "",
+        "url": ""
+      },
+      "b": {
+        "id": 30050,
+        "source_id": "18676757",
+        "cluster_id": "1735584",
+        "category": "",
+        "identifiers": "[{\"/productID\": \"[tel019709]\"}, {\"/gtin13\": \"[6955250208666]\"}]",
+        "title": "\"LAMBORGHINI LEATHER BOOK CASE APPLE IPHONE 6 RED E.T-D1\" \"Lamborghini Leather Book Case Apple Iphone E.t-d1 - (TEL.019709)\"",
+        "brand": "\"LAMBORGHINI\"",
+        "description": "",
+        "price": null,
+        "currency": "",
+        "seller": "",
+        "url": ""
+      },
+      "expected_match": false,
+      "combined_score": 0.342188772124407
+    },
+    {
+      "a": {
+        "id": 11189,
+        "source_id": "5384820",
+        "cluster_id": "5381627",
+        "category": "Cellphones_and_Accessories",
+        "identifiers": "[{\"/sku\": \"[mccaip5umb]\"}]",
+        "title": "\" Umbrella Apple iPhone 5 Phone Case \" \"Buy | StyleBaby.com\"",
+        "brand": "",
+        "description": "",
+        "price": null,
+        "currency": "",
+        "seller": "",
+        "url": ""
+      },
+      "b": {
+        "id": 8169,
+        "source_id": "11472531",
+        "cluster_id": "5367188",
+        "category": "Cellphones_and_Accessories",
+        "identifiers": "[{\"/sku\": \"[mccaip4scb]\"}]",
+        "title": "\" Colourful Birds Apple iPhone 4S Phone Case \" \"Buy | StyleBaby.com\"",
+        "brand": "",
+        "description": "",
+        "price": null,
+        "currency": "",
+        "seller": "",
+        "url": ""
+      },
+      "expected_match": false,
+      "combined_score": 1.186620830353119
+    }
+  ]
+}

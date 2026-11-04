@@ -78,7 +78,7 @@ def load_bundle(entry=None):
         raise ModelUnavailable("Trained model is not installed on this server.")
     checksum = entry.get("sha256")
     if entry["id"] == model_entry()["id"]:
-        checksum = os.getenv("MODEL_SHA256", checksum)
+        checksum = os.getenv(entry.get("checksum_env", "MODEL_SHA256"), checksum)
     bundle = read_bundle(str(path), checksum, path.stat().st_mtime_ns)
     if entry["adapter"] == "logistic_pair_v1" and bundle.get("feature_columns") != FEATURE_COLUMNS:
         raise ModelUnavailable("LR feature order does not match its original training code.")

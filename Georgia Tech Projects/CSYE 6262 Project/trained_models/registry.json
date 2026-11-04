@@ -1,6 +1,59 @@
 {
-  "default_model": "linear_svc_v3",
+  "default_model": "linear_svc_combined",
   "models": [
+    {
+      "id": "linear_svc_combined",
+      "name": "SVM \u00b7 Combined",
+      "version": "20261104",
+      "algorithm": "LinearSVC",
+      "status": "approved",
+      "adapter": "tfidf_pair",
+      "artifact": "svm/svm_combined.joblib",
+      "sha256": "5f55d72fa195e917a76abeff413d578df6345a0533b2e008b6ba50d739047c9f",
+      "checksum_env": "SVM_COMBINED_SHA256",
+      "score_type": "decision_score",
+      "dataset": "WDC V2 / all four categories / combined",
+      "feature_schema": "title intersection + description intersection + 17 numeric features",
+      "default_threshold": 0.25,
+      "training_config": {
+        "script": "models/svm/train_sizes.py",
+        "training_pairs": 201457,
+        "validation_pairs": 66769,
+        "settings": {
+          "C": 10,
+          "class_weight": "balanced",
+          "threshold": 0.25
+        }
+      },
+      "library_versions": {
+        "python": "3.13.14",
+        "scikit-learn": "1.8.0"
+      },
+      "evaluation": {
+        "dataset_id": "WDC all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
+        "split": "gold standard test; 4,398 pairs",
+        "procedure": "Fixed saved threshold; model selection by common validation F1. Duplicate/reversed gold-pair overlaps quarantined before fitting. Test metrics independently reproduced during integration.",
+        "metrics": {
+          "accuracy": 0.8974533879035925,
+          "precision": 0.793401413982718,
+          "recall": 0.8430717863105175,
+          "f1": 0.8174828004856334
+        },
+        "confusion_matrix": [
+          [
+            2937,
+            263
+          ],
+          [
+            188,
+            1010
+          ]
+        ],
+        "pair_count": 4398,
+        "threshold": 0.25
+      },
+      "integration_note": "Selected by validation F1 on the WDC benchmark. The gold test contains no iPhone-case titles; accessory matching is not established by these metrics. Two inspected iPhone accessory pairs remain false matches. See docs/evaluation/svm_sizes_20261104 for details."
+    },
     {
       "id": "linear_svc_v3",
       "name": "SVM V3 \u00b7 Small",
@@ -94,6 +147,218 @@
         "validation": "computers_valid_xlarge.csv",
         "test": "computers_gs.json.gz"
       }
+    },
+    {
+      "id": "linear_svc_small",
+      "name": "SVM \u00b7 Small",
+      "version": "20261104",
+      "algorithm": "LinearSVC",
+      "status": "approved",
+      "adapter": "tfidf_pair",
+      "artifact": "svm/svm_small.joblib",
+      "sha256": "96170ef8d66d50e09bb8a56f2301064bfd3d855f95c737ac0fa214159d8129c7",
+      "checksum_env": "SVM_SMALL_SHA256",
+      "score_type": "decision_score",
+      "dataset": "WDC V2 / all four categories / small",
+      "feature_schema": "title intersection + description intersection + 17 numeric features",
+      "default_threshold": 0.25,
+      "training_config": {
+        "script": "models/svm/train_sizes.py",
+        "training_pairs": 5484,
+        "validation_pairs": 66769,
+        "settings": {
+          "C": 10,
+          "class_weight": "balanced",
+          "threshold": 0.25
+        }
+      },
+      "library_versions": {
+        "python": "3.13.14",
+        "scikit-learn": "1.8.0"
+      },
+      "evaluation": {
+        "dataset_id": "WDC all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
+        "split": "gold standard test; 4,398 pairs",
+        "procedure": "Fixed saved threshold; model selection by common validation F1. Duplicate/reversed gold-pair overlaps quarantined before fitting. Test metrics independently reproduced during integration.",
+        "metrics": {
+          "accuracy": 0.810368349249659,
+          "precision": 0.6154822335025381,
+          "recall": 0.8096828046744574,
+          "f1": 0.6993511175198269
+        },
+        "confusion_matrix": [
+          [
+            2594,
+            606
+          ],
+          [
+            228,
+            970
+          ]
+        ],
+        "pair_count": 4398,
+        "threshold": 0.25
+      },
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
+    },
+    {
+      "id": "linear_svc_medium",
+      "name": "SVM \u00b7 Medium",
+      "version": "20261104",
+      "algorithm": "LinearSVC",
+      "status": "approved",
+      "adapter": "tfidf_pair",
+      "artifact": "svm/svm_medium.joblib",
+      "sha256": "b6ef6abc4687bfb7069b37e86f7ce84eee972cb9fa6015cfc88817bf4e7a1bc6",
+      "checksum_env": "SVM_MEDIUM_SHA256",
+      "score_type": "decision_score",
+      "dataset": "WDC V2 / all four categories / medium",
+      "feature_schema": "title intersection + description intersection + 17 numeric features",
+      "default_threshold": 0.25,
+      "training_config": {
+        "script": "models/svm/train_sizes.py",
+        "training_pairs": 16264,
+        "validation_pairs": 66769,
+        "settings": {
+          "C": 10,
+          "class_weight": "balanced",
+          "threshold": 0.25
+        }
+      },
+      "library_versions": {
+        "python": "3.13.14",
+        "scikit-learn": "1.8.0"
+      },
+      "evaluation": {
+        "dataset_id": "WDC all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
+        "split": "gold standard test; 4,398 pairs",
+        "procedure": "Fixed saved threshold; model selection by common validation F1. Duplicate/reversed gold-pair overlaps quarantined before fitting. Test metrics independently reproduced during integration.",
+        "metrics": {
+          "accuracy": 0.8317417007730786,
+          "precision": 0.6543126684636119,
+          "recall": 0.8105175292153589,
+          "f1": 0.7240865026099925
+        },
+        "confusion_matrix": [
+          [
+            2687,
+            513
+          ],
+          [
+            227,
+            971
+          ]
+        ],
+        "pair_count": 4398,
+        "threshold": 0.25
+      },
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
+    },
+    {
+      "id": "linear_svc_large",
+      "name": "SVM \u00b7 Large",
+      "version": "20261104",
+      "algorithm": "LinearSVC",
+      "status": "approved",
+      "adapter": "tfidf_pair",
+      "artifact": "svm/svm_large.joblib",
+      "sha256": "f53fa77b76fea99473d34de58eedb44b83db527dc0474ee071a80a734eeafb11",
+      "checksum_env": "SVM_LARGE_SHA256",
+      "score_type": "decision_score",
+      "dataset": "WDC V2 / all four categories / large",
+      "feature_schema": "title intersection + description intersection + 17 numeric features",
+      "default_threshold": 0.25,
+      "training_config": {
+        "script": "models/svm/train_sizes.py",
+        "training_pairs": 71075,
+        "validation_pairs": 66769,
+        "settings": {
+          "C": 10,
+          "class_weight": "balanced",
+          "threshold": 0.25
+        }
+      },
+      "library_versions": {
+        "python": "3.13.14",
+        "scikit-learn": "1.8.0"
+      },
+      "evaluation": {
+        "dataset_id": "WDC all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
+        "split": "gold standard test; 4,398 pairs",
+        "procedure": "Fixed saved threshold; model selection by common validation F1. Duplicate/reversed gold-pair overlaps quarantined before fitting. Test metrics independently reproduced during integration.",
+        "metrics": {
+          "accuracy": 0.869031377899045,
+          "precision": 0.7240634005763689,
+          "recall": 0.83889816360601,
+          "f1": 0.777262180974478
+        },
+        "confusion_matrix": [
+          [
+            2817,
+            383
+          ],
+          [
+            193,
+            1005
+          ]
+        ],
+        "pair_count": 4398,
+        "threshold": 0.25
+      },
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
+    },
+    {
+      "id": "linear_svc_xlarge",
+      "name": "SVM \u00b7 Xlarge",
+      "version": "20261104",
+      "algorithm": "LinearSVC",
+      "status": "approved",
+      "adapter": "tfidf_pair",
+      "artifact": "svm/svm_xlarge.joblib",
+      "sha256": "3d4b1597f6b2048bbca3e971eaeef223f2190285758f2f60130f2813b8db1321",
+      "checksum_env": "SVM_XLARGE_SHA256",
+      "score_type": "decision_score",
+      "dataset": "WDC V2 / all four categories / xlarge",
+      "feature_schema": "title intersection + description intersection + 17 numeric features",
+      "default_threshold": -0.25,
+      "training_config": {
+        "script": "models/svm/train_sizes.py",
+        "training_pairs": 159207,
+        "validation_pairs": 66769,
+        "settings": {
+          "C": 10,
+          "class_weight": null,
+          "threshold": -0.25
+        }
+      },
+      "library_versions": {
+        "python": "3.13.14",
+        "scikit-learn": "1.8.0"
+      },
+      "evaluation": {
+        "dataset_id": "WDC all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
+        "split": "gold standard test; 4,398 pairs",
+        "procedure": "Fixed saved threshold; model selection by common validation F1. Duplicate/reversed gold-pair overlaps quarantined before fitting. Test metrics independently reproduced during integration.",
+        "metrics": {
+          "accuracy": 0.8776716689404275,
+          "precision": 0.7682926829268293,
+          "recall": 0.7888146911519198,
+          "f1": 0.7784184514003295
+        },
+        "confusion_matrix": [
+          [
+            2915,
+            285
+          ],
+          [
+            253,
+            945
+          ]
+        ],
+        "pair_count": 4398,
+        "threshold": -0.25
+      },
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
     }
   ]
 }

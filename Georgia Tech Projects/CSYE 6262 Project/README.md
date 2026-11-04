@@ -212,7 +212,7 @@ send their recorded currency. Cross-currency comparisons are excluded.
 
 ## Model versions and teammate integration
 
-LinearSVC v3 remains the default; its training procedure is unchanged. Existing
+The combined all-category SVM is now the default; original LinearSVC v3 remains a separate baseline. Existing
 artifacts are never retrained or overwritten by application startup. Training
 and serving now import the original feature calculations from
 `models/svm/features.py`, removing the duplicate implementation. The registry
@@ -246,8 +246,8 @@ exploration. Otherwise labels come from the classifier's `predict` method.
 Only entries with `status: "approved"` can serve predictions. New versions should
 start as `experimental`. A human must review compatible preprocessing, split
 integrity, runtime/memory behavior and evaluation before approval. Select an
-approved version with Render variable `ACTIVE_MODEL=<id>`; default remains
-`linear_svc_v3`. There is no public model-upload or activation endpoint.
+approved version with Render variable `ACTIVE_MODEL=<id>`; default is
+`linear_svc_combined`. There is no public model-upload or activation endpoint.
 
 Joblib can execute code. Only use an artifact from a trusted producer, with its
 SHA-256 configured in the registry (or `MODEL_SHA256` for the active model).
@@ -537,7 +537,7 @@ partial run folder if interrupted.
 
 ### Switching SVM and Random Forest
 
-The workspace's **Matching model** dropdown selects the actual feature pipeline and classifier. Switching re-scores the reference's candidates, resets the exploratory threshold, and clears stale pair predictions/reviews. Search retrieval and independent attribute comparisons remain shared. Each browser chooses its model independently; SVM is still the default. LR remains disabled pending its integration.
+The workspace's **Matching model** dropdown selects the actual feature pipeline and classifier. Switching re-scores the reference's candidates, resets the exploratory threshold, and clears stale pair predictions/reviews. Search retrieval and independent attribute comparisons remain shared. Each browser chooses its model independently; the combined SVM is the default. LR remains disabled pending its integration.
 
 From the project folder, install the RF runtime once:
 
@@ -549,3 +549,12 @@ python -m uvicorn website.main:app --reload
 The existing Render build command (`pip install -r requirements.txt && python prepare_assets.py`) now installs RF's isolated runtime too. The start command stays the same. RF's original artifact is committed at `trained_models/RF/random_forest_v1.joblib`; its notebook is `models/RF/random_forest.ipynb`. Training inputs belong in `data/`. See `models/RF/README.md` for scope and missing-specification limitations. No model has been retrained.
 
 API callers can pass `model_id` on `/predict` and `/predict/batch`, or as a query parameter on `/candidates/{id}`. `/feedback` recomputes the selected model's official prediction and stores its ID/version.
+
+
+## Combined SVM default
+
+The default model ID is `linear_svc_combined`, artifact `trained_models/svm/svm_combined.joblib`, saved threshold **+0.25**. The four individual size experiments are also selectable. Their test metrics and confusion matrices are populated in Model evaluation and independently reproduced on the 4,398 gold pairs. The training/audit handoff is in `docs/evaluation/svm_sizes_20261104/`.
+
+If Render has `ACTIVE_MODEL` set to an older ID, change it to `linear_svc_combined` (or remove it to use the registry default). Legacy `MODEL_URL` and `MODEL_SHA256` still refer to the original `svm_small_v3.joblib`; they do not replace or change the combined artifact. Combined uses its committed SHA, with an optional scoped `SVM_COMBINED_SHA256` override. Keep the existing database download variables and build/start commands.
+
+The combined model improves measured test precision to 79.34%, but still makes the two reported iPhone accessory false matches. See the documented examples before treating higher scores as proof of product identity. Threshold selection used validation F1, not these examples or the gold test. No model was retrained in this integration.
