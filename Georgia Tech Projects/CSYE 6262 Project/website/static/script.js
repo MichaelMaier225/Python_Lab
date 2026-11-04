@@ -522,12 +522,17 @@ function renderEvaluation() {
     const model = state.evaluation.find((item) => item.id === get("evaluation-model").value);
     const target = get("evaluation-content");
     target.replaceChildren();
-    if (model?.integration_note) {
+    const data = model?.evaluation;
+    if (model?.integration_note || data) {
         const details = node("details", undefined, "model-details evaluation-details");
-        details.append(node("summary", "Model details"), node("p", model.integration_note));
+        details.append(node("summary", "Model details"));
+        if (model?.integration_note) details.append(node("p", model.integration_note));
+        if (data) {
+            details.append(node("p", `Dataset record: ${data.dataset_id || "Not specified"}`));
+            details.append(node("p", `Evaluation setup: ${data.procedure || "Not documented"}`));
+        }
         target.append(details);
     }
-    const data = model?.evaluation;
     if (!data) {
         const empty = node("div", undefined, "evaluation-empty");
         empty.append(node("span", "RESULTS PENDING", "small-label"),
@@ -541,12 +546,8 @@ function renderEvaluation() {
         target.append(empty);
         return;
     }
-    target.append(
-        node(
-            "p",
-            `Dataset: ${data.dataset_id || "Not specified"} · split: ${data.split || "Not specified"} · ${data.procedure || "Procedure not documented"}`
-        )
-    );
+    for (const paragraph of data.summary || ["These results use the supplied labeled test pairs. Open Model details for the dataset and evaluation setup."])
+        target.append(node("p", paragraph));
     const metrics = node("div", undefined, "metric-grid");
     for (const name of ["accuracy", "precision", "recall", "f1"]) {
         const card = node("div", name.toUpperCase());
@@ -599,7 +600,7 @@ function renderEvaluation() {
     target.append(
         node(
             "p",
-            "Version views are not a fair ranking unless dataset, split, labels and evaluation procedure match.",
+            "Compare models carefully: their training data and evaluation sets differ.",
             "muted"
         )
     );

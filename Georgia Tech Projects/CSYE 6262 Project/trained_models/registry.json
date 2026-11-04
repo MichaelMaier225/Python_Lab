@@ -55,7 +55,11 @@
           ]
         ],
         "pair_count": 4398,
-        "threshold": 0.3094963319960764
+        "threshold": 0.3094963319960764,
+        "summary": [
+          "We tested the combined SVM on 4,398 gold-standard product pairs. Its settings and cutoff were selected using validation data before the test results were calculated.",
+          "Training and test sets share some products, although identical pairs were excluded. These results do not tell us how well the model handles completely new products or every website search."
+        ]
       },
       "integration_note": "V4 identity features; validation F0.5 selection favors precision over recall. The two previously reported accessory pairs are correctly rejected, but broader website precision remains unmeasured. Benchmark splits share product IDs.",
       "show_in_website": true
@@ -161,9 +165,13 @@
           ]
         ],
         "confusion_matrix_order": "[[TN, FP], [FN, TP]]",
-        "retained_pair_ids_sha256": "c37c50aae453fc946add9e755a1db909fc75865aa6b031c2172e816d7b812596"
+        "retained_pair_ids_sha256": "c37c50aae453fc946add9e755a1db909fc75865aa6b031c2172e816d7b812596",
+        "summary": [
+          "We tested the saved logistic regression model on the same 4,397 pairs used for Random Forest. We left out one known training pair and kept the original model and prediction settings.",
+          "The supplied code uses Computers XL, but we have not verified how its original CSV files were prepared. These results do not measure the accuracy of website search matches."
+        ]
       },
-      "integration_note": "Trained on computers only (Computers XL reported by source). These results use a broader 4,397-pair benchmark with one known training pair excluded; they are not computer-only or website-retrieval precision. Original LR CSV provenance is unverified; the models have not been retrained.",
+      "integration_note": "LR uses its original eight features and saved text vectorizers. The supplied training code uses Computers XL. Its original CSV preparation has not been verified, so the overlap check against the supplied archive does not establish its complete training history.",
       "default_threshold": 0.5
     },
     {
@@ -188,7 +196,7 @@
         "model_sha256": "b02e11e11a706573181abe41bff7f7f1c7a6f0debc8edb26d2bd1209e82e0791",
         "dataset_id": "all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
         "split": "Shared all-category gold benchmark; 4,397 pairs after excluding one known training pair",
-        "procedure": "Original saved model, fitted preprocessing and fixed decision rule; no retraining or tuning. Known exact/reversed pairs excluded against the supplied Computers XL archive. Original LR CSV provenance and full training history are not verified; splits may share products. Model trained on computers; evaluated here on a broader shared benchmark, not the notebook-specific computer test. Benchmark specifications are used when present; the current catalog lacks specification-table text.",
+        "procedure": "Original saved model, fitted preprocessing and fixed decision rule; no retraining or tuning. Known exact/reversed pairs excluded against the supplied Computers XL archive. The full original training history has not been verified; splits may share products. Model trained on computers; evaluated here on a broader shared benchmark, not the notebook-specific computer test. Benchmark specifications are used when present; the current catalog lacks specification-table text.",
         "overlap_audit": {
           "reference_archive": "computers_train.zip",
           "reference_archive_sha256": "0ec260c841086d5eb8b6ed7caa4aeab7a3ab87cf91d85412aef3a6d1c7fcedf6",
@@ -217,9 +225,13 @@
           ]
         ],
         "confusion_matrix_order": "[[TN, FP], [FN, TP]]",
-        "retained_pair_ids_sha256": "c37c50aae453fc946add9e755a1db909fc75865aa6b031c2172e816d7b812596"
+        "retained_pair_ids_sha256": "c37c50aae453fc946add9e755a1db909fc75865aa6b031c2172e816d7b812596",
+        "summary": [
+          "We trained Random Forest on Computers XL and tested the saved model on 4,397 product pairs from the broader dataset. We left out one pair because it also appeared in the supplied training archive.",
+          "These results show how it performed across the broader test set, not just computers. They do not tell us how accurate the matches are in website searches."
+        ]
       },
-      "integration_note": "Trained on computers only (Computers XL reported by source). These results use a broader 4,397-pair benchmark with one known training pair excluded; they are not computer-only or website-retrieval precision. Original LR CSV provenance is unverified; the models have not been retrained. Specification text is present in some benchmark pairs but missing from the current catalog.",
+      "integration_note": "Random Forest was trained on computers only. The test data includes product specifications where available, while the website catalog does not store this information. We checked for overlapping pairs against the supplied training archive; the full original training history has not been verified.",
       "training_config": {
         "notebook": "models/RF/random_forest.ipynb",
         "train": "computers_train_xlarge.json.gz",

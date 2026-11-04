@@ -912,3 +912,5 @@ footer {
     .evaluation-empty { padding: 32px 16px; }
     .evaluation-empty h3 { font-size: 19px; }
 }
+
+.evaluation-details p { overflow-wrap: anywhere; }
