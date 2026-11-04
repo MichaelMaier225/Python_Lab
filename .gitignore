@@ -1,12 +1,83 @@
+
+# ==========================================
+# GITHUB ACCOUNT SECURITY
+# ==========================================
+
+github-recovery-codes.txt
+**/github-recovery-codes.txt
+
+# ==========================================
+# API KEYS, PASSWORDS, AND SECRETS
+# ==========================================
+
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+credentials.json
+OPENAI.py
+
+# ==========================================
+# EXISTING PROJECT EXCLUSIONS
+# ==========================================
+
 Python/Queens of Sparkles/
-Python/**/.env
-Python/**/.env.*
-Python/**/OPENAI.py
+
+# ==========================================
+# PYTHON
+# ==========================================
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ==========================================
+# MACHINE LEARNING / LOCAL DATA
+# ==========================================
+
 Python/**/*.bin
 Python/**/*.pdf
 Python/**/chroma.sqlite3*
-Python/**/__pycache__/
-Python/**/.ipynb_checkpoints/
-SAVN/**/.env
-SAVN/**/.env.*
-SAVN/**/node_modules/
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
+# ==========================================
+# NODE.JS / WEB DEVELOPMENT
+# ==========================================
+
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.npm/
+
+# ==========================================
+# OPERATING SYSTEM / EDITOR
+# ==========================================
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ==========================================
+# TEMPORARY FILES
+# ==========================================
+
+*.log
+*.tmp
+*.bak
+*.swp
