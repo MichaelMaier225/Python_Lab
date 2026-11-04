@@ -38,6 +38,7 @@ class Product(BaseModel):
     currency: str = Field(default="USD", max_length=30)
     seller: str = Field(default="", max_length=300)
     source_id: str | None = Field(default=None, max_length=300)
+    category: str | None = Field(default=None, max_length=300)
 
 
 class ProductPair(BaseModel):

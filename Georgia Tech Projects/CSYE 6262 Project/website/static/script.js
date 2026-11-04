@@ -88,7 +88,8 @@ function getProduct(prefix) {
         price: raw === "" ? null : Number(raw),
         currency: get(`${prefix}-currency`).value.trim().toUpperCase(),
         seller: state.listings[prefix]?.seller || "",
-        source_id: state.listings[prefix]?.source_id || null
+        source_id: state.listings[prefix]?.source_id || null,
+        category: state.listings[prefix]?.category || null
     };
 }
 
@@ -146,7 +147,9 @@ function setThreshold() {
 function matches(item) {
     if (!item.prediction) return null;
     if (!get("threshold").disabled && Number.isFinite(item.prediction.raw_score)) {
-        return item.prediction.raw_score >= Number(get("threshold").value);
+        const cutoff = Number(get("threshold").value);
+        if (cutoff === item.prediction.threshold) return item.prediction.is_match;
+        return item.prediction.raw_score >= cutoff;
     }
     return item.prediction.is_match;
 }

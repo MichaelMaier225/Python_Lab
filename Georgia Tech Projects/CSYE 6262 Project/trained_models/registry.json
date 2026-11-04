@@ -39,10 +39,10 @@
       "version": "1",
       "algorithm": "LogisticRegression",
       "status": "experimental",
-      "adapter": null,
+      "adapter": "logistic_pair_v1",
       "artifact": "logistic_regression/logistic_regression_v1.joblib",
       "sha256": "f29f363006fa685333e4726a41508bf1f393b6992b3de451e92e74bb05efce89",
-      "score_type": null,
+      "score_type": "probability",
       "dataset": null,
       "feature_schema": [
         "title_similarity",
@@ -55,13 +55,20 @@
         "brand_match"
       ],
       "label_mapping": null,
-      "training_config": null,
+      "training_config": {
+        "script": "models/logistic_regression/train.py",
+        "estimator": "LogisticRegression(random_state=42)",
+        "training_file": "Computers_XL_Training.csv",
+        "test_file": "Gold_Standard.xlsx",
+        "source_changes": "Only the two dataset input paths were adjusted."
+      },
       "library_versions": {
         "scikit-learn": "1.9.1"
       },
       "created_at": null,
       "evaluation": null,
-      "integration_note": "Model received. Predictions are not enabled yet: the original feature-building code and a runtime compatible with both model versions are required. The SVM remains active."
+      "integration_note": "Original feature adapter is implemented. Predictions are not enabled yet: LR requires scikit-learn 1.9.1 while the active SVM requires 1.8.0. Neither original artifact has been changed.",
+      "default_threshold": 0.5
     }
   ]
 }

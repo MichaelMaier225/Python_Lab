@@ -14,6 +14,7 @@ import pandas as pd
 from sklearn.exceptions import InconsistentVersionWarning
 
 from models.svm.features import pair_features
+from models.logistic_regression.features import FEATURE_COLUMNS, pair_features as logistic_features
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY_PATH = ROOT / "trained_models" / "registry.json"
@@ -68,7 +69,7 @@ def load_bundle(entry=None):
     entry = entry or model_entry()
     if entry["status"] != "approved":
         raise ModelUnavailable("Experimental models cannot serve predictions until approved.")
-    if entry["adapter"] != "tfidf_pair":
+    if entry["adapter"] not in {"tfidf_pair", "logistic_pair_v1"}:
         raise ModelUnavailable("No adapter is registered for this feature pipeline.")
     path = artifact_path(entry)
     if not path.is_file():
@@ -76,7 +77,10 @@ def load_bundle(entry=None):
     checksum = entry.get("sha256")
     if entry["id"] == model_entry()["id"]:
         checksum = os.getenv("MODEL_SHA256", checksum)
-    return read_bundle(str(path), checksum, path.stat().st_mtime_ns)
+    bundle = read_bundle(str(path), checksum, path.stat().st_mtime_ns)
+    if entry["adapter"] == "logistic_pair_v1" and bundle.get("feature_columns") != FEATURE_COLUMNS:
+        raise ModelUnavailable("LR feature order does not match its original training code.")
+    return bundle
 
 
 def capabilities(entry, bundle):
@@ -85,7 +89,7 @@ def capabilities(entry, bundle):
     score = (kind == "decision_score" and hasattr(model, "decision_function")) or (
         kind == "probability" and hasattr(model, "predict_proba")
     )
-    threshold = bundle.get("threshold")
+    threshold = bundle.get("threshold", entry.get("default_threshold"))
     if threshold is not None:
         threshold = float(threshold)
         if not math.isfinite(threshold):
@@ -120,19 +124,34 @@ def predict_pairs(pairs, model_id=None):
     flags = capabilities(entry, bundle)
     rows = []
     for a, b in pairs:
+        fields = ["title", "brand", "description"]
+        if entry["adapter"] == "logistic_pair_v1":
+            fields.append("category")
         rows.append({f"{field}_{side}": product.get(field, "")
                      for product, side in [(a, "left"), (b, "right")]
-                     for field in ["title", "brand", "description"]})
+                     for field in fields})
     if not rows:
         return []
-    features = pair_features(pd.DataFrame(rows), bundle["title_vectorizer"], bundle["description_vectorizer"])
+    frame = pd.DataFrame(rows)
+    feature_builder = pair_features
+    if entry["adapter"] == "logistic_pair_v1":
+        # Empty website fields represent missing CSV cells, which pandas read as NaN.
+        for field in ["brand", "description", "category"]:
+            for side in ["left", "right"]:
+                column = f"{field}_{side}"
+                frame[column] = frame[column].replace("", None)
+        feature_builder = logistic_features
+    features = feature_builder(frame, bundle["title_vectorizer"], bundle["description_vectorizer"])
     model = bundle["model"]
     scores = None
     if flags["score_type"] == "decision_score":
         scores = np.asarray(model.decision_function(features)).reshape(-1)
     elif flags["score_type"] == "probability":
         scores = np.asarray(model.predict_proba(features))[:, 1]
-    labels = (scores >= flags["default_threshold"]).astype(int) if flags["threshold"] else model.predict(features)
+    if entry["adapter"] == "logistic_pair_v1":
+        labels = model.predict(features)  # Preserve the teammate's original classifier decision, including ties.
+    else:
+        labels = (scores >= flags["default_threshold"]).astype(int) if flags["threshold"] else model.predict(features)
     output = []
     for i, label in enumerate(labels):
         score = float(scores[i]) if scores is not None else None
