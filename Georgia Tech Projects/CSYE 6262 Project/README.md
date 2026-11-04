@@ -553,7 +553,7 @@ API callers can pass `model_id` on `/predict` and `/predict/batch`, or as a quer
 
 ## Combined SVM default
 
-The default model ID is `linear_svc_combined`, artifact `trained_models/svm/svm_combined.joblib`, saved threshold **+0.25**. The four individual size experiments are also selectable. Their test metrics and confusion matrices are populated in Model evaluation and independently reproduced on the 4,398 gold pairs. The training/audit handoff is in `docs/evaluation/svm_sizes_20261104/`.
+The default model ID is `linear_svc_combined`, artifact `trained_models/svm/svm_combined.joblib`, saved threshold **+0.25**. The individual size experiments and original baseline remain saved for reproducibility, but only the combined model appears as **SVM** in the website selectors. Their test metrics and confusion matrices are populated in Model evaluation and independently reproduced on the 4,398 gold pairs. The training/audit handoff is in `docs/evaluation/svm_sizes_20261104/`.
 
 If Render has `ACTIVE_MODEL` set to an older ID, change it to `linear_svc_combined` (or remove it to use the registry default). Legacy `MODEL_URL` and `MODEL_SHA256` still refer to the original `svm_small_v3.joblib`; they do not replace or change the combined artifact. Combined uses its committed SHA, with an optional scoped `SVM_COMBINED_SHA256` override. Keep the existing database download variables and build/start commands.
 

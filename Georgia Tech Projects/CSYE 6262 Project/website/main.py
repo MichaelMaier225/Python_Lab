@@ -131,7 +131,7 @@ def predict(pair: ProductPair):
 
 @app.get("/models")
 def models():
-    return {"active_model": model_entry()["id"], "models": [model_info(entry) for entry in entries()]}
+    return {"active_model": model_entry()["id"], "models": [model_info(entry) for entry in entries() if entry.get("show_in_website", True)]}
 
 
 @app.get("/candidates/{product_id}")
@@ -179,4 +179,4 @@ def evaluation():
     # Versioned, team-reviewed metrics only. No inferred metrics from search results.
     return {"models": [{"id": entry["id"], "name": entry["name"], "version": entry["version"],
                         "evaluation": entry.get("evaluation"),
-                        "integration_note": entry.get("integration_note")} for entry in entries()]}
+                        "integration_note": entry.get("integration_note")} for entry in entries() if entry.get("show_in_website", True)]}

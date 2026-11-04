@@ -3,7 +3,7 @@
   "models": [
     {
       "id": "linear_svc_combined",
-      "name": "SVM \u00b7 Combined",
+      "name": "SVM",
       "version": "20261104",
       "algorithm": "LinearSVC",
       "status": "approved",
@@ -84,7 +84,8 @@
         "pandas": "2.2.3",
         "scipy": "1.17.0",
         "joblib": "1.5.3"
-      }
+      },
+      "show_in_website": false
     },
     {
       "id": "logistic_regression_v1",
@@ -199,7 +200,8 @@
         "pair_count": 4398,
         "threshold": 0.25
       },
-      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline.",
+      "show_in_website": false
     },
     {
       "id": "linear_svc_medium",
@@ -252,7 +254,8 @@
         "pair_count": 4398,
         "threshold": 0.25
       },
-      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline.",
+      "show_in_website": false
     },
     {
       "id": "linear_svc_large",
@@ -305,7 +308,8 @@
         "pair_count": 4398,
         "threshold": 0.25
       },
-      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline.",
+      "show_in_website": false
     },
     {
       "id": "linear_svc_xlarge",
@@ -358,7 +362,8 @@
         "pair_count": 4398,
         "threshold": -0.25
       },
-      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline."
+      "integration_note": "Size experiment with a common held-out validation cohort; original Small V3 is a separate baseline.",
+      "show_in_website": false
     }
   ]
 }

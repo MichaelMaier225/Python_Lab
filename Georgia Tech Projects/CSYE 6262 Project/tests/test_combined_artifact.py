@@ -25,3 +25,13 @@ class CombinedArtifactTests(unittest.TestCase):
                 prediction = registry.predict_pairs([(product, product)])[0]
                 self.assertEqual(prediction['model_id'], 'linear_svc_combined')
                 self.assertEqual(prediction['threshold'], 0.25)
+
+    def test_only_combined_svm_is_listed_on_website(self):
+        from website.main import models, evaluation
+        visible = models()['models']
+        self.assertEqual([x['id'] for x in visible if x['algorithm'] == 'LinearSVC'], ['linear_svc_combined'])
+        self.assertEqual(next(x['name'] for x in visible if x['id'] == 'linear_svc_combined'), 'SVM')
+        listed = {x['id'] for x in evaluation()['models']}
+        self.assertNotIn('linear_svc_v3', listed)
+        self.assertIn('linear_svc_combined', listed)
+        self.assertTrue(registry.artifact_path(registry.model_entry('linear_svc_v3')).is_file())
