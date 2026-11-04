@@ -1,7 +1,7 @@
 """WDC V2 product matching: SVM v3 with richer pairwise features.
 
 Place the original archives in the project data/ directory.
-Run from the project root: python -m models.svm
+Run from the project root: python -m models.svm.train
 """
 from __future__ import annotations
 
@@ -18,9 +18,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report, confusion_matrix, f1_score, precision_score, recall_score
 from sklearn.svm import LinearSVC
 
-from .svm_features import pair_features, text_column
+from .features import pair_features, text_column
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
 MODELS = ROOT / "trained_models" / "svm"
 SIZE = "small"  # Try medium or large after establishing a baseline.

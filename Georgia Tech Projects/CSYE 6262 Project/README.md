@@ -7,8 +7,11 @@ with the existing TF-IDF / LinearSVC model.
 
 ```text
 models/                        Algorithm source code
-    svm.py                     Train and evaluate the existing SVM
-    svm_features.py            Shared SVM preprocessing and pair features
+    svm/
+        train.py               Train the existing SVM
+        features.py            Shared SVM preprocessing and pair features
+    logistic_regression/       Teammate source goes here (still pending)
+    decision_tree/             Teammate source goes here (not supplied yet)
 trained_models/                Saved models, grouped by algorithm
     svm/                       Original SVM v2 and v3 joblib files
     logistic_regression/       Received LR v1 joblib (integration pending)
@@ -18,6 +21,7 @@ website/                       FastAPI backend and frontend files
 scripts/                       Dataset and deployment tools
     build_database.py          Import the original product corpus
     prepare_assets.py          Download and verify deployment assets
+    evaluate_model.py          Evaluate a saved model without retraining
 tests/                         Backend/model tests and browser checks
     fixtures/                  Frozen, synthetic feature regression data
 data/                          Local datasets and SQLite files (Git-ignored)
@@ -27,20 +31,22 @@ requirements.txt               Application dependencies
 requirements-dev.txt           Additional test dependencies
 ```
 
-Put future LR and Decision Tree training scripts in `models/` when their real
-source is available. Their fitted artifacts belong in separate `trained_models/`
+Put future LR and Decision Tree training scripts in their named subfolders in
+`models/` when their real source is available. Their fitted artifacts belong in separate `trained_models/`
 subfolders. No placeholder algorithm implementations have been added.
 
 From this project directory:
 
 ```bash
-# Train/evaluate SVM only when the original datasets are available:
-python -m models.svm
+# Train SVM only when the original datasets are available:
+python -m models.svm.train
 # Inspect/import product data:
 python -m scripts.build_database --inspect
 python -m scripts.build_database --limit 50000
 # Download configured deployment assets:
 python -m scripts.prepare_assets
+# Evaluate the saved SVM on data/all_gs.json.gz, without training:
+python -m scripts.evaluate_model
 # Run automated tests:
 python -m unittest discover -s tests -v
 # Start the website:
@@ -170,7 +176,7 @@ and feature ordering have not been changed.
 
 - `website/main.py`: bounded request schemas and HTTP routes.
 - `website/database.py`: parameterized product lookup, search and retrieval.
-- `models/svm_features.py`: unchanged baseline feature transformations.
+- `models/svm/features.py`: unchanged baseline feature transformations.
 - `website/registry.py`: trusted artifact loading, caching and model adapters.
 - `website/attributes.py`: conservative, independent attribute comparison.
 - `website/feedback.py`: SQLite review storage.
@@ -208,7 +214,7 @@ send their recorded currency. Cross-currency comparisons are excluded.
 LinearSVC v3 remains the default; its training procedure is unchanged. Existing
 artifacts are never retrained or overwritten by application startup. Training
 and serving now import the original feature calculations from
-`models/svm_features.py`, removing the duplicate implementation. The registry
+`models/svm/features.py`, removing the duplicate implementation. The registry
 keeps one batch prediction implementation.
 
 `trained_models/registry.json` keeps version metadata alongside the source. Each
@@ -298,9 +304,9 @@ SQLite file, not an incomplete WAL snapshot.
 On Windows PowerShell, get the original file hashes from the project directory:
 
 ```powershell
-Get-FileHash .\models\svm_small_v3.joblib -Algorithm SHA256
+Get-FileHash .\trained_models\svm\svm_small_v3.joblib -Algorithm SHA256
 Get-FileHash .\data\products.db -Algorithm SHA256
-Get-Item .\models\svm_small_v3.joblib, .\data\products.db | Select-Object Name, Length
+Get-Item .\trained_models\svm\svm_small_v3.joblib, .\data\products.db | Select-Object Name, Length
 ```
 
 For durable feedback, attach persistent storage and set `PRODUCTMATCH_DATA_DIR`
@@ -440,6 +446,28 @@ Regression checks verify the downloaded database is closed before replacement,
 and that feedback connections close on success, duplicate returns and errors.
 This addresses the Windows WinError 32 file locks rather than hiding cleanup errors.
 
-`No module named models.svm` means the source reorganization is not present in
+`No module named models.svm.train` means the source reorganization is not present in
 your checkout, or you are outside the project root. Get the published update first;
 `git pull` cannot retrieve changes that only exist in the cloud workspace.
+
+
+## Evaluate the existing SVM (no retraining)
+
+Keep `all_gs.json.gz` compressed in `data/`. From this project directory:
+
+```bat
+python -m scripts.evaluate_model
+```
+
+It prints match precision, recall, F1, accuracy and the confusion matrix using the
+original saved threshold. It writes `evaluation.json`, `predictions.csv` and
+`errors.csv` under `reports/evaluation/` (Git-ignored). `--data` selects another
+labeled gzip JSON-lines file and `--output` chooses another report folder. There
+is no fitting or threshold-search step. It does not update the website registry
+or push results. Training/test separation still needs checking against the original
+training data. LR remains unavailable until its exact preprocessing is supplied.
+
+To train the SVM intentionally, use `python -m models.svm.train`. This is separate
+from evaluation and saves to `trained_models/svm/`; it retains the existing training
+script's behavior of replacing the selected version's output file. Preserve any
+version you need before deliberately training again.

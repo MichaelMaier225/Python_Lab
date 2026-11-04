@@ -18,7 +18,7 @@
         "1": "match"
       },
       "training_config": {
-        "script": "models/svm.py",
+        "script": "models/svm/train.py",
         "seed": 42
       },
       "library_versions": null,
