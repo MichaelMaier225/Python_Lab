@@ -1,4 +1,6 @@
 """Synthetic fixtures validate software behavior, not real-world model accuracy."""
+
+from contextlib import closing
 import asyncio
 import hashlib
 import json
@@ -17,11 +19,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 
-import train_svm
 from website import database, feedback, registry
 from website.attributes import compare_attributes
 from website.main import app
-from website.model import pair_features
+from models.svm_features import pair_features
 
 
 class ProductMatchTests(unittest.TestCase):
@@ -48,7 +49,7 @@ class ProductMatchTests(unittest.TestCase):
         self.features = pair_features(self.frame, self.tv, self.dv)
         self.estimator = LinearSVC(random_state=42).fit(self.features, [1,0,1,0])
         self.install(self.estimator, 'decision_score', 0.25)
-        with database.connect() as conn:
+        with closing(database.connect()) as conn, conn:
             database.initialize(conn)
             for i,p in enumerate([self.a,self.b,self.c],1):
                 conn.execute('INSERT INTO products (id, source_id, title, brand, description, price, currency, seller) VALUES (?,?,?,?,?,?,?,?)',
@@ -79,12 +80,12 @@ class ProductMatchTests(unittest.TestCase):
                 return await client.request(method,path,json=body)
         return asyncio.run(run())
 
-    def test_training_feature_parity_and_symmetry(self):
-        expected = train_svm.pair_features(self.frame,self.tv,self.dv)
-        np.testing.assert_allclose(self.features.toarray(),expected.toarray(),rtol=0,atol=0)
+    def test_frozen_feature_regression_and_symmetry(self):
+        expected = np.asarray(json.loads((Path(__file__).parent / 'fixtures' / 'svm_features.json').read_text()))
+        np.testing.assert_allclose(self.features.toarray(),expected,rtol=1e-12,atol=1e-12)
         reversed_frame = self.frame.rename(columns={f'{field}_{side}':f'{field}_{other}'
             for field in ['title','brand','description'] for side,other in [('left','right'),('right','left')]})
-        np.testing.assert_allclose(pair_features(reversed_frame,self.tv,self.dv).toarray(),expected.toarray())
+        np.testing.assert_allclose(pair_features(reversed_frame,self.tv,self.dv).toarray(),expected)
 
     def test_baseline_prediction_parity_and_batch(self):
         expected = self.estimator.decision_function(self.features)
@@ -182,7 +183,7 @@ class ProductMatchTests(unittest.TestCase):
         self.assertEqual(self.request('POST','/feedback',dict(body,choice='match')).status_code,409)
         self.assertEqual(self.request('POST','/feedback',dict(body,model_version='old')).status_code,409)
         import sqlite3
-        with sqlite3.connect(self.root/'feedback.db') as conn:
+        with closing(sqlite3.connect(self.root/'feedback.db')) as conn, conn:
             row=conn.execute('SELECT model_id,model_version,record FROM feedback').fetchone()
             self.assertEqual(row[:2],('fixture','test-only'))
             self.assertEqual(json.loads(row[2])['prediction']['model_id'],'fixture')

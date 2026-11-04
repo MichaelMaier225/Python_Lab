@@ -7,7 +7,7 @@ from pathlib import Path
 
 from website.database import connect, initialize, DB_PATH
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 
 SOURCE = (
     ROOT

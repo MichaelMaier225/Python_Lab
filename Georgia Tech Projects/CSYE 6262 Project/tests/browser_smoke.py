@@ -3,7 +3,6 @@ Run a local server first; see README. Requires Playwright and Chromium.
 """
 import json
 import os
-from pathlib import Path
 
 from playwright.sync_api import sync_playwright, expect
 

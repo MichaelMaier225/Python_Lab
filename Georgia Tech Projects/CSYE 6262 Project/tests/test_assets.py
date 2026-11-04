@@ -1,3 +1,4 @@
+from contextlib import closing
 import hashlib
 import io
 import os
@@ -7,7 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import prepare_assets
+from scripts import prepare_assets
 
 
 class Response(io.BytesIO):
@@ -45,7 +46,7 @@ class AssetTests(unittest.TestCase):
     def test_database_download_schema(self):
         with tempfile.TemporaryDirectory() as folder:
             source = Path(folder) / 'source.db'
-            with sqlite3.connect(source) as conn:
+            with closing(sqlite3.connect(source)) as conn, conn:
                 conn.execute('CREATE TABLE products (id INTEGER, title TEXT)')
                 conn.execute('CREATE VIRTUAL TABLE product_search USING fts5(title)')
             content = source.read_bytes()

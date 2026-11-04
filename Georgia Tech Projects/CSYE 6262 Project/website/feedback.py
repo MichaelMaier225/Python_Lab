@@ -1,3 +1,4 @@
+from contextlib import closing
 import hashlib
 import json
 import sqlite3
@@ -17,7 +18,7 @@ def save_feedback(a, b, prediction, choice, request_id):
     path.parent.mkdir(parents=True, exist_ok=True)
     identifier = pair_id(a, b)
     record = json.dumps({"product_a": a, "product_b": b, "prediction": prediction}, sort_keys=True)
-    with sqlite3.connect(path) as conn:
+    with closing(sqlite3.connect(path)) as conn, conn:
         conn.execute("""CREATE TABLE IF NOT EXISTS feedback (
             request_id TEXT PRIMARY KEY, pair_id TEXT NOT NULL,
             model_id TEXT NOT NULL, model_version TEXT NOT NULL,

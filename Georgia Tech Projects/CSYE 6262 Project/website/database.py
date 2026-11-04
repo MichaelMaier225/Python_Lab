@@ -1,3 +1,4 @@
+from contextlib import closing
 
 import re
 import os
@@ -73,7 +74,7 @@ def search_products(query, limit=20):
         '"' + word + '"*' for word in words
     )
 
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         initialize(conn)
 
         rows = conn.execute("""
@@ -107,7 +108,7 @@ def search_products(query, limit=20):
 
 
 def count_products():
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         initialize(conn)
 
         return conn.execute(
@@ -116,7 +117,7 @@ def count_products():
 
 
 def get_product(product_id):
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         initialize(conn)
         row = conn.execute("SELECT * FROM products WHERE id = ?", (product_id,)).fetchone()
         return dict(row) if row else None
@@ -127,7 +128,7 @@ def candidates(product, limit=40):
     if not words:
         return []
     expression = " OR ".join('"' + word + '"' for word in words)
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         initialize(conn)
         rows = conn.execute("""
             SELECT p.* FROM product_search

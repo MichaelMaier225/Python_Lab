@@ -3,6 +3,63 @@
 FastAPI website for searching historical WDC listings and comparing products
 with the existing TF-IDF / LinearSVC model.
 
+## Folder layout
+
+```text
+models/                        Algorithm source code
+    svm.py                     Train and evaluate the existing SVM
+    svm_features.py            Shared SVM preprocessing and pair features
+trained_models/                Saved models, grouped by algorithm
+    svm/                       Original SVM v2 and v3 joblib files
+    logistic_regression/       Received LR v1 joblib (integration pending)
+    registry.json              Version metadata, checksums and readiness
+website/                       FastAPI backend and frontend files
+    static/                    HTML, CSS, JavaScript and vendored D3
+scripts/                       Dataset and deployment tools
+    build_database.py          Import the original product corpus
+    prepare_assets.py          Download and verify deployment assets
+tests/                         Backend/model tests and browser checks
+    fixtures/                  Frozen, synthetic feature regression data
+data/                          Local datasets and SQLite files (Git-ignored)
+docs/proposal/                 Proposal slides, requirements and planning figures
+prepare_assets.py              Compatibility entry point for the live Render build
+requirements.txt               Application dependencies
+requirements-dev.txt           Additional test dependencies
+```
+
+Put future LR and Decision Tree training scripts in `models/` when their real
+source is available. Their fitted artifacts belong in separate `trained_models/`
+subfolders. No placeholder algorithm implementations have been added.
+
+From this project directory:
+
+```bash
+# Train/evaluate SVM only when the original datasets are available:
+python -m models.svm
+# Inspect/import product data:
+python -m scripts.build_database --inspect
+python -m scripts.build_database --limit 50000
+# Download configured deployment assets:
+python -m scripts.prepare_assets
+# Run automated tests:
+python -m unittest discover -s tests -v
+# Start the website:
+python -m uvicorn website.main:app --reload
+```
+
+The Render root directory, start command and database environment variables stay
+the same. Its existing `python prepare_assets.py` build step delegates to
+`scripts.prepare_assets`, so no immediate Render settings edit is needed.
+The module command `python -m scripts.prepare_assets` is the preferred new entry
+point. The small root wrapper is in use, not dead code.
+
+The algorithm source folder used to contain the saved artifacts. After pulling
+this reorganization, any older untracked copies of `.joblib` files may remain in
+your local `models/` directory; inspect those against `trained_models/` before
+removing your own copies. Local `data/` files are left in place. If you configured
+`PRODUCTMATCH_MODEL_DIR`, it now points at the root containing the `svm/` and
+`logistic_regression/` artifact subfolders.
+
 ## Run locally
 
 Use Python 3.12. From this directory:
@@ -11,8 +68,9 @@ Use Python 3.12. From this directory:
 python -m venv .venv
 ```
 
-Activate it with `source .venv/bin/activate` (macOS/Linux) or
-`.venv\Scripts\Activate.ps1` (Windows PowerShell), then run:
+Activate it with `source .venv/bin/activate` (macOS/Linux),
+`.venv\Scripts\activate.bat` (Windows Command Prompt), or
+`.venv\Scripts\Activate.ps1` (PowerShell), then run:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -43,8 +101,8 @@ does not establish that prediction or populated search works.
 
 ## Required data and model
 
-The v2 and v3 model artifacts are now committed in `models/`. The v3 artifact's
-SHA-256 is pinned in `model_registry.json`; it loads successfully with the current
+The v2 and v3 model artifacts are now committed in `trained_models/`. The v3 artifact's
+SHA-256 is pinned in `trained_models/registry.json`; it loads successfully with the current
 requirements. A regression check confirms identical scores from the original
 training feature pipeline and the serving adapter on representative inputs.
 This verifies compatibility, not test-set accuracy.
@@ -57,8 +115,8 @@ To build the database locally, place the original
 `offers_corpus_all_v2_non_norm.json.gz` in `data/`, then run:
 
 ```bash
-python build_database.py --inspect
-python build_database.py --limit 50000
+python -m scripts.build_database --inspect
+python -m scripts.build_database --limit 50000
 ```
 
 The limit counts input records; it does not guarantee that many inserted products.
@@ -112,13 +170,13 @@ and feature ordering have not been changed.
 
 - `website/main.py`: bounded request schemas and HTTP routes.
 - `website/database.py`: parameterized product lookup, search and retrieval.
-- `website/model.py`: unchanged baseline feature transformations.
+- `models/svm_features.py`: unchanged baseline feature transformations.
 - `website/registry.py`: trusted artifact loading, caching and model adapters.
 - `website/attributes.py`: conservative, independent attribute comparison.
 - `website/feedback.py`: SQLite review storage.
 - `website/static/script.js`: shared UI state and linked interactions.
 - `website/static/charts.js`: D3 v5 scatterplot and evaluation curve.
-- `model_registry.json`: versioned model metadata; model binaries remain ignored.
+- `trained_models/registry.json`: versioned model metadata; the saved SVM and LR artifacts are tracked.
 
 D3 5.16.0 is vendored from its npm distribution with its license so the deployed
 site does not depend on a third-party script CDN. There is no frontend build step.
@@ -147,13 +205,14 @@ send their recorded currency. Cross-currency comparisons are excluded.
 
 ## Model versions and teammate integration
 
-LinearSVC v3 remains the default; the training script is unchanged. Existing
-artifacts are never retrained or overwritten by application startup. The old
-feature code is retained, and repeated prediction/loading code was replaced by
-the registry's single batch implementation.
+LinearSVC v3 remains the default; its training procedure is unchanged. Existing
+artifacts are never retrained or overwritten by application startup. Training
+and serving now import the original feature calculations from
+`models/svm_features.py`, removing the duplicate implementation. The registry
+keeps one batch prediction implementation.
 
-`model_registry.json` keeps version metadata alongside the source. Each
-version gets a unique ID and artifact path within `models/`. Preserve old entries
+`trained_models/registry.json` keeps version metadata alongside the source. Each
+version gets a unique ID and artifact path within `trained_models/`. Preserve old entries
 and binaries. Record algorithm, adapter, status, dataset, feature schema, labels,
 training configuration, original library versions, creation date, checksum and
 reviewed evaluation data. Unknown original-run metadata stays null; the current
@@ -193,7 +252,7 @@ loading. A label-only adapter advertises no continuous-score capabilities.
 
 ## Provision existing artifacts on Render
 
-The model now deploys from the committed `models/` directory. Only the populated
+The model now deploys from the committed `trained_models/` directory. Only the populated
 product database needs transferring. For this public repository, use a Release asset:
 
 1. Open the repository's Releases page and choose **Draft a new release**.
@@ -229,7 +288,7 @@ Save the settings, then select **Manual Deploy → Deploy latest commit**. Build
 should report `DATABASE: downloaded and verified.` Verify `/health` returns 200
 with a nonzero product count, then try an actual search and prediction.
 
-`prepare_assets.py` streams downloads into temporary files, verifies SHA-256,
+`scripts/prepare_assets.py` streams downloads into temporary files, verifies SHA-256,
 checks the database schema/integrity and atomically installs verified files. An
 incorrect download leaves existing files intact and fails the build. With no URLs,
 it leaves existing files alone. It does not deserialize a model or train one.
@@ -246,7 +305,7 @@ Get-Item .\models\svm_small_v3.joblib, .\data\products.db | Select-Object Name, 
 
 For durable feedback, attach persistent storage and set `PRODUCTMATCH_DATA_DIR`
 to its mounted directory. Set `PRODUCTMATCH_MODEL_DIR` only if models live outside
-this project's `models/`. A Render build may not have access to a runtime disk;
+this project's `trained_models/`. A Render build may not have access to a runtime disk;
 provision that disk separately before pointing runtime paths at it. Downloading
 into build-local `data/` does not initialize an unrelated mounted directory.
 Free-instance feedback is local and disposable. Do not enable a database refresh
@@ -306,8 +365,8 @@ node --check website/static/script.js
 node --check website/static/charts.js
 ```
 
-The backend suite also checks the actual committed v3 artifact against the training
-feature pipeline. Other tests train tiny, explicitly synthetic fixtures in temporary
+The backend suite checks the actual committed v3 artifact against scores recorded
+before the organization change and a frozen synthetic feature matrix. Other tests train tiny, explicitly synthetic fixtures in temporary
 folders, exercises real APIs, and checks training/inference feature parity,
 batch predictions, class-only/probability adapters, checksums, path restrictions,
 validation, missing artifacts, currency safety and feedback persistence. These
@@ -331,7 +390,7 @@ in the production database. Tests do not deploy or change the active model.
 
 ## Received Logistic Regression v1
 
-`models/logistic_regression_v1.joblib` is preserved exactly as received and registered
+`trained_models/logistic_regression/logistic_regression_v1.joblib` is preserved exactly as received and registered
 as experimental. It appears in Model evaluation with a pending integration note;
 it does not serve predictions or replace the default SVM.
 
@@ -354,3 +413,33 @@ To finish integration, obtain the teammate's training/prediction script or noteb
 the original package versions, and ideally an example pair with its computed
 8-value feature vector and expected prediction. Keep their genuine evaluation
 results and dataset/split metadata separate from software compatibility tests.
+
+
+## Troubleshooting local Windows tests
+
+Use an isolated environment with the pinned development requirements. The SVM
+artifact was saved with scikit-learn 1.8.0; the reported local installation of
+1.7.2 cannot load it under the version checks. From this project directory:
+
+```bat
+python -m venv .venv
+.venv\Scripts\activate.bat
+python -m pip install -r requirements-dev.txt
+python -c "import sklearn; print(sklearn.__version__)"
+python -m unittest discover -s tests -v
+```
+
+The verified Render runtime uses Python 3.12.14. To match it locally, use an
+installed Python 3.12 interpreter to create the environment (`py -3.12 -m venv
+.venv`). An existing environment retains the Python version used to create it.
+
+SQLite connections must be closed explicitly: its transaction context manager
+commits or rolls back but does not close the file. Product queries, feedback,
+asset validation and test fixtures now close connections deterministically.
+Regression checks verify the downloaded database is closed before replacement,
+and that feedback connections close on success, duplicate returns and errors.
+This addresses the Windows WinError 32 file locks rather than hiding cleanup errors.
+
+`No module named models.svm` means the source reorganization is not present in
+your checkout, or you are outside the project root. Get the published update first;
+`git pull` cannot retrieve changes that only exist in the cloud workspace.

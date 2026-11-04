@@ -2,15 +2,13 @@
 import unittest
 
 import numpy as np
-import pandas as pd
 
-import train_svm
 from website import registry
 
 
 class OriginalArtifactTests(unittest.TestCase):
-    @unittest.skipUnless((registry.ROOT / 'models' / 'svm_small_v3.joblib').exists(), 'Original artifact is not installed')
-    def test_original_scores_match_training_pipeline(self):
+    @unittest.skipUnless((registry.ROOT / 'trained_models' / 'svm' / 'svm_small_v3.joblib').exists(), 'Original artifact is not installed')
+    def test_original_scores_preserved_after_organization(self):
         entry = next(e for e in registry.entries() if e['id'] == 'linear_svc_v3')
         bundle = registry.load_bundle(entry)
         products = [
@@ -21,13 +19,11 @@ class OriginalArtifactTests(unittest.TestCase):
         ]
         pairs = [(products[0],products[0]), (products[0],products[1]),
                  (products[0],products[2]), (products[2],products[3])]
-        rows = [{f'{field}_{side}':product[field]
-                 for product,side in [(a,'left'),(b,'right')]
-                 for field in ['title','brand','description']} for a,b in pairs]
-        features = train_svm.pair_features(pd.DataFrame(rows),bundle['title_vectorizer'],bundle['description_vectorizer'])
-        expected = bundle['model'].decision_function(features)
+        # Recorded from the original, pre-organization feature code and model.
+        expected = np.array([1.2597878032904417, 0.8872527909719772,
+                             -1.0329692546660636, -0.5431122447755886])
         actual = registry.predict_pairs(pairs,'linear_svc_v3')
-        np.testing.assert_allclose([r['raw_score'] for r in actual],expected,rtol=0,atol=0)
+        np.testing.assert_allclose([r['raw_score'] for r in actual],expected,rtol=1e-12,atol=1e-12)
         self.assertEqual([r['is_match'] for r in actual],(expected>=bundle['threshold']).tolist())
         self.assertTrue(all(r['probability'] is None for r in actual))
 

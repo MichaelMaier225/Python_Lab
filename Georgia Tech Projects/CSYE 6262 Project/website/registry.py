@@ -13,10 +13,10 @@ import numpy as np
 import pandas as pd
 from sklearn.exceptions import InconsistentVersionWarning
 
-from .model import pair_features
+from models.svm_features import pair_features
 
 ROOT = Path(__file__).resolve().parent.parent
-REGISTRY_PATH = ROOT / "model_registry.json"
+REGISTRY_PATH = ROOT / "trained_models" / "registry.json"
 
 
 class ModelUnavailable(ValueError):
@@ -37,7 +37,7 @@ def model_entry(model_id=None):
 
 
 def artifact_path(entry):
-    directory = Path(os.getenv("PRODUCTMATCH_MODEL_DIR", ROOT / "models")).resolve()
+    directory = Path(os.getenv("PRODUCTMATCH_MODEL_DIR", ROOT / "trained_models")).resolve()
     path = (directory / entry["artifact"]).resolve()
     if not path.is_relative_to(directory):
         raise ModelUnavailable("Model artifact must remain inside the model directory.")
