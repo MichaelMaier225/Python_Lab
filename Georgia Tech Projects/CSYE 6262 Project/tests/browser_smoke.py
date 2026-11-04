@@ -33,7 +33,7 @@ with sync_playwright() as p:
     page.locator('#example-btn').click()
     page.locator('#attributes-btn').click()
     expect(page.locator('#attribute-body tr')).to_have_count(5)
-    expect(page.locator('#evaluation-content')).to_contain_text('No verified evaluation')
+    expect(page.locator('#evaluation-content')).to_contain_text('Evaluation results haven’t been added yet.')
     print('PASS: actual startup state, manual attributes, evaluation empty state')
     def fulfill(route,data): route.fulfill(status=200,content_type='application/json',body=json.dumps(data))
     page.route('**/models',lambda route:fulfill(route,{'active_model':'fixture','models':[MODEL]}))
@@ -111,7 +111,7 @@ with sync_playwright() as p:
     expect(page.locator('#evaluation-content')).to_contain_text('Threshold 0.5')
     expect(page.locator('#evaluation-content svg circle')).to_have_count(2)
     page.locator('#evaluation-model').select_option('unreported')
-    expect(page.locator('#evaluation-content')).to_contain_text('No verified evaluation')
+    expect(page.locator('#evaluation-content')).to_contain_text('Evaluation results haven’t been added yet.')
     print('PASS: labeled-fixture metrics, confusion matrix, threshold curve and version selection')
     assert not errors,errors
     print('PASS: no browser JavaScript errors')

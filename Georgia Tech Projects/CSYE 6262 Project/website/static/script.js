@@ -108,15 +108,13 @@ function showModel(info) {
     state.model = info;
     const status = get("model-status");
     status.className = info.available ? "model-status" : "model-status warning";
-    status.textContent = `${info.name} · version ${info.version} — ${
-        info.available
-            ? "Ready. " +
-              (info.capabilities.probability
-                  ? "Model probability estimate; calibration has not been verified."
-                  : "Scores are not probabilities.")
-            : info.message + " You can still compare attributes manually."
-    }`;
-    if (info.integration_note) status.textContent += " " + info.integration_note;
+    status.textContent = info.available ? "Ready" : "Unavailable";
+    const explanation = info.available
+        ? (info.capabilities.probability
+            ? "Scores are model probability estimates; calibration has not been verified."
+            : "Scores are SVM decision values, not probabilities.")
+        : info.message + " You can still compare attributes manually.";
+    get("model-description").textContent = `${info.name} · version ${info.version}. ${explanation} ${info.integration_note || ""}`;
     get("compare-btn").disabled = !info.available;
 }
 
@@ -525,17 +523,22 @@ function renderEvaluation() {
     const target = get("evaluation-content");
     target.replaceChildren();
     if (model?.integration_note) {
-        target.append(node("p", model.integration_note, "notice warning"));
+        const details = node("details", undefined, "model-details evaluation-details");
+        details.append(node("summary", "Model details"), node("p", model.integration_note));
+        target.append(details);
     }
     const data = model?.evaluation;
     if (!data) {
-        target.append(
-            node(
-                "p",
-                "No verified evaluation results supplied for this version. Add the original labeled evaluation outputs; no metrics have been invented.",
-                "notice warning"
-            )
-        );
+        const empty = node("div", undefined, "evaluation-empty");
+        empty.append(node("span", "RESULTS PENDING", "small-label"),
+            node("h3", "Evaluation results haven’t been added yet."),
+            node("p", "You can still use available models in Workspace. This page will show accuracy, precision, recall, F1, and a confusion matrix when evaluation results are available."),
+            node("p", "Viewing results here does not change the active prediction model.", "muted"));
+        const button = node("button", "Open Workspace");
+        button.type = "button";
+        button.addEventListener("click", () => showView(false));
+        empty.append(button);
+        target.append(empty);
         return;
     }
     target.append(
@@ -604,6 +607,11 @@ function renderEvaluation() {
 get("evaluation-model").addEventListener("change", renderEvaluation);
 
 function showView(evaluation) {
+    get("workspace-controls").hidden = evaluation;
+    get("page-title").textContent = evaluation ? "Model evaluation" : "Product matching";
+    get("page-description").textContent = evaluation
+        ? "Understand model performance before comparing predictions."
+        : "Find a listing. Explore its matches. Inspect the evidence.";
     get("workspace-view").hidden = evaluation;
     get("evaluation").hidden = !evaluation;
     for (const [id, active] of [

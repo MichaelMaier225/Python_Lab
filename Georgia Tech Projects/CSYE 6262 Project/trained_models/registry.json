@@ -3,7 +3,7 @@
   "models": [
     {
       "id": "linear_svc_v3",
-      "name": "Linear SVM \u00b7 baseline",
+      "name": "SVM V3 \u00b7 Small",
       "version": "3",
       "algorithm": "LinearSVC",
       "status": "approved",

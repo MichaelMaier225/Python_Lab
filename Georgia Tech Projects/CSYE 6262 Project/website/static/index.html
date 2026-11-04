@@ -29,20 +29,25 @@
             <div class="page-heading">
                 <div>
                     <p class="eyebrow">CROSS-VENDOR ANALYSIS</p>
-                    <h1>Product matching</h1>
+                    <h1 id="page-title">Product matching</h1>
+                    <p id="page-description" class="page-description">Find a listing. Explore its matches. Inspect the evidence.</p>
                 </div>
                 <span class="dataset-label"
                     ><span class="status-dot" aria-hidden="true"></span>WDC · Historical
                     listings</span
                 >
             </div>
-            <div class="model-picker">
-                <label for="prediction-model">Matching model</label>
-                <select id="prediction-model" disabled aria-describedby="model-status"></select>
-            </div>
-            <div id="model-status" class="model-status" role="status">
-                Checking model availability…
-            </div>
+            <section id="workspace-controls" class="workspace-controls" aria-label="Prediction model">
+                <div class="model-picker">
+                    <label for="prediction-model">Active prediction model</label>
+                    <select id="prediction-model" disabled aria-describedby="model-status"></select>
+                </div>
+                <div id="model-status" class="model-status" role="status">Checking model availability…</div>
+                <details class="model-details">
+                    <summary>Model details</summary>
+                    <p id="model-description">Loading model information…</p>
+                </details>
+            </section>
             <div id="workspace-view" class="workspace">
                 <aside id="explorer" class="search-pane" aria-labelledby="search-heading">
                     <div class="pane-heading">
@@ -377,14 +382,15 @@
             </div>
             <section id="evaluation" class="evaluation-pane" hidden>
                 <div class="pane-heading">
-                    <h2>Model evaluation</h2>
+                    <h2>Evaluation results</h2>
                     <span class="small-label">LABELED TEST RESULTS</span>
                 </div>
                 <p class="muted">
-                    Compare versions using the same evaluation dataset and procedure. Raw scores
-                    across different algorithms are not directly comparable.
+                    Explore recorded performance for each model. Compare results only when the test data and evaluation procedure match.
                 </p>
-                <label>Model version<select id="evaluation-model"></select></label>
+                <label for="evaluation-model">View results for</label>
+                <select id="evaluation-model" aria-describedby="evaluation-help"></select>
+                <p id="evaluation-help" class="muted">This changes the results shown here. Choose the active prediction model in Workspace.</p>
                 <div id="evaluation-content" class="evaluation-content" role="status">
                     Loading evaluation metadata…
                 </div>
