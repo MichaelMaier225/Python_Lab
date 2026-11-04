@@ -553,11 +553,11 @@ API callers can pass `model_id` on `/predict` and `/predict/batch`, or as a quer
 
 ## Combined SVM default
 
-The default model ID is `linear_svc_combined`, artifact `trained_models/svm/svm_combined.joblib`, saved threshold **+0.25**. The individual size experiments and original baseline remain saved for reproducibility, but only the combined model appears as **SVM** in the website selectors. Their test metrics and confusion matrices are populated in Model evaluation and independently reproduced on the 4,398 gold pairs. The training/audit handoff is in `docs/evaluation/svm_sizes_20261104/`.
+The website's **SVM** is Combined V4: ID `linear_svc_combined`, version `4`, adapter `tfidf_pair_v4`, artifact `trained_models/svm/v4/svm_combined.joblib`, saved threshold **0.3094963319960764**. Individual size models are saved in the same v4 folder but hidden from website selectors. Previous artifacts remain intact.
 
-If Render has `ACTIVE_MODEL` set to an older ID, change it to `linear_svc_combined` (or remove it to use the registry default). Legacy `MODEL_URL` and `MODEL_SHA256` still refer to the original `svm_small_v3.joblib`; they do not replace or change the combined artifact. Combined uses its committed SHA, with an optional scoped `SVM_COMBINED_SHA256` override. Keep the existing database download variables and build/start commands.
+All five V4 gold-test results were independently reproduced. Combined accuracy is 92.54%, precision 92.15%, recall 79.38%, and F1 85.29% on 4,398 benchmark pairs. It rejects the two previously reported accessory false matches. Those examples are not a representative website evaluation. Splits share individual product IDs, so these metrics do not establish unseen-product performance. See `docs/evaluation/svm_v4_20261104/` for the supplied run and audit.
 
-The combined model improves measured test precision to 79.34%, but still makes the two reported iPhone accessory false matches. See the documented examples before treating higher scores as proof of product identity. Threshold selection used validation F1, not these examples or the gold test. No model was retrained in this integration.
+If Render sets `ACTIVE_MODEL`, use `linear_svc_combined`. Legacy `MODEL_URL`/`MODEL_SHA256` still target the original Small V3 artifact and do not replace V4. V4 uses its committed checksum, optionally overridden by `SVM_COMBINED_V4_SHA256`; remove any old custom override for that variable when changing artifacts. Database download settings and build/start commands are unchanged.
 
 
 ## Retrain SVM v4 (identity-aware features)

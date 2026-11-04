@@ -1,0 +1,452 @@
+{
+  "status": "complete",
+  "feature_schema": "tfidf_pair_v4",
+  "selection_metric": "F0.5",
+  "runtime": {
+    "python": "3.13.14",
+    "scikit-learn": "1.8.0"
+  },
+  "source_hashes": {
+    "all_train.zip": "41b1989363f9ee3d09975cea49d21075d16e4d201aa2b65ce19dd6753024dc33",
+    "all_valid.zip": "2ad0f8f3f4ecdf60b0a93a6f78e2c2977d10751f1ad2d4b7c0b1b48bc545e863",
+    "all_gs.json.gz": "4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b"
+  },
+  "pipeline_hashes": {
+    "features.py": "678be8991f1caed88622002b6a6811b0d865eb35adcb219a23bc66ae80fcd8ee",
+    "features_v4.py": "253ab0f243a91f2d34ea5a82e23a6faa647c41c169fe2860eb9ef657e502911e",
+    "train.py": "665c2b73c2dbb2bedb287c7f46d5a52154a3a668302b466d4558aa656ed2fafe",
+    "scoring.py": "d86cd6ad4d514e1c2cb49f94f07a4050c5f2c5516c5ce490237545537168817c",
+    "train_sizes.py": "6706fb021e3220eed4c2f6d9e855a414792aa83540aa639ccc7af369d401fc45"
+  },
+  "audit": {
+    "small": {
+      "source_rows": 9038,
+      "unique_pairs": 9038
+    },
+    "medium": {
+      "source_rows": 25567,
+      "unique_pairs": 25567
+    },
+    "large": {
+      "source_rows": 103397,
+      "unique_pairs": 103397
+    },
+    "xlarge": {
+      "source_rows": 214661,
+      "unique_pairs": 214661
+    },
+    "combined": {
+      "source_rows": 352663,
+      "unique_pairs": 268228,
+      "usable_unique_pairs": 268226
+    },
+    "gold_overlap": {
+      "policy": "quarantine",
+      "unique_pairs_removed": 2,
+      "validation_pairs_removed": 0,
+      "by_size": {
+        "small": 0,
+        "medium": 0,
+        "large": 1,
+        "xlarge": 2
+      }
+    }
+  },
+  "common_validation_pairs": 66769,
+  "test_pairs": 4398,
+  "recommended_by_validation": "combined",
+  "combined_equivalent_to": [],
+  "results": [
+    {
+      "size": "small",
+      "training_pairs": 5484,
+      "artifact": "svm_small.joblib",
+      "settings": {
+        "C": 1,
+        "class_weight": null,
+        "threshold": 0.3911445767823112,
+        "feature_schema": "tfidf_pair_v4",
+        "selection_metric": "F0.5"
+      },
+      "training_seconds": 20.01516509987414,
+      "training": {
+        "accuracy": 0.9788475565280816,
+        "precision": 0.9990375360923965,
+        "recall": 0.9002601908065915,
+        "f1": 0.9470802919708029,
+        "f0_5": 0.9775852326238463,
+        "confusion_matrix": [
+          [
+            4330,
+            1
+          ],
+          [
+            115,
+            1038
+          ]
+        ]
+      },
+      "shared_train_validation_product_ids": 6945,
+      "shared_train_test_product_ids": 1280,
+      "validation": {
+        "accuracy": 0.9203223052614237,
+        "precision": 0.8391140827413289,
+        "recall": 0.5912258317793699,
+        "f1": 0.6936895439889452,
+        "f0_5": 0.7741935483870968,
+        "confusion_matrix": [
+          [
+            55425,
+            1155
+          ],
+          [
+            4165,
+            6024
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.8535698044565712,
+        "precision": 0.7678916827852998,
+        "recall": 0.662771285475793,
+        "f1": 0.7114695340501792,
+        "f0_5": 0.7442819647544057,
+        "confusion_matrix": [
+          [
+            2960,
+            240
+          ],
+          [
+            404,
+            794
+          ]
+        ]
+      },
+      "known_browser_examples": [
+        {
+          "score": -0.792934047046411,
+          "prediction": false,
+          "expected_match": false
+        },
+        {
+          "score": 0.8630415982431253,
+          "prediction": true,
+          "expected_match": false
+        }
+      ]
+    },
+    {
+      "size": "medium",
+      "training_pairs": 16264,
+      "artifact": "svm_medium.joblib",
+      "settings": {
+        "C": 1,
+        "class_weight": null,
+        "threshold": 0.31934256251302495,
+        "feature_schema": "tfidf_pair_v4",
+        "selection_metric": "F0.5"
+      },
+      "training_seconds": 27.367236400023103,
+      "training": {
+        "accuracy": 0.978049680275455,
+        "precision": 0.9961890243902439,
+        "recall": 0.8828098615332658,
+        "f1": 0.9360787824529991,
+        "f0_5": 0.9712417329271011,
+        "confusion_matrix": [
+          [
+            13293,
+            10
+          ],
+          [
+            347,
+            2614
+          ]
+        ]
+      },
+      "shared_train_validation_product_ids": 11283,
+      "shared_train_test_product_ids": 2781,
+      "validation": {
+        "accuracy": 0.9299674998876725,
+        "precision": 0.871646218147499,
+        "recall": 0.6345078025321426,
+        "f1": 0.7344087242985345,
+        "f0_5": 0.8110244122738791,
+        "confusion_matrix": [
+          [
+            55628,
+            952
+          ],
+          [
+            3724,
+            6465
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.8683492496589359,
+        "precision": 0.8098098098098098,
+        "recall": 0.6752921535893155,
+        "f1": 0.7364588074647246,
+        "f0_5": 0.7787832113977666,
+        "confusion_matrix": [
+          [
+            3010,
+            190
+          ],
+          [
+            389,
+            809
+          ]
+        ]
+      },
+      "known_browser_examples": [
+        {
+          "score": -0.2514754364627716,
+          "prediction": false,
+          "expected_match": false
+        },
+        {
+          "score": 1.1938866384555227,
+          "prediction": true,
+          "expected_match": false
+        }
+      ]
+    },
+    {
+      "size": "large",
+      "training_pairs": 71075,
+      "artifact": "svm_large.joblib",
+      "settings": {
+        "C": 1,
+        "class_weight": null,
+        "threshold": 0.2920337312576764,
+        "feature_schema": "tfidf_pair_v4",
+        "selection_metric": "F0.5"
+      },
+      "training_seconds": 77.33189609996043,
+      "training": {
+        "accuracy": 0.9719451283855083,
+        "precision": 0.9909100194055765,
+        "recall": 0.8358749030757302,
+        "f1": 0.9068137209084961,
+        "f0_5": 0.9554667034330622,
+        "confusion_matrix": [
+          [
+            59379,
+            89
+          ],
+          [
+            1905,
+            9702
+          ]
+        ]
+      },
+      "shared_train_validation_product_ids": 13490,
+      "shared_train_test_product_ids": 3427,
+      "validation": {
+        "accuracy": 0.9498270155311597,
+        "precision": 0.9309388783868935,
+        "recall": 0.7249975463735401,
+        "f1": 0.8151622158463915,
+        "f0_5": 0.8808938920556179,
+        "confusion_matrix": [
+          [
+            56032,
+            548
+          ],
+          [
+            2802,
+            7387
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.903137789904502,
+        "precision": 0.8704414587332053,
+        "recall": 0.7570951585976627,
+        "f1": 0.8098214285714286,
+        "f0_5": 0.8451360417443161,
+        "confusion_matrix": [
+          [
+            3065,
+            135
+          ],
+          [
+            291,
+            907
+          ]
+        ]
+      },
+      "known_browser_examples": [
+        {
+          "score": -0.8906772999637725,
+          "prediction": false,
+          "expected_match": false
+        },
+        {
+          "score": 0.5567179760856675,
+          "prediction": true,
+          "expected_match": false
+        }
+      ]
+    },
+    {
+      "size": "xlarge",
+      "training_pairs": 159207,
+      "artifact": "svm_xlarge.joblib",
+      "settings": {
+        "C": 1,
+        "class_weight": null,
+        "threshold": 0.14596673285991568,
+        "feature_schema": "tfidf_pair_v4",
+        "selection_metric": "F0.5"
+      },
+      "training_seconds": 185.43001460004598,
+      "training": {
+        "accuracy": 0.9801516264988348,
+        "precision": 0.981253083374445,
+        "recall": 0.8639895747864279,
+        "f1": 0.9188953339150968,
+        "f0_5": 0.9553212154849452,
+        "confusion_matrix": [
+          [
+            138146,
+            342
+          ],
+          [
+            2818,
+            17901
+          ]
+        ]
+      },
+      "shared_train_validation_product_ids": 13673,
+      "shared_train_test_product_ids": 3435,
+      "validation": {
+        "accuracy": 0.9570908655214246,
+        "precision": 0.9465853658536585,
+        "recall": 0.7618019432721562,
+        "f1": 0.8442003371580836,
+        "f0_5": 0.9027890855800321,
+        "confusion_matrix": [
+          [
+            56142,
+            438
+          ],
+          [
+            2427,
+            7762
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.9124602091859937,
+        "precision": 0.8942774005819593,
+        "recall": 0.7696160267111853,
+        "f1": 0.8272768057424854,
+        "f0_5": 0.8662157083803081,
+        "confusion_matrix": [
+          [
+            3091,
+            109
+          ],
+          [
+            276,
+            922
+          ]
+        ]
+      },
+      "known_browser_examples": [
+        {
+          "score": -1.4456287234801368,
+          "prediction": false,
+          "expected_match": false
+        },
+        {
+          "score": 0.32719270519711774,
+          "prediction": true,
+          "expected_match": false
+        }
+      ]
+    },
+    {
+      "size": "combined",
+      "training_pairs": 201457,
+      "artifact": "svm_combined.joblib",
+      "settings": {
+        "C": 10,
+        "class_weight": null,
+        "threshold": 0.3094963319960764,
+        "feature_schema": "tfidf_pair_v4",
+        "selection_metric": "F0.5"
+      },
+      "training_seconds": 233.51925450004637,
+      "training": {
+        "accuracy": 0.98561976004805,
+        "precision": 0.9908737211201306,
+        "recall": 0.8839989715461091,
+        "f1": 0.9343902162835466,
+        "f0_5": 0.9674802086069111,
+        "confusion_matrix": [
+          [
+            177931,
+            190
+          ],
+          [
+            2707,
+            20629
+          ]
+        ]
+      },
+      "shared_train_validation_product_ids": 13692,
+      "shared_train_test_product_ids": 3436,
+      "validation": {
+        "accuracy": 0.9588281987149725,
+        "precision": 0.9572271386430679,
+        "recall": 0.7643537147904603,
+        "f1": 0.8499863574351978,
+        "f0_5": 0.9112395572508366,
+        "confusion_matrix": [
+          [
+            56232,
+            348
+          ],
+          [
+            2401,
+            7788
+          ]
+        ]
+      },
+      "test": {
+        "accuracy": 0.9254206457480673,
+        "precision": 0.9215116279069767,
+        "recall": 0.7938230383973289,
+        "f1": 0.852914798206278,
+        "f0_5": 0.892790086368757,
+        "confusion_matrix": [
+          [
+            3119,
+            81
+          ],
+          [
+            247,
+            951
+          ]
+        ]
+      },
+      "known_browser_examples": [
+        {
+          "score": -2.8981250837422974,
+          "prediction": false,
+          "expected_match": false
+        },
+        {
+          "score": -0.3126206888926515,
+          "prediction": false,
+          "expected_match": false
+        }
+      ]
+    }
+  ],
+  "note": "Gold test was not used for tuning or model selection. Combined is a deduplicated union, not extra independent data. No model was automatically deployed."
+}
