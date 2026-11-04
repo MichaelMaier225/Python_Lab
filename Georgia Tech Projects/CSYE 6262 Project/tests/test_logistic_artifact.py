@@ -18,9 +18,10 @@ class LogisticArtifactTests(unittest.TestCase):
         self.assertEqual(len(entry['feature_schema']), 8)
         self.assertEqual(entry['status'], 'approved')
         self.assertEqual(entry['adapter'], 'logistic_pair_v1')
-        self.assertIsNone(entry['evaluation'])
+        self.assertEqual(entry['evaluation']['pair_count'], 4397)
+        self.assertEqual(entry['evaluation']['overlap_audit']['excluded_pairs'], 1)
         listed = next(item for item in evaluation()['models'] if item['id'] == entry['id'])
-        self.assertIn('No verified held-out evaluation', listed['integration_note'])
+        self.assertIn('CSV provenance is unverified', listed['integration_note'])
 
 
 if __name__ == '__main__':

@@ -10,3 +10,5 @@ RF uses scikit-learn 1.9.1 in `.venv-rf`, while SVM stays on 1.8.0. From the pro
 The website uses the saved classifier's `predict` result, including its class-0 decision at a probability tie. The exploratory slider does not alter that official result. Probabilities have not been calibrated. RF was trained on computers only. The existing catalog lacks specification-table text, so that input is missing for catalog predictions; the API accepts `specTableContent` when available.
 
 Original feature code credits: https://github.com/wbsg-uni-mannheim/wdc-lspc-v2 and https://github.com/anhaidgroup/py_entitymatching. Stopwords source: https://github.com/nltk/nltk_data/tree/gh-pages/packages/corpora (English stopwords; see STOPWORDS_README.txt).
+
+The evaluation tab now includes independently computed results on the broader 4,397-pair shared benchmark after excluding one known Computers XL training pair. This is a different evaluation from the notebook computer-only result. Scope, checksums, overlap limitations and reproduction commands are in docs/evaluation/lr_rf_shared_gold_20261104/. The artifact and original algorithm remain unchanged.

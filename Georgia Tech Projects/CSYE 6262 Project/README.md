@@ -579,4 +579,9 @@ New artifacts declare `feature_schema=tfidf_pair_v4`; future approved registry e
 
 The original LR artifact and eight-feature adapter now run in the existing `.venv-rf` scikit-learn 1.9.1 environment through `models/sklearn_worker.py`. SVM remains in 1.8.0. No new dependency setup is needed if RF already works; otherwise run `python -m scripts.setup_rf_runtime`. Render build/start commands are unchanged.
 
-The original training source has not been altered or retrained. Uploaded normalized Computers XL archive contents were checked, but the original CSV conversion and gold Excel dataset remain unverified. LR evaluation is not populated and no performance metrics are inferred. The website states its Computers training scope.
+The original training source has not been altered or retrained. Uploaded normalized Computers XL archive contents were checked, but the original CSV conversion and gold Excel dataset remain unverified. LR and RF evaluation results are now populated from the broader shared gold benchmark, with one known training pair excluded. The website states its Computers training scope.
+
+
+### Saved LR and RF evaluation results
+
+Both evaluation views now show measured accuracy, precision, recall, F1, and confusion matrices from a shared 4,397-pair benchmark cohort. The evaluator retains each classifier's original labels (including probability ties) and does not train or tune. One known Computers XL training pair was excluded; original LR CSV equivalence is not established. These are broader all-category results, not the RF notebook's computer-only test or measured website precision. SVM's existing view uses 4,398 pairs. See `docs/evaluation/lr_rf_shared_gold_20261104/` for results, checksums, limitations, and reproduction commands. Random Forest's dropdown label is shortened; training scope remains in Model details.

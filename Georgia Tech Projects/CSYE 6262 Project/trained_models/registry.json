@@ -126,13 +126,49 @@
         "scikit-learn": "1.9.1"
       },
       "created_at": null,
-      "evaluation": null,
-      "integration_note": "Original eight-feature LR pipeline and saved vectorizers; runs in isolated scikit-learn 1.9.1. Computers-only training scope reported by source. Uploaded archive contains normalized Computers XL, but equivalence to the original CSV has not been established. No verified held-out evaluation results supplied.",
+      "evaluation": {
+        "model_id": "logistic_regression_v1",
+        "model_version": "1",
+        "model_sha256": "f29f363006fa685333e4726a41508bf1f393b6992b3de451e92e74bb05efce89",
+        "dataset_id": "all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
+        "split": "Shared all-category gold benchmark; 4,397 pairs after excluding one known training pair",
+        "procedure": "Original saved model, fitted preprocessing and fixed decision rule; no retraining or tuning. Known exact/reversed pairs excluded against the supplied Computers XL archive. Original LR CSV provenance and full training history are not verified; splits may share products. Model trained on computers; evaluated here on a broader shared benchmark, not the notebook-specific computer test.",
+        "overlap_audit": {
+          "reference_archive": "computers_train.zip",
+          "reference_archive_sha256": "0ec260c841086d5eb8b6ed7caa4aeab7a3ab87cf91d85412aef3a6d1c7fcedf6",
+          "archive_member": "computers_train_xlarge.json.gz",
+          "original_pairs": 4398,
+          "excluded_pairs": 1,
+          "retained_pairs": 4397,
+          "note": "Exact/reversed pairs excluded against supplied archive; original LR CSV equivalence remains unverified."
+        },
+        "pair_count": 4397,
+        "threshold": 0.5,
+        "metrics": {
+          "accuracy": 0.6374801000682283,
+          "precision": 0.37396825396825395,
+          "recall": 0.49206349206349204,
+          "f1": 0.424963924963925
+        },
+        "confusion_matrix": [
+          [
+            2214,
+            986
+          ],
+          [
+            608,
+            589
+          ]
+        ],
+        "confusion_matrix_order": "[[TN, FP], [FN, TP]]",
+        "retained_pair_ids_sha256": "c37c50aae453fc946add9e755a1db909fc75865aa6b031c2172e816d7b812596"
+      },
+      "integration_note": "Trained on computers only (Computers XL reported by source). These results use a broader 4,397-pair benchmark with one known training pair excluded; they are not computer-only or website-retrieval precision. Original LR CSV provenance is unverified; the models have not been retrained.",
       "default_threshold": 0.5
     },
     {
       "id": "random_forest_v1",
-      "name": "Random Forest \u00b7 Computers XL",
+      "name": "Random Forest",
       "version": "1",
       "algorithm": "RandomForestClassifier",
       "status": "approved",
@@ -146,8 +182,44 @@
       "library_versions": {
         "scikit-learn": "1.9.1"
       },
-      "evaluation": null,
-      "integration_note": "Trained on computers only. Other categories have not been evaluated. Existing catalog listings lack specification-table text; this feature is treated as missing. Notebook reports test F1 0.644567 on 1,100 computer pairs; not independently reproduced.",
+      "evaluation": {
+        "model_id": "random_forest_v1",
+        "model_version": "1",
+        "model_sha256": "b02e11e11a706573181abe41bff7f7f1c7a6f0debc8edb26d2bd1209e82e0791",
+        "dataset_id": "all_gs.json.gz; sha256:4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b",
+        "split": "Shared all-category gold benchmark; 4,397 pairs after excluding one known training pair",
+        "procedure": "Original saved model, fitted preprocessing and fixed decision rule; no retraining or tuning. Known exact/reversed pairs excluded against the supplied Computers XL archive. Original LR CSV provenance and full training history are not verified; splits may share products. Model trained on computers; evaluated here on a broader shared benchmark, not the notebook-specific computer test. Benchmark specifications are used when present; the current catalog lacks specification-table text.",
+        "overlap_audit": {
+          "reference_archive": "computers_train.zip",
+          "reference_archive_sha256": "0ec260c841086d5eb8b6ed7caa4aeab7a3ab87cf91d85412aef3a6d1c7fcedf6",
+          "archive_member": "computers_train_xlarge.json.gz",
+          "original_pairs": 4398,
+          "excluded_pairs": 1,
+          "retained_pairs": 4397,
+          "note": "Exact/reversed pairs excluded against supplied archive; original LR CSV equivalence remains unverified."
+        },
+        "pair_count": 4397,
+        "threshold": 0.5,
+        "metrics": {
+          "accuracy": 0.764384807823516,
+          "precision": 0.5982905982905983,
+          "recall": 0.4093567251461988,
+          "f1": 0.4861111111111111
+        },
+        "confusion_matrix": [
+          [
+            2871,
+            329
+          ],
+          [
+            707,
+            490
+          ]
+        ],
+        "confusion_matrix_order": "[[TN, FP], [FN, TP]]",
+        "retained_pair_ids_sha256": "c37c50aae453fc946add9e755a1db909fc75865aa6b031c2172e816d7b812596"
+      },
+      "integration_note": "Trained on computers only (Computers XL reported by source). These results use a broader 4,397-pair benchmark with one known training pair excluded; they are not computer-only or website-retrieval precision. Original LR CSV provenance is unverified; the models have not been retrained. Specification text is present in some benchmark pairs but missing from the current catalog.",
       "training_config": {
         "notebook": "models/RF/random_forest.ipynb",
         "train": "computers_train_xlarge.json.gz",
