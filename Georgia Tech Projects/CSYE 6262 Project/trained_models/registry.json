@@ -95,15 +95,15 @@
     },
     {
       "id": "logistic_regression_v1",
-      "name": "Logistic Regression \u00b7 pending integration",
+      "name": "Logistic Regression",
       "version": "1",
       "algorithm": "LogisticRegression",
-      "status": "experimental",
+      "status": "approved",
       "adapter": "logistic_pair_v1",
       "artifact": "logistic_regression/logistic_regression_v1.joblib",
       "sha256": "f29f363006fa685333e4726a41508bf1f393b6992b3de451e92e74bb05efce89",
       "score_type": "probability",
-      "dataset": null,
+      "dataset": "Computers XL reported by original source; exact original CSV conversion not verified",
       "feature_schema": [
         "title_similarity",
         "description_similarity",
@@ -127,7 +127,7 @@
       },
       "created_at": null,
       "evaluation": null,
-      "integration_note": "Original feature adapter is implemented. Predictions are not enabled yet: LR requires scikit-learn 1.9.1 while the active SVM requires 1.8.0. Neither original artifact has been changed.",
+      "integration_note": "Original eight-feature LR pipeline and saved vectorizers; runs in isolated scikit-learn 1.9.1. Computers-only training scope reported by source. Uploaded archive contains normalized Computers XL, but equivalence to the original CSV has not been established. No verified held-out evaluation results supplied.",
       "default_threshold": 0.5
     },
     {

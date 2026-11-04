@@ -406,10 +406,9 @@ website never imports it.
 `models/logistic_regression/features.py` is a separate adapter reproducing the
 original eight features and their order. Feature and prediction parity were
 checked against the original source in a separate sklearn 1.9.1 environment.
-The 1.8.0 website keeps the SVM working and does not load the incompatible LR
-artifact. LR remains experimental pending runtime compatibility; no artifact was
-retrained, overwritten, or silently re-exported. See the algorithm folder's README
-for exact input files, missing-value semantics and remaining deployment choices.
+The website keeps SVM on 1.8.0 and routes LR to the isolated RF/LR 1.9.1 worker.
+LR is enabled without retraining, overwriting, or silently re-exporting its artifact.
+See the algorithm folder's README for inputs, missing-value semantics and scope.
 No real LR accuracy results have been supplied or inferred from these checks.
 
 ## Troubleshooting local Windows tests
@@ -456,11 +455,11 @@ original saved threshold. It writes `evaluation.json`, `predictions.csv` and
 labeled gzip JSON-lines file and `--output` chooses another report folder. There
 is no fitting or threshold-search step. It does not update the website registry
 or push results. Training/test separation still needs checking against the original
-training data. LR remains unavailable until its exact preprocessing is supplied.
+training data. LR is available through its own adapter, but this SVM evaluator does not evaluate LR.
 
 To train the SVM intentionally, use `python -m models.svm.train`. This is separate
-from evaluation and saves to `trained_models/svm/`; it retains the existing training
-script's behavior of replacing the selected version's output file. Preserve any
+from evaluation and saves under `trained_models/svm/v4_size_experiments/`; it uses the
+versioned feature pipeline and creates a timestamped experiment folder. Preserve any
 version you need before deliberately training again.
 
 
@@ -537,7 +536,7 @@ partial run folder if interrupted.
 
 ### Switching SVM and Random Forest
 
-The workspace's **Matching model** dropdown selects the actual feature pipeline and classifier. Switching re-scores the reference's candidates, resets the exploratory threshold, and clears stale pair predictions/reviews. Search retrieval and independent attribute comparisons remain shared. Each browser chooses its model independently; the combined SVM is the default. LR remains disabled pending its integration.
+The workspace's **Matching model** dropdown selects the actual feature pipeline and classifier. Switching re-scores the reference's candidates, resets the exploratory threshold, and clears stale pair predictions/reviews. Search retrieval and independent attribute comparisons remain shared. Each browser chooses its model independently; the combined SVM is the default. LR is enabled through the same isolated 1.9.1 runtime as RF.
 
 From the project folder, install the RF runtime once:
 
@@ -574,3 +573,10 @@ Keep `all_train.zip`, `all_valid.zip`, and `all_gs.json.gz` in `data/`. The comm
 V4 preserves single-character tokens, separates capacity/color/type/model evidence, represents title differences, and replaces the legacy generic number/model flags. Thresholds are selected from validation scores using **F0.5**, emphasizing precision over recall. This can reduce recall and does not guarantee a precision target. Training and validation metrics, shared product-ID counts, and the previously reported browser failures are printed. The known browser examples are diagnostics only, never training/tuning data and not a fresh test set. Gold-test scores still do not establish general phone/accessory accuracy.
 
 New artifacts declare `feature_schema=tfidf_pair_v4`; future approved registry entries must use adapter `tfidf_pair_v4`. Old saved models keep their original feature adapter. Feature-code hashes, dataset hashes, and training/validation metrics are saved with the new artifacts. Review genuine held-out results and website examples before promoting a new artifact. Unknown or ambiguous product types are not automatically rejected; these are learned features, not hard-coded prediction overrides.
+
+
+### Logistic Regression enabled
+
+The original LR artifact and eight-feature adapter now run in the existing `.venv-rf` scikit-learn 1.9.1 environment through `models/sklearn_worker.py`. SVM remains in 1.8.0. No new dependency setup is needed if RF already works; otherwise run `python -m scripts.setup_rf_runtime`. Render build/start commands are unchanged.
+
+The original training source has not been altered or retrained. Uploaded normalized Computers XL archive contents were checked, but the original CSV conversion and gold Excel dataset remain unverified. LR evaluation is not populated and no performance metrics are inferred. The website states its Computers training scope.

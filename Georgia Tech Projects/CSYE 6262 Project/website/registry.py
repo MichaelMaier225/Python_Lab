@@ -13,10 +13,10 @@ import numpy as np
 import pandas as pd
 from sklearn.exceptions import InconsistentVersionWarning
 
-from models.RF.runtime import run as run_rf
+from models.RF.runtime import run as run_isolated
 
 from models.svm.features import pair_features
-from models.logistic_regression.features import FEATURE_COLUMNS, pair_features as logistic_features
+from models.logistic_regression.features import FEATURE_COLUMNS
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY_PATH = ROOT / "trained_models" / "registry.json"
@@ -88,17 +88,17 @@ def load_bundle(entry=None):
 
 
 @lru_cache(maxsize=4)
-def check_rf(path, checksum, modified, entry_json):
-    return run_rf(json.loads(entry_json), path, checksum)
+def check_isolated(path, checksum, modified, entry_json):
+    return run_isolated(json.loads(entry_json), path, checksum)
 
 
-def rf_info(entry):
+def isolated_info(entry):
     if entry['status'] != 'approved':
         raise ModelUnavailable('Experimental models cannot serve predictions until approved.')
     path = artifact_path(entry)
     checksum = entry['sha256']
     try:
-        check_rf(str(path), checksum, path.stat().st_mtime_ns, json.dumps(entry, sort_keys=True))
+        check_isolated(str(path), checksum, path.stat().st_mtime_ns, json.dumps(entry, sort_keys=True))
     except (ValueError, OSError) as exc:
         raise ModelUnavailable(str(exc)) from exc
     return {'continuous_score': True, 'threshold': True, 'probability': True,
@@ -131,8 +131,8 @@ def model_info(entry=None):
     entry = entry or model_entry()
     info = {key: value for key, value in entry.items() if key not in {"artifact", "sha256"}}
     try:
-        if entry['adapter'] == 'random_forest_pair_v1':
-            flags = rf_info(entry)
+        if entry['adapter'] in {'random_forest_pair_v1', 'logistic_pair_v1'}:
+            flags = isolated_info(entry)
         else:
             flags = capabilities(entry, load_bundle(entry))
         info.update(available=True, capabilities=flags, message=None)
@@ -146,10 +146,10 @@ def model_info(entry=None):
 
 def predict_pairs(pairs, model_id=None):
     entry = model_entry(model_id)
-    if entry['adapter'] == 'random_forest_pair_v1':
+    if entry['adapter'] in {'random_forest_pair_v1', 'logistic_pair_v1'}:
         try:
-            rf_info(entry)
-            return run_rf(entry, artifact_path(entry), entry['sha256'], pairs)
+            isolated_info(entry)
+            return run_isolated(entry, artifact_path(entry), entry['sha256'], pairs)
         except (ValueError, OSError) as exc:
             raise ModelUnavailable(str(exc)) from exc
     bundle = load_bundle(entry)
@@ -157,8 +157,6 @@ def predict_pairs(pairs, model_id=None):
     rows = []
     for a, b in pairs:
         fields = ["title", "brand", "description"]
-        if entry["adapter"] == "logistic_pair_v1":
-            fields.append("category")
         rows.append({f"{field}_{side}": product.get(field, "")
                      for product, side in [(a, "left"), (b, "right")]
                      for field in fields})
@@ -169,13 +167,6 @@ def predict_pairs(pairs, model_id=None):
     if entry["adapter"] == "tfidf_pair_v4":
         from models.svm.features_v4 import pair_features as v4_features
         feature_builder = v4_features
-    if entry["adapter"] == "logistic_pair_v1":
-        # Empty website fields represent missing CSV cells, which pandas read as NaN.
-        for field in ["brand", "description", "category"]:
-            for side in ["left", "right"]:
-                column = f"{field}_{side}"
-                frame[column] = frame[column].replace("", None)
-        feature_builder = logistic_features
     features = feature_builder(frame, bundle["title_vectorizer"], bundle["description_vectorizer"])
     model = bundle["model"]
     scores = None
@@ -183,10 +174,7 @@ def predict_pairs(pairs, model_id=None):
         scores = np.asarray(model.decision_function(features)).reshape(-1)
     elif flags["score_type"] == "probability":
         scores = np.asarray(model.predict_proba(features))[:, 1]
-    if entry["adapter"] == "logistic_pair_v1":
-        labels = model.predict(features)  # Preserve the teammate's original classifier decision, including ties.
-    else:
-        labels = (scores >= flags["default_threshold"]).astype(int) if flags["threshold"] else model.predict(features)
+    labels = (scores >= flags["default_threshold"]).astype(int) if flags["threshold"] else model.predict(features)
     output = []
     for i, label in enumerate(labels):
         score = float(scores[i]) if scores is not None else None

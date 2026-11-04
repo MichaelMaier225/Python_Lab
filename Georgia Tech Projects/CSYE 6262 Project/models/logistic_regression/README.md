@@ -29,17 +29,10 @@ conversion of SVM scores; calibration is not claimed.
 
 ## Runtime status
 
-The artifact was saved with scikit-learn **1.9.1**. Its probabilities and labels
-were verified against the original source in an isolated 1.9.1 environment.
-The current website/SVM environment remains on **1.8.0**, and both original
-artifacts remain unchanged. LR therefore stays experimental and unavailable on
-the live site until the deployment versions are reconciled. Do not disable
-version checks or simply upgrade the shared requirements: the SVM artifact needs
-its own verified version too.
+LR is enabled through the same isolated scikit-learn **1.9.1** runtime already used by RF (`.venv-rf`). SVM stays on **1.8.0**. The shared JSON prediction worker is `models/sklearn_worker.py`. The original artifact and teammate training source remain unchanged.
 
-A straightforward next option is for the teammate to train/export LR in the same
-1.8.0 environment as the SVM, keeping this original v1 artifact as historical
-work and giving the new export its own version. Otherwise, supporting separate
-runtimes needs an explicit deployment change. Neither was performed here.
+From the project folder, `python -m scripts.setup_rf_runtime` installs the shared RF/LR runtime. Render's existing `python prepare_assets.py` build step already does this. The model selector changes actual feature extraction, candidate scores, official predictions, and feedback model IDs. LR uses its original classifier decision with a 0.5 probability boundary; calibration is not claimed.
 
-Evaluation results and exact dataset/split provenance still need to be supplied.
+`data/computers_train.zip` was inspected: it contains normalized Small, Medium, Large, and XL JSON.gz files. XL has 68,461 pairs (58,771 different, 9,690 match). The data folder is ignored by Git. This establishes the supplied archive contents, not exact equivalence to the teammate's `Computers_XL_Training.csv` or the provenance of `Gold_Standard.xlsx`. No conversion or retraining was silently performed. Source feature parity and saved-artifact prediction parity are tested separately from real-world matching quality.
+
+Held-out evaluation remains unpopulated until an identified evaluation dataset is used and its results are verified. Computers-only scope is stated in the UI; enabling predictions does not validate performance on other categories.

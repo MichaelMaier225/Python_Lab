@@ -107,7 +107,7 @@ print(json.dumps({'pairs':pairs,'scores':b['model'].predict_proba(X)[:,1].tolist
                     database.initialize(conn)
                     for product in [a, b]:
                         conn.execute('INSERT INTO products(title, brand, description) VALUES (?, ?, ?)', tuple(product.values()))
-                for model_id, kind, threshold in [('linear_svc_v3', 'decision_score', -0.25), ('random_forest_v1', 'probability', 0.5)]:
+                for model_id, kind, threshold in [('linear_svc_v3', 'decision_score', -0.25), ('random_forest_v1', 'probability', 0.5), ('logistic_regression_v1', 'probability', 0.5)]:
                     body = {'product_a': a, 'product_b': b, 'model_id': model_id}
                     result = call('POST', '/predict', body)
                     self.assertEqual(result['model_id'], model_id)
@@ -124,4 +124,4 @@ print(json.dumps({'pairs':pairs,'scores':b['model'].predict_proba(X)[:,1].tolist
                     self.assertEqual(conn.execute('SELECT COUNT(*) FROM products').fetchone()[0], 2)
                 import sqlite3
                 with closing(sqlite3.connect(Path(temporary) / 'feedback.db')) as conn:
-                    self.assertEqual({x[0] for x in conn.execute('SELECT model_id FROM feedback')}, {'linear_svc_v3', 'random_forest_v1'})
+                    self.assertEqual({x[0] for x in conn.execute('SELECT model_id FROM feedback')}, {'linear_svc_v3', 'random_forest_v1', 'logistic_regression_v1'})
