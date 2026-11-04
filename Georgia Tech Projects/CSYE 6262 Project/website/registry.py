@@ -71,7 +71,7 @@ def load_bundle(entry=None):
     entry = entry or model_entry()
     if entry["status"] != "approved":
         raise ModelUnavailable("Experimental models cannot serve predictions until approved.")
-    if entry["adapter"] not in {"tfidf_pair", "logistic_pair_v1"}:
+    if entry["adapter"] not in {"tfidf_pair", "tfidf_pair_v4", "logistic_pair_v1"}:
         raise ModelUnavailable("No adapter is registered for this feature pipeline.")
     path = artifact_path(entry)
     if not path.is_file():
@@ -80,6 +80,8 @@ def load_bundle(entry=None):
     if entry["id"] == model_entry()["id"]:
         checksum = os.getenv(entry.get("checksum_env", "MODEL_SHA256"), checksum)
     bundle = read_bundle(str(path), checksum, path.stat().st_mtime_ns)
+    if entry["adapter"] in {"tfidf_pair", "tfidf_pair_v4"} and bundle.get("feature_schema", "tfidf_pair") != entry["adapter"]:
+        raise ModelUnavailable("SVM artifact and adapter feature schemas differ.")
     if entry["adapter"] == "logistic_pair_v1" and bundle.get("feature_columns") != FEATURE_COLUMNS:
         raise ModelUnavailable("LR feature order does not match its original training code.")
     return bundle
@@ -164,6 +166,9 @@ def predict_pairs(pairs, model_id=None):
         return []
     frame = pd.DataFrame(rows)
     feature_builder = pair_features
+    if entry["adapter"] == "tfidf_pair_v4":
+        from models.svm.features_v4 import pair_features as v4_features
+        feature_builder = v4_features
     if entry["adapter"] == "logistic_pair_v1":
         # Empty website fields represent missing CSV cells, which pandas read as NaN.
         for field in ["brand", "description", "category"]:

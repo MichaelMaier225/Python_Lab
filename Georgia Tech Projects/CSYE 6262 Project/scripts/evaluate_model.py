@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def evaluate(data_path, model_id=None, batch_size=256):
     entry = model_entry(model_id)
-    if entry["adapter"] != "tfidf_pair":
+    if entry["adapter"] not in {"tfidf_pair", "tfidf_pair_v4"}:
         raise ValueError("This model needs its original preprocessing adapter before evaluation.")
     bundle = load_bundle(entry)
     if entry.get("score_type") != "decision_score" or "threshold" not in bundle:
@@ -36,7 +36,8 @@ def evaluate(data_path, model_id=None, batch_size=256):
     if not np.isfinite(threshold):
         raise ValueError("The saved model threshold must be finite.")
     scores = decision_scores(bundle["model"], bundle["title_vectorizer"],
-                             bundle["description_vectorizer"], frame, batch_size)
+                             bundle["description_vectorizer"], frame, batch_size,
+                             feature_schema=bundle.get("feature_schema", "tfidf_pair"))
     labels = frame["label"].to_numpy(dtype=int)
     predictions = (scores >= threshold).astype(int)
     with data_path.open("rb") as file:

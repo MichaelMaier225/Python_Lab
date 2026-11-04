@@ -473,9 +473,9 @@ python -m models.svm.train_sizes
 ```
 
 This loops over Small, Medium, Large and Extra Large, then trains a fifth model
-using their combined unique pairs. It reuses the existing SVM features and
-validation search. The currently deployed `svm_small_v3.joblib` and registry are
-not modified. This is a local experiment, not a Render build step.
+using their combined unique pairs. It now uses versioned SVM v4 features and
+validation F0.5 selection. The currently deployed combined artifact and registry
+are not modified. This is a local experiment, not a Render build step.
 
 Inputs in `data/`: `all_train.zip`, `all_valid.zip`, and `all_gs.json.gz`. Archives
 stay compressed on disk. Runs are sequential to limit peak memory. Larger sets
@@ -484,7 +484,7 @@ until run on your computer. The union retains only the fields used by the SVM,
 and does not keep four complete original dataframes in memory.
 
 Each run creates a fresh timestamped folder under
-`trained_models/svm/size_experiments/` containing:
+`trained_models/svm/v4_size_experiments/` containing:
 
 - `svm_small.joblib`, `svm_medium.joblib`, `svm_large.joblib`, `svm_xlarge.joblib`,
   and `svm_combined.joblib`.
@@ -528,7 +528,7 @@ partial run folder if interrupted.
   generalization; shared individual products across different pairs still need
   separate investigation.
 - All models and thresholds are fixed before gold-test results are calculated.
-  The recommendation uses validation F1 (precision breaks ties), not gold-test F1.
+  The v4 recommendation uses validation F0.5 (precision breaks ties), not gold-test results.
 - If subsets overlap completely, the combined union may equal XL. This is reported
   explicitly; combining repeated pairs does not create extra independent data.
 - No benchmark performance is claimed from synthetic test fixtures. Full training
@@ -558,3 +558,19 @@ The default model ID is `linear_svc_combined`, artifact `trained_models/svm/svm_
 If Render has `ACTIVE_MODEL` set to an older ID, change it to `linear_svc_combined` (or remove it to use the registry default). Legacy `MODEL_URL` and `MODEL_SHA256` still refer to the original `svm_small_v3.joblib`; they do not replace or change the combined artifact. Combined uses its committed SHA, with an optional scoped `SVM_COMBINED_SHA256` override. Keep the existing database download variables and build/start commands.
 
 The combined model improves measured test precision to 79.34%, but still makes the two reported iPhone accessory false matches. See the documented examples before treating higher scores as proof of product identity. Threshold selection used validation F1, not these examples or the gold test. No model was retrained in this integration.
+
+
+## Retrain SVM v4 (identity-aware features)
+
+From the project folder in PowerShell:
+
+```powershell
+git pull --ff-only origin main
+.\.venv\Scripts\python.exe -m models.svm.train_sizes
+```
+
+Keep `all_train.zip`, `all_valid.zip`, and `all_gs.json.gz` in `data/`. The command prints Small, Medium, Large, XL, and Combined results, then saves all five artifacts and comparison/audit reports under `trained_models/svm/v4_size_experiments/<timestamp>/`. It does not overwrite or activate the current website model. `python -m models.svm.train` now delegates to the same maintained workflow instead of the older refit-and-overwrite path.
+
+V4 preserves single-character tokens, separates capacity/color/type/model evidence, represents title differences, and replaces the legacy generic number/model flags. Thresholds are selected from validation scores using **F0.5**, emphasizing precision over recall. This can reduce recall and does not guarantee a precision target. Training and validation metrics, shared product-ID counts, and the previously reported browser failures are printed. The known browser examples are diagnostics only, never training/tuning data and not a fresh test set. Gold-test scores still do not establish general phone/accessory accuracy.
+
+New artifacts declare `feature_schema=tfidf_pair_v4`; future approved registry entries must use adapter `tfidf_pair_v4`. Old saved models keep their original feature adapter. Feature-code hashes, dataset hashes, and training/validation metrics are saved with the new artifacts. Review genuine held-out results and website examples before promoting a new artifact. Unknown or ambiguous product types are not automatically rejected; these are learned features, not hard-coded prediction overrides.

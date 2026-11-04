@@ -6,3 +6,4 @@ __pycache__/
 /reports/
 /trained_models/svm/size_experiments/
 /.venv-rf/
+/trained_models/svm/v4_size_experiments/
