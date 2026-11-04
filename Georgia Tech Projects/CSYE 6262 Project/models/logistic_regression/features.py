@@ -14,7 +14,7 @@ FEATURE_COLUMNS = [
 
 def extract_numeric_tokens(description):
     import re
-    
+
     if pd.isna(description):
         return [], []
 
