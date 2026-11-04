@@ -170,4 +170,5 @@ def feedback(item: Feedback):
 def evaluation():
     # Versioned, team-reviewed metrics only. No inferred metrics from search results.
     return {"models": [{"id": entry["id"], "name": entry["name"], "version": entry["version"],
-                        "evaluation": entry.get("evaluation")} for entry in entries()]}
+                        "evaluation": entry.get("evaluation"),
+                        "integration_note": entry.get("integration_note")} for entry in entries()]}

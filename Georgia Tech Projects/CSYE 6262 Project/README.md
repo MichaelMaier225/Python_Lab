@@ -328,3 +328,29 @@ URL. Run it against a development server. It checks
 the actual startup state first, then intercepts browser requests with
 synthetic fixtures to test linked interactions. No fixture predictions are stored
 in the production database. Tests do not deploy or change the active model.
+
+## Received Logistic Regression v1
+
+`models/logistic_regression_v1.joblib` is preserved exactly as received and registered
+as experimental. It appears in Model evaluation with a pending integration note;
+it does not serve predictions or replace the default SVM.
+
+Inspection found a LogisticRegression classifier with eight inputs and fitted
+title/description vectorizers. The stored feature names are `title_similarity`,
+`description_similarity`, `description_available`, `same_category`, `jaccard_num`,
+`jaccard_alph`, `brand_available`, and `brand_match`. These names do not specify the
+original cleaning, missing-value rules, tokenization, similarity definitions or
+category handling. The original feature-building code and label definitions are
+required before writing its serving adapter. Reusing the SVM's 78,125-feature
+pipeline would be incorrect. No preprocessing or evaluation results were invented.
+
+The artifact records scikit-learn 1.9.1; the currently verified SVM runtime uses
+1.8.0. Loading incompatible sklearn versions is not supported. Keep the serving
+requirements unchanged until a compatible, tested deployment approach is chosen
+with the original code. Do not silently retrain, rewrite or re-export either
+artifact just to suppress version warnings.
+
+To finish integration, obtain the teammate's training/prediction script or notebook,
+the original package versions, and ideally an example pair with its computed
+8-value feature vector and expected prediction. Keep their genuine evaluation
+results and dataset/split metadata separate from software compatibility tests.

@@ -517,6 +517,9 @@ function renderEvaluation() {
     const model = state.evaluation.find((item) => item.id === get("evaluation-model").value);
     const target = get("evaluation-content");
     target.replaceChildren();
+    if (model?.integration_note) {
+        target.append(node("p", model.integration_note, "notice warning"));
+    }
     const data = model?.evaluation;
     if (!data) {
         target.append(

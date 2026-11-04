@@ -32,6 +32,36 @@
         "scipy": "1.17.0",
         "joblib": "1.5.3"
       }
+    },
+    {
+      "id": "logistic_regression_v1",
+      "name": "Logistic Regression \u00b7 pending integration",
+      "version": "1",
+      "algorithm": "LogisticRegression",
+      "status": "experimental",
+      "adapter": null,
+      "artifact": "logistic_regression_v1.joblib",
+      "sha256": "f29f363006fa685333e4726a41508bf1f393b6992b3de451e92e74bb05efce89",
+      "score_type": null,
+      "dataset": null,
+      "feature_schema": [
+        "title_similarity",
+        "description_similarity",
+        "description_available",
+        "same_category",
+        "jaccard_num",
+        "jaccard_alph",
+        "brand_available",
+        "brand_match"
+      ],
+      "label_mapping": null,
+      "training_config": null,
+      "library_versions": {
+        "scikit-learn": "1.9.1"
+      },
+      "created_at": null,
+      "evaluation": null,
+      "integration_note": "Model received. Predictions are not enabled yet: the original feature-building code and a runtime compatible with both model versions are required. The SVM remains active."
     }
   ]
 }
