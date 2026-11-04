@@ -461,3 +461,69 @@ To train the SVM intentionally, use `python -m models.svm.train`. This is separa
 from evaluation and saves to `trained_models/svm/`; it retains the existing training
 script's behavior of replacing the selected version's output file. Preserve any
 version you need before deliberately training again.
+
+
+## Train SVM on every size and the combined data
+
+With the virtual environment active, run from this project directory:
+
+```bat
+python -m models.svm.train_sizes
+```
+
+This loops over Small, Medium, Large and Extra Large, then trains a fifth model
+using their combined unique pairs. It reuses the existing SVM features and
+validation search. The currently deployed `svm_small_v3.joblib` and registry are
+not modified. This is a local experiment, not a Render build step.
+
+Inputs in `data/`: `all_train.zip`, `all_valid.zip`, and `all_gs.json.gz`. Archives
+stay compressed on disk. Runs are sequential to limit peak memory. Larger sets
+can still require substantial RAM and training time; actual duration is unknown
+until run on your computer. The union retains only the fields used by the SVM,
+and does not keep four complete original dataframes in memory.
+
+Each run creates a fresh timestamped folder under
+`trained_models/svm/size_experiments/` containing:
+
+- `svm_small.joblib`, `svm_medium.joblib`, `svm_large.joblib`, `svm_xlarge.joblib`,
+  and `svm_combined.joblib`.
+- `comparison.csv`: validation/test metrics and training times for all five.
+- `results.json`: selected settings, row/duplicate counts, source archive hashes,
+  runtime versions, validation-based recommendation and completion status.
+- `validation_pairs.csv`: the common holdout IDs.
+- `errors_<size>.csv`: incorrect gold-test decisions for each model.
+
+Generated experiments are Git-ignored. Existing runs are not overwritten. Copy an
+approved version into the normal artifact folder and update the registry only
+after reviewing it; the experiment does not activate a model automatically.
+
+For a shorter first run:
+
+```bat
+python -m models.svm.train_sizes --sizes small medium
+```
+
+That trains Small, Medium and their union. Runs using different `--sizes` choices
+can have different common validation cohorts, so keep comparisons within the same
+run. There is no automatic checkpoint/resume; already saved models remain in the
+partial run folder if interrupted.
+
+### Comparison safeguards
+
+- Validation IDs from all selected sizes define one common holdout, excluded from
+  every training set, including the combined model. Parameters and threshold are
+  selected on this common validation set. Its scores are tuning scores, not a
+  second independent test.
+- The new experimental models are not refitted on the held-out validation pairs.
+  This differs from the old single-size command's final train+validation refit.
+- Duplicate and reversed product pairs count once in training/validation.
+  Inconsistent duplicate labels or modeled input features stop the run.
+- Training/test pair overlap, including reversed pairs, stops the run. This does
+  not establish product/cluster-disjoint generalization; shared individual products
+  across different pairs still need separate investigation.
+- All models and thresholds are fixed before gold-test results are calculated.
+  The recommendation uses validation F1 (precision breaks ties), not gold-test F1.
+- If subsets overlap completely, the combined union may equal XL. This is reported
+  explicitly; combining repeated pairs does not create extra independent data.
+- No benchmark performance is claimed from synthetic test fixtures. Full training
+  archives were not available in the cloud workspace for a genuine five-model run.

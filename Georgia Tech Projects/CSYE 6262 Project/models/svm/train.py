@@ -8,6 +8,7 @@ from __future__ import annotations
 import gzip
 import io
 import json
+import re
 import zipfile
 from pathlib import Path
 
@@ -27,27 +28,29 @@ SIZE = "small"  # Try medium or large after establishing a baseline.
 SEED = 42
 
 
-def read_train() -> pd.DataFrame:
-    path = DATA / "all_train.zip"
-    print(f"Loading {SIZE} training data...", flush=True)
+def read_train(size=SIZE, data_dir=DATA) -> pd.DataFrame:
+    path = Path(data_dir) / "all_train.zip"
+    print(f"Loading {size} training data...", flush=True)
     with zipfile.ZipFile(path) as z:
-        matches = [n for n in z.namelist() if n.lower().endswith(f"all_train_{SIZE}.json.gz")]
+        matches = [n for n in z.namelist() if n.lower().endswith(f"all_train_{size}.json.gz")]
         if len(matches) != 1:
             raise ValueError(f"Expected one training member; found {matches}. Archive: {z.namelist()[:20]}")
         with z.open(matches[0]) as f, gzip.GzipFile(fileobj=f) as g:
             df = pd.read_json(g, lines=True)
     df["pair_id"] = df["pair_id"].astype(str)
+    if df["label"].isna().any() or not set(df["label"]).issubset({0, 1}):
+        raise ValueError("Dataset labels must be 0 or 1.")
     df["label"] = df["label"].astype(int)
     print(f"Loaded {len(df):,} training pairs", flush=True)
     return df
 
 
-def read_validation_ids() -> set[str]:
-    path = DATA / "all_valid.zip"
+def read_validation_ids(size=SIZE, data_dir=DATA) -> set[str]:
+    path = Path(data_dir) / "all_valid.zip"
     with zipfile.ZipFile(path) as z:
-        matches = [n for n in z.namelist() if not n.endswith("/") and SIZE in Path(n).name.lower()]
+        matches = [n for n in z.namelist() if not n.endswith("/") and re.search(rf"(?<![a-z0-9]){re.escape(size)}(?![a-z0-9])", Path(n).name.lower())]
         if len(matches) != 1:
-            raise ValueError(f"Expected one {SIZE} validation file; found {matches}")
+            raise ValueError(f"Expected one {size} validation file; found {matches}")
         name = matches[0]
         raw = z.read(name)
     if name.lower().endswith(".gz"):
@@ -76,10 +79,12 @@ def read_validation_ids() -> set[str]:
     return result
 
 
-def read_gold() -> pd.DataFrame:
+def read_gold(data_dir=DATA) -> pd.DataFrame:
     print("Loading gold standard...", flush=True)
-    df = pd.read_json(DATA / "all_gs.json.gz", compression="gzip", lines=True)
+    df = pd.read_json(Path(data_dir) / "all_gs.json.gz", compression="gzip", lines=True)
     df["pair_id"] = df["pair_id"].astype(str)
+    if df["label"].isna().any() or not set(df["label"]).issubset({0, 1}):
+        raise ValueError("Dataset labels must be 0 or 1.")
     df["label"] = df["label"].astype(int)
     print(f"Gold-standard pairs: {len(df):,}", flush=True)
     return df
@@ -107,21 +112,7 @@ def report(label: str, y: np.ndarray, pred: np.ndarray):
           f"F1={f1_score(y, pred, zero_division=0):.4f}", flush=True)
 
 
-def main():
-    MODELS.mkdir(parents=True, exist_ok=True)
-    df = read_train()
-    valid_ids = read_validation_ids()
-    gold = read_gold()
-    mask = df["pair_id"].isin(valid_ids)
-    train, valid = df.loc[~mask].copy(), df.loc[mask].copy()
-    print(f"Training={len(train):,}; validation={len(valid):,}; unmatched validation IDs={len(valid_ids - set(df['pair_id'])):,}", flush=True)
-    if len(valid) == 0 or len(train) == 0:
-        raise ValueError("Official validation split did not produce nonempty train/validation partitions")
-    overlap = set(df["pair_id"]) & set(gold["pair_id"])
-    print(f"Gold-standard pair ID overlap: {len(overlap)}", flush=True)
-    if overlap:
-        raise ValueError("Training/gold pair overlap detected")
-
+def fit_model(train, valid):
     print("\nFitting training-only vectorizers...", flush=True)
     tv, dv = make_vectorizers(train)
     print("Building training features...", flush=True)
@@ -145,14 +136,34 @@ def main():
                 # Break F1 ties in favor of higher precision.
                 rank = (f1, precision)
                 if best is None or rank > best[0]:
-                    best = (rank, c, weight, threshold)
+                    best = (rank, c, weight, threshold, model)
             print(f"C={c:<5} class_weight={str(weight):<8} done", flush=True)
 
-    (_, _), best_c, best_weight, best_threshold = best
+    (_, _), best_c, best_weight, best_threshold, selected = best
     print(f"\nSelected: C={best_c}, class_weight={best_weight}, threshold={best_threshold}", flush=True)
-    selected = LinearSVC(C=best_c, class_weight=best_weight, max_iter=15000, random_state=SEED)
-    selected.fit(xt, yt)
-    report("OFFICIAL VALIDATION RESULTS", yv,
+    settings = {"C": best_c, "class_weight": best_weight, "threshold": best_threshold}
+    return selected, tv, dv, settings
+
+
+def main():
+    MODELS.mkdir(parents=True, exist_ok=True)
+    df = read_train()
+    valid_ids = read_validation_ids()
+    gold = read_gold()
+    mask = df["pair_id"].isin(valid_ids)
+    train, valid = df.loc[~mask].copy(), df.loc[mask].copy()
+    print(f"Training={len(train):,}; validation={len(valid):,}; unmatched validation IDs={len(valid_ids - set(df['pair_id'])):,}", flush=True)
+    if len(valid) == 0 or len(train) == 0:
+        raise ValueError("Official validation split did not produce nonempty train/validation partitions")
+    overlap = set(df["pair_id"]) & set(gold["pair_id"])
+    print(f"Gold-standard pair ID overlap: {len(overlap)}", flush=True)
+    if overlap:
+        raise ValueError("Training/gold pair overlap detected")
+
+    selected, tv, dv, settings = fit_model(train, valid)
+    best_c, best_weight, best_threshold = settings["C"], settings["class_weight"], settings["threshold"]
+    xv = pair_features(valid, tv, dv)
+    report("OFFICIAL VALIDATION RESULTS", valid["label"].to_numpy(),
            (selected.decision_function(xv) >= best_threshold).astype(int))
 
     print("\nRefitting on all training pairs...", flush=True)
