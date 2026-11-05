@@ -129,9 +129,18 @@ def predict(pair: ProductPair):
     return result
 
 
+def display_model_info(entry):
+    info = model_info(entry)
+    if entry["adapter"] in {"logistic_pair_v1", "random_forest_pair_v1"}:
+        # Keep prediction capabilities, but do not publish evaluation records or notes.
+        info.pop("evaluation", None)
+        info["integration_note"] = "The supplied training code uses computers only."
+    return info
+
+
 @app.get("/models")
 def models():
-    return {"active_model": model_entry()["id"], "models": [model_info(entry) for entry in entries() if entry.get("show_in_website", True)]}
+    return {"active_model": model_entry()["id"], "models": [display_model_info(entry) for entry in entries() if entry.get("show_in_website", True)]}
 
 
 @app.get("/candidates/{product_id}")
@@ -142,7 +151,7 @@ def product_candidates(product_id: int, limit: int = Query(default=40, ge=1, le=
         raise HTTPException(status_code=404, detail="Reference product not found.")
     products = candidates(reference, limit)
     try:
-        info = model_info(model_entry(model_id))
+        info = display_model_info(model_entry(model_id))
     except ModelUnavailable as exc:
         raise HTTPException(status_code=503, detail=str(exc))
     results = predictions([(reference, item) for item in products], model_id) if products and info["available"] else [None] * len(products)
@@ -179,4 +188,5 @@ def evaluation():
     # Versioned, team-reviewed metrics only. No inferred metrics from search results.
     return {"models": [{"id": entry["id"], "name": entry["name"], "version": entry["version"],
                         "evaluation": entry.get("evaluation"),
-                        "integration_note": entry.get("integration_note")} for entry in entries() if entry.get("show_in_website", True)]}
+                        "integration_note": entry.get("integration_note")} for entry in entries() if entry.get("show_in_website", True)
+                        and entry["adapter"] not in {"logistic_pair_v1", "random_forest_pair_v1"}]}
