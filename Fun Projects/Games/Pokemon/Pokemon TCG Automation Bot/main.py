@@ -19,15 +19,32 @@ WINDOW_KEYWORDS = ("phone screen", "phone link", "link to windows")
 
 
 def find_window():
-    matches = [w for w in gw.getAllWindows() if w.title and any(
-        term in w.title.lower() for term in WINDOW_KEYWORDS)]
-    if not matches:
-        raise RuntimeError("No Phone Link window found. Open the mirrored phone screen first.")
-    for i, window in enumerate(matches, 1):
-        print(f"{i}. {window.title} ({window.left},{window.top}, {window.width}x{window.height})")
-    if len(matches) == 1:
-        return matches[0]
-    return matches[int(input("Choose window number: ")) - 1]
+    """Find the mirrored phone, or let the user choose a visible window."""
+    windows = [
+        w for w in gw.getAllWindows()
+        if w.title and w.title.strip() and w.width >= 150 and w.height >= 150
+    ]
+    if not windows:
+        raise RuntimeError("No visible windows detected. Open the mirrored phone screen.")
+
+    preferred = [
+        w for w in windows
+        if any(term in w.title.lower() for term in
+               (*WINDOW_KEYWORDS, "michael's s20+", "s20+"))
+    ]
+    if len(preferred) == 1:
+        selected = preferred[0]
+        print(f"Detected phone window: {selected.title}")
+        return selected
+
+    print("Choose your mirrored phone window:")
+    for i, window in enumerate(windows, 1):
+        print(f"{i}. {window.title} ({window.width}x{window.height})")
+    while True:
+        answer = input("Window number: ").strip()
+        if answer.isdigit() and 1 <= int(answer) <= len(windows):
+            return windows[int(answer) - 1]
+        print("Enter a number from the list.")
 
 
 def calibrate(window):
