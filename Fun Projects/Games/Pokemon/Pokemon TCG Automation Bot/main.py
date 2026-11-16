@@ -15,6 +15,15 @@ from pynput import keyboard, mouse
 ROOT = Path(__file__).resolve().parent
 RECORDINGS = ROOT / "recordings"
 SCREENSHOT_INTERVAL = 2.0
+VERSION = "RECORDER V2.1 - ENTER START + 6 CHECKPOINTS"
+CHECKPOINT_NAMES = (
+    "Tutorial complete",
+    "First pack and Wonder Pick complete",
+    "Ready for first 10-pack",
+    "Two single packs and first 10-pack complete",
+    "Ready for second 10-pack",
+    "Final 10-pack complete",
+)
 WINDOW_KEYWORDS = ("phone screen", "phone link", "link to windows")
 
 
@@ -80,6 +89,7 @@ class Recorder:
         self.writer = threading.Thread(target=self.write_screenshots, daemon=True)
         self.writer.start()
         self.next_periodic = 0.0
+        self.last_focus = None
 
     def bounds(self):
         l, t, r, b = self.offsets
@@ -113,7 +123,7 @@ class Recorder:
                 "relative_y": round((y - t) / (b - t), 6)}
 
     def screenshot(self, reason):
-        if self.state != "RECORDING" or not self.active():
+        if self.state != "RECORDING":
             return
         timestamp = self.elapsed()
         filename = f"{timestamp:010.3f}_{reason}_{self.screenshots:05d}.png"
@@ -141,9 +151,6 @@ class Recorder:
     def start(self):
         if self.state != "READY":
             return
-        if not self.active():
-            print("Focus the Phone Link game window before starting.")
-            return
         RECORDINGS.mkdir(parents=True, exist_ok=True)
         self.session = RECORDINGS / datetime.now().strftime("session_%Y%m%d_%H%M%S_%f")
         (self.session / "screenshots").mkdir(parents=True)
@@ -153,7 +160,8 @@ class Recorder:
         self.record("start", window_title=self.window.title, offsets=self.offsets)
         self.screenshot("start")
         self.next_periodic = time.monotonic() + SCREENSHOT_INTERVAL
-        print("RECORDING — F6 pause, F7 stop, F8 checkpoint")
+        print("RECORDING — session created:", self.session, flush=True)
+        print("F6 pause | F7 save/exit | F8 checkpoint", flush=True)
 
     def pause(self, reason="manual"):
         if self.state == "RECORDING":
@@ -164,9 +172,6 @@ class Recorder:
 
     def resume(self):
         if self.state == "PAUSED":
-            if not self.active():
-                print("Focus Phone Link before resuming.")
-                return
             self.state = "RECORDING"
             self.record("resume")
             self.screenshot("resume")
@@ -200,7 +205,6 @@ class Recorder:
             if self.state != "RECORDING":
                 return
             if not self.active():
-                self.pause("window lost focus")
                 return
             p = self.point(x, y)
             if pressed and p:
@@ -227,6 +231,21 @@ class Recorder:
                     if now - path[-1]["t"] >= 0.03:
                         path.append({"t": now, **p})
 
+    def checkpoint(self):
+        if self.state != "RECORDING":
+            print("Not recording; checkpoint ignored.", flush=True)
+            return
+        index = len(self.checkpoints)
+        if index >= len(CHECKPOINT_NAMES):
+            print("All 6 checkpoints already saved.", flush=True)
+            return
+        name = CHECKPOINT_NAMES[index]
+        self.screenshot(f"checkpoint_{index + 1}")
+        item = {"number": index + 1, "t": self.elapsed(), "name": name}
+        self.checkpoints.append(item)
+        self.record("checkpoint", **item)
+        print(f"CHECKPOINT {index + 1}/6 SAVED: {name}", flush=True)
+
     def on_key(self, key):
         if key == keyboard.Key.f5:
             self.start()
@@ -236,19 +255,34 @@ class Recorder:
             self.stop()
             return False
         elif key == keyboard.Key.f8 and self.state == "RECORDING":
-            self.screenshot("checkpoint")
-            self.checkpoints.append({"t": self.elapsed(), "name": "Checkpoint"})
+            self.checkpoint()
 
     def run(self):
-        print("READY — F5 start | F6 pause/resume | F7 save/exit | F8 checkpoint")
+        print("\\n" + "=" * 60)
+        print(VERSION, flush=True)
+        print("=" * 60)
+        print("READY — Press ENTER in this terminal to START (or F5).", flush=True)
+        print("F6 pause/resume | F7 save/exit | F8 checkpoint", flush=True)
+        for i, name in enumerate(CHECKPOINT_NAMES, 1):
+            print(f"  Checkpoint {i}: {name}", flush=True)
+        print("Do not play until you see RECORDING.", flush=True)
         with mouse.Listener(on_click=self.on_click, on_move=self.on_move) as ml:
             with keyboard.Listener(on_press=self.on_key) as kl:
+                # Terminal Enter is a reliable fallback if F5 is intercepted by the shell.
+                if self.state == "READY":
+                    input("Press ENTER to begin recording (or press F5): ")
+                    if self.state == "READY":
+                        self.start()
                 while kl.running and self.state != "COMPLETE":
                     time.sleep(0.1)
                     if self.state == "RECORDING":
-                        if not self.active():
-                            self.pause("window lost focus")
-                        elif time.monotonic() >= self.next_periodic:
+                        focused = self.active()
+                        if focused != self.last_focus:
+                            self.record("focus_change", focused=focused)
+                            self.last_focus = focused
+                            if not focused:
+                                print("WARNING: Phone window lost focus; recording continues.", flush=True)
+                        if time.monotonic() >= self.next_periodic:
                             self.screenshot("periodic")
                             self.next_periodic = time.monotonic() + SCREENSHOT_INTERVAL
             ml.stop()
