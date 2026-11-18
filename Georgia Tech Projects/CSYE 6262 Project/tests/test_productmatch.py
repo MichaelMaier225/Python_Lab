@@ -3,8 +3,10 @@
 from contextlib import closing
 import asyncio
 import hashlib
+import io
 import json
 import os
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -182,12 +184,69 @@ class ProductMatchTests(unittest.TestCase):
         self.assertTrue(self.request('POST','/feedback',body).json()['duplicate'])
         self.assertEqual(self.request('POST','/feedback',dict(body,choice='match')).status_code,409)
         self.assertEqual(self.request('POST','/feedback',dict(body,model_version='old')).status_code,409)
-        import sqlite3
         with closing(sqlite3.connect(self.root/'feedback.db')) as conn, conn:
             row=conn.execute('SELECT model_id,model_version,record FROM feedback').fetchone()
             self.assertEqual(row[:2],('fixture','test-only'))
             self.assertEqual(json.loads(row[2])['prediction']['model_id'],'fixture')
         self.assertEqual(feedback.pair_id(self.a,self.b),feedback.pair_id(self.b,self.a))
+
+    def test_feedback_writes_each_review_to_configured_directory(self):
+        feedback_dir = self.root / 'mounted'
+        body = {'product_a': self.a, 'product_b': self.b, 'model_id': 'fixture',
+                'model_version': 'test-only'}
+        with patch.dict(os.environ, {'PRODUCTMATCH_FEEDBACK_DIR': str(feedback_dir)}):
+            for choice, request_id in [
+                ('match', 'a95c96e1-2a6a-4b3e-83ca-56cfaabda101'),
+                ('different', 'a95c96e1-2a6a-4b3e-83ca-56cfaabda102'),
+            ]:
+                response = self.request('POST', '/feedback', dict(body, choice=choice, request_id=request_id))
+                self.assertEqual(response.status_code, 200)
+        self.assertFalse((self.root / 'feedback.db').exists())
+        with closing(sqlite3.connect(feedback_dir / 'feedback.db')) as conn:
+            rows = conn.execute('SELECT pair_id, choice FROM feedback ORDER BY request_id').fetchall()
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0][0], rows[1][0])
+        self.assertEqual([row[1] for row in rows], ['match', 'different'])
+
+    def test_feedback_supabase_insert_retry_conflict_and_failure(self):
+        body = {
+            'product_a': self.a, 'product_b': self.b, 'choice': 'different',
+            'request_id': 'a95c96e1-2a6a-4b3e-83ca-56cfaabda101',
+            'model_id': 'fixture', 'model_version': 'test-only',
+        }
+        config = {'SUPABASE_URL': 'https://test.supabase.co', 'SUPABASE_SECRET_KEY': 'sb_secret_test'}
+
+        def response(status, rows):
+            result = io.BytesIO(json.dumps(rows).encode())
+            result.status = status
+            return result
+
+        with patch.dict(os.environ, config), patch.object(feedback, 'HTTPSConnection') as connect:
+            connection = connect.return_value
+            connection.getresponse.return_value = response(201, [body])
+            self.assertFalse(self.request('POST', '/feedback', body).json()['duplicate'])
+            connect.assert_called_once_with('test.supabase.co', timeout=5)
+            args, kwargs = connection.request.call_args
+            self.assertEqual(args, ('POST', '/rest/v1/feedback?on_conflict=request_id'))
+            self.assertEqual(kwargs['headers']['apikey'], config['SUPABASE_SECRET_KEY'])
+            row = json.loads(kwargs['body'])
+            self.assertEqual(row['choice'], 'different')
+            self.assertEqual(row['record']['prediction']['model_id'], 'fixture')
+
+            existing = {field: row[field] for field in ('pair_id', 'choice', 'record')}
+            connection.getresponse.side_effect = [
+                response(201, []), response(200, [existing]),
+                response(201, []), response(200, [existing]),
+                response(403, {}),
+            ]
+            self.assertTrue(self.request('POST', '/feedback', body).json()['duplicate'])
+            self.assertEqual(self.request('POST', '/feedback', dict(body, choice='match')).status_code, 409)
+            self.assertEqual(self.request('POST', '/feedback', body).status_code, 503)
+
+        with patch.dict(os.environ, {'SUPABASE_URL': config['SUPABASE_URL'], 'SUPABASE_SECRET_KEY': ''}):
+            self.assertEqual(self.request('POST', '/feedback', body).status_code, 503)
+
+        self.assertFalse((self.root / 'feedback.db').exists())
 
     def test_evaluation_and_assets(self):
         self.assertIsNone(self.request('GET','/evaluation').json()['models'][0]['evaluation'])

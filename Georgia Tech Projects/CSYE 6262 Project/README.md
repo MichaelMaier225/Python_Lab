@@ -12,7 +12,6 @@ models/                        Algorithm source code
         features.py            Shared SVM preprocessing and pair features
         scoring.py             Shared batch scoring for experiments/evaluation
     logistic_regression/       Teammate source goes here (still pending)
-    decision_tree/             Teammate source goes here (not supplied yet)
 trained_models/                Saved models, grouped by algorithm
     svm/                       Original SVM v2 and v3 joblib files
     logistic_regression/       Received LR v1 joblib (integration pending)
@@ -150,7 +149,9 @@ when needed. The website connects four areas:
    supplied. Missing results have an explicit empty state.
 4. **Feedback:** review an official prediction. Submissions retain listing
    contents, a stable content-based pair ID, model ID/version, original prediction
-   and score, choice, and UTC timestamp in `data/feedback.db`.
+   and score, choice, and UTC timestamp in the SQLite `feedback` table. The app
+   creates `data/feedback.db` on the first successful review by default. On a
+   configured Supabase deployment, the reviews go to `public.feedback`.
 
 A threshold slider changes exploratory candidate classifications, plot colors,
 match counts and the lowest qualifying listed price. It does not retrain the
@@ -310,14 +311,52 @@ Get-FileHash .\data\products.db -Algorithm SHA256
 Get-Item .\trained_models\svm\svm_small_v3.joblib, .\data\products.db | Select-Object Name, Length
 ```
 
-For durable feedback, attach persistent storage and set `PRODUCTMATCH_DATA_DIR`
-to its mounted directory. Set `PRODUCTMATCH_MODEL_DIR` only if models live outside
-this project's `trained_models/`. A Render build may not have access to a runtime disk;
-provision that disk separately before pointing runtime paths at it. Downloading
-into build-local `data/` does not initialize an unrelated mounted directory.
-Free-instance feedback is local and disposable. Do not enable a database refresh
-against a live writable dataset. Choose a paid plan only after measuring the real
-model's peak memory; 512 MB has not been validated for the original artifact.
+### Store live reviews in Supabase
+
+Create the table once in the Supabase SQL Editor:
+
+```sql
+create table if not exists public.feedback (
+    request_id uuid primary key,
+    pair_id text not null,
+    model_id text not null,
+    model_version text not null,
+    choice text not null check (choice in ('match', 'different', 'unsure')),
+    record jsonb not null,
+    created_at timestamptz not null default now()
+);
+
+alter table public.feedback enable row level security;
+revoke all on table public.feedback from public, anon, authenticated;
+grant select, insert on table public.feedback to service_role;
+```
+
+Enable the Supabase Data API. In Render, set `SUPABASE_URL` to the project URL
+(`https://<project-ref>.supabase.co`) and `SUPABASE_SECRET_KEY` to an
+`sb_secret_` key from **Project Settings → API Keys**. Store the key only in
+server-side environment settings. Deploy, submit a review, then check
+**Supabase → Table Editor → feedback** for the new row. The Table Editor can
+export the rows as CSV. Existing SQLite reviews stay in their original file.
+
+With both settings unset, local reviews use SQLite. With Supabase configured,
+a storage error is shown to the reviewer so they can retry.
+
+### Store reviews on a persistent disk
+
+To keep reviews across Render redeploys, attach a persistent disk and set
+`PRODUCTMATCH_FEEDBACK_DIR` to its mounted directory, for example `/var/data`.
+The app creates `feedback.db` there on the first successful submission. Leave
+`PRODUCTMATCH_DATA_DIR` pointed at the catalog directory. If
+`PRODUCTMATCH_FEEDBACK_DIR` is unset, reviews go next to `products.db`, preserving
+the existing setup. To carry existing reviews to the new location, stop the app
+and copy the existing `feedback.db` to the mounted directory before restarting.
+
+A Render build may not have access to a runtime disk. Keep catalog preparation
+in the build directory unless you provision the catalog disk separately. Set
+`PRODUCTMATCH_MODEL_DIR` only if models live outside this project's
+`trained_models/`. Free-instance feedback storage is temporary. Do not refresh
+the catalog against a live writable dataset. Measure real model peak memory
+before choosing a plan.
 
 ## Evaluation data and methodology
 

@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .database import candidates, count_products, get_product, search_products
 from .attributes import compare_attributes
-from .feedback import save_feedback
+from .feedback import FeedbackStorageError, save_feedback
 from .registry import ModelUnavailable, entries, model_entry, model_info, predict_pairs
 
 
@@ -179,6 +179,8 @@ def feedback(item: Feedback):
         raise HTTPException(status_code=409, detail="The active model changed. Run a new official prediction before reviewing it.")
     try:
         return save_feedback(a, b, result, item.choice, str(item.request_id))
+    except FeedbackStorageError as exc:
+        raise HTTPException(status_code=503, detail="Feedback storage is unavailable. Try again shortly.") from exc
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
 

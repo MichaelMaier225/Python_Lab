@@ -728,12 +728,6 @@ td.status-unknown {
         serif;
     margin-top: 6px;
 }
-.notice {
-    padding: 14px;
-    background: #f5f6f1;
-    border: 1px solid var(--line);
-    font-size: 12px;
-}
 footer {
     max-width: 1560px;
     margin: auto;
