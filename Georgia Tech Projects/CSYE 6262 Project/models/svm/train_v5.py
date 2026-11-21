@@ -1,5 +1,3 @@
-"""Train the combined v5 SVM and compare it with the saved v4 baseline."""
-
 import argparse
 import hashlib
 import json
