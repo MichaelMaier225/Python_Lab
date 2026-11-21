@@ -83,7 +83,7 @@ class ProductMatchTests(unittest.TestCase):
         return asyncio.run(run())
 
     def test_frozen_feature_regression_and_symmetry(self):
-        expected = np.asarray(json.loads((Path(__file__).parent / 'fixtures' / 'svm_features.json').read_text()))
+        expected = np.asarray(json.loads((Path(__file__).resolve().parents[1] / 'fixtures' / 'svm_features.json').read_text()))
         np.testing.assert_allclose(self.features.toarray(),expected,rtol=1e-12,atol=1e-12)
         reversed_frame = self.frame.rename(columns={f'{field}_{side}':f'{field}_{other}'
             for field in ['title','brand','description'] for side,other in [('left','right'),('right','left')]})

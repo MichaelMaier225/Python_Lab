@@ -22,7 +22,7 @@ from models.RF.runtime import python_path
 from website import database, feedback, registry
 from website.main import app
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 
 
 class RandomForestTests(unittest.TestCase):

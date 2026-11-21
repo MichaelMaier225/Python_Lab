@@ -13,7 +13,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from models.logistic_regression import features
 from website import registry
 
-SOURCE = Path(__file__).resolve().parents[1] / 'models' / 'logistic_regression' / 'train.py'
+SOURCE = Path(__file__).resolve().parents[3] / 'models' / 'logistic_regression' / 'train.py'
 
 
 def original_features(frame, title, description):

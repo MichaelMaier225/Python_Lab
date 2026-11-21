@@ -1,14 +1,15 @@
-# Random Forest (Computers XL)
+# Random Forest
 
-- `random_forest.ipynb`: received training notebook; only data/output paths and the saved feature-key mismatch were adjusted. Its displayed outputs are the teammate's existing outputs, not a new run.
-- `features.py`: inference functions copied from that notebook. The English NLTK stopwords are vendored alongside their source README, avoiding runtime downloads.
-- `../../trained_models/RF/random_forest_v1.joblib`: original received artifact, unchanged.
-- The artifact uses `feature_columns`; the original notebook save cell used `feature_names`. The adapter accepts either and checks the exact feature order.
+The model was trained on Computers XL. `random_forest.ipynb` keeps the
+original notebook outputs. Its data paths, output path, and saved feature key
+were adjusted. The website uses `features.py` and the [original saved model](../../trained_models/RF/random_forest_v1.joblib).
 
-RF uses scikit-learn 1.9.1 in `.venv-rf`, while SVM stays on 1.8.0. From the project folder, run `python -m scripts.setup_rf_runtime` once. Render's existing `python prepare_assets.py` build step also installs this runtime. `PRODUCTMATCH_RF_PYTHON` optionally selects its interpreter.
+Run `python -m scripts.setup_rf_runtime` for scikit-learn 1.9.1.
+Render runs it during build. Set `PRODUCTMATCH_RF_PYTHON` to use another
+interpreter. The website uses the saved model's `predict` label. It accepts
+`specTableContent` through the API. Catalog rows lack that field.
 
-The website uses the saved classifier's `predict` result, including its class-0 decision at a probability tie. The exploratory slider does not alter that official result. Probabilities have not been calibrated. RF was trained on computers only. The existing catalog lacks specification-table text, so that input is missing for catalog predictions; the API accepts `specTableContent` when available.
-
-Original feature code credits: https://github.com/wbsg-uni-mannheim/wdc-lspc-v2 and https://github.com/anhaidgroup/py_entitymatching. Stopwords source: https://github.com/nltk/nltk_data/tree/gh-pages/packages/corpora (English stopwords; see STOPWORDS_README.txt).
-
-The evaluation tab now includes independently computed results on the broader 4,397-pair shared benchmark after excluding one known Computers XL training pair. This is a different evaluation from the notebook computer-only result. Scope, checksums, overlap limitations and reproduction commands are in docs/evaluation/lr_rf_shared_gold_20261104/. The artifact and original algorithm remain unchanged.
+See the [shared benchmark](../../docs/evaluation/lr_rf_shared_gold_20261104/)
+and [stopwords credit](STOPWORDS_README.txt). Feature code sources are
+[WDC](https://github.com/wbsg-uni-mannheim/wdc-lspc-v2) and
+[py_entitymatching](https://github.com/anhaidgroup/py_entitymatching).
