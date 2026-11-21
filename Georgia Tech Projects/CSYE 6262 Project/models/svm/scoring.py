@@ -6,11 +6,14 @@ from .features import pair_features
 
 
 def decision_scores(model, title_vectorizer, description_vectorizer, frame, batch_size=256, feature_schema="tfidf_pair"):
-    if feature_schema not in {"tfidf_pair", "tfidf_pair_v4"}:
-        raise ValueError("Unknown SVM feature schema.")
-    builder = pair_features
-    if feature_schema == "tfidf_pair_v4":
+    if feature_schema == "tfidf_pair":
+        builder = pair_features
+    elif feature_schema == "tfidf_pair_v4":
         from .features_v4 import pair_features as builder
+    elif feature_schema == "tfidf_pair_v5":
+        from .features_v5 import pair_features as builder
+    else:
+        raise ValueError("Unknown SVM feature schema.")
     if batch_size < 1:
         raise ValueError("Batch size must be positive.")
     scores = []

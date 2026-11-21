@@ -624,3 +624,33 @@ The original training source has not been altered or retrained. Uploaded normali
 ### Saved LR and RF evaluation results
 
 Both evaluation views now show measured accuracy, precision, recall, F1, and confusion matrices from a shared 4,397-pair benchmark cohort. The evaluator retains each classifier's original labels (including probability ties) and does not train or tune. One known Computers XL training pair was excluded; original LR CSV equivalence is not established. These are broader all-category results, not the RF notebook's computer-only test or measured website precision. SVM's existing view uses 4,398 pairs. See `docs/evaluation/lr_rf_shared_gold_20261104/` for results, checksums, limitations, and reproduction commands. Random Forest's dropdown label is shortened; training scope remains in Model details.
+
+
+## Train and compare SVM v5
+
+V5 adds one feature to v4's feature set. It flags explicitly different MacBook
+coverage sizes when both titles name the same MacBook family. The Supabase
+feedback identified this failure pattern. Keep `data/feedback_rows.csv` as a
+development reference and train with the original WDC archives.
+
+From the project directory, in the Python 3.12 development environment:
+
+```bash
+python -m unittest discover -s tests -p test_svm_v5.py -v
+python -m models.svm.train_v5
+```
+
+Place `all_train.zip`, `all_valid.zip`, and `all_gs.json.gz` in `data/` or pass
+`--data-dir`. The trainer fits the combined model and selects its threshold on
+the official validation split. It saves the candidate and its v4/v5 comparison
+in a timestamped directory under `trained_models/svm/v5/`. Compare false
+positives and false negatives in each confusion matrix (rows are actual labels,
+columns are predicted labels, with different first). The website continues
+using its configured v4 artifact.
+
+For an independent website check, pass `--fresh-test path/to/pairs.json.gz`
+with fresh, verified WDC-format pairs. Use the original catalog product IDs
+(`id_left` and `id_right` or `pair_id=left#right`). The comparison excludes
+fresh pairs sharing product IDs with the training, validation, or gold splits.
+The WDC gold comparison excludes exact and reversed gold pairs from fitting.
+It can still include products seen in training.

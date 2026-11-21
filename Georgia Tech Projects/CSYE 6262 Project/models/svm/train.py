@@ -104,13 +104,13 @@ def make_vectorizers(train: pd.DataFrame):
     return title_vec, desc_vec
 
 
-def fit_model(train, valid):
+def fit_model(train, valid, *, feature_builder=pair_features, feature_schema=SCHEMA):
     print("\nFitting training-only vectorizers...", flush=True)
     tv, dv = make_vectorizers(train)
     print("Building training features...", flush=True)
-    xt = pair_features(train, tv, dv)
+    xt = feature_builder(train, tv, dv)
     print("Building validation features...", flush=True)
-    xv = pair_features(valid, tv, dv)
+    xv = feature_builder(valid, tv, dv)
     yt, yv = train["label"].to_numpy(), valid["label"].to_numpy()
 
     # Choose both regularization and threshold using validation only.
@@ -140,7 +140,7 @@ def fit_model(train, valid):
         raise ValueError("No SVM candidate converged. Inspect training inputs before increasing iteration limits.")
     _, best_c, best_weight, best_threshold, selected = best
     print(f"\nSelected: C={best_c}, class_weight={best_weight}, threshold={best_threshold}", flush=True)
-    settings = {"C": best_c, "class_weight": best_weight, "threshold": best_threshold, "feature_schema": SCHEMA, "selection_metric": "F0.5"}
+    settings = {"C": best_c, "class_weight": best_weight, "threshold": best_threshold, "feature_schema": feature_schema, "selection_metric": "F0.5"}
     return selected, tv, dv, settings
 
 
