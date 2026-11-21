@@ -1,0 +1,48 @@
+{
+  "feature": "macbook_compatibility_size_conflict",
+  "feature_weight": 0.0,
+  "source_hashes": {
+    "all_train.zip": "41b1989363f9ee3d09975cea49d21075d16e4d201aa2b65ce19dd6753024dc33",
+    "all_valid.zip": "2ad0f8f3f4ecdf60b0a93a6f78e2c2977d10751f1ad2d4b7c0b1b48bc545e863",
+    "all_gs.json.gz": "4adf972cc973e7ce12ab819a682b66f98708e29fa4a088aca11726a0cbd65c1b"
+  },
+  "results": {
+    "wdc_gold": {
+      "pairs": 4376,
+      "v4": {
+        "accuracy": 0.9255027422303473,
+        "precision": 0.9233009708737864,
+        "recall": 0.7938230383973289,
+        "f1": 0.8536804308797128,
+        "f0_5": 0.8941331327566755,
+        "confusion_matrix": [
+          [
+            3099,
+            79
+          ],
+          [
+            247,
+            951
+          ]
+        ]
+      },
+      "v5": {
+        "accuracy": 0.9273308957952467,
+        "precision": 0.9166666666666666,
+        "recall": 0.8080133555926544,
+        "f1": 0.8589174800354925,
+        "f0_5": 0.8926595352268536,
+        "confusion_matrix": [
+          [
+            3090,
+            88
+          ],
+          [
+            230,
+            968
+          ]
+        ]
+      }
+    }
+  }
+}

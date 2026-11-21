@@ -1,5 +1,3 @@
-"""Train each WDC size and its deduplicated union. Never overwrite the live SVM."""
-
 import argparse
 import gc
 import hashlib
