@@ -1,4 +1,5 @@
 import argparse
+import csv
 import hashlib
 import json
 from datetime import datetime, timezone
@@ -11,7 +12,7 @@ import pandas as pd
 
 from website.registry import load_bundle, model_entry
 
-from .features_v5 import SCHEMA, pair_features
+from .features_v5 import SCHEMA, compatibility_conflicts, pair_features
 from .scoring import decision_scores
 from .train import DATA, MODELS, fit_model, read_gold
 from .train_sizes import SIZES, collect_data, deduplicate, metrics, prepare_pairs
@@ -27,7 +28,38 @@ def compare(frame, bundles):
     }
 
 
-def run(data_dir=DATA, output_root=MODELS / "v5", fresh_test=None):
+def print_coverage(name, frame, choices):
+    hits = frame.loc[pd.Series(compatibility_conflicts(frame), index=frame.index, dtype=bool)]
+    print(f"\n{name}: {len(hits):,}/{len(frame):,} rows triggered the feature")
+    for label, choice in choices.items():
+        print(f"  {label}: {hits['label'].eq(choice).sum():,}/{frame['label'].eq(choice).sum():,}")
+    for row in hits.head(5).itertuples(index=False):
+        print(f"  {row.title_left} | {row.title_right}")
+
+
+def audit_feedback(path):
+    with path.open(encoding="utf-8-sig", newline="") as file:
+        rows = []
+        for vote in csv.DictReader(file):
+            pair = json.loads(vote["record"])
+            rows.append({
+                "title_left": pair["product_a"]["title"],
+                "title_right": pair["product_b"]["title"],
+                "label": vote["choice"],
+            })
+    frame = pd.DataFrame(rows, columns=["title_left", "title_right", "label"])
+    print_coverage("Supabase feedback votes", frame, {
+        "match": "match", "different": "different", "unsure": "unsure",
+    })
+    applecare = frame.loc[
+        frame["title_left"].str.contains("applecare", case=False, na=False)
+        & frame["title_right"].str.contains("applecare", case=False, na=False)
+    ]
+    for row, conflict in zip(applecare.itertuples(index=False), compatibility_conflicts(applecare)):
+        print(f"  AppleCare+ check ({'triggered' if conflict else 'quiet'}): {row.title_left} | {row.title_right}")
+
+
+def run(data_dir=DATA, output_root=MODELS / "v5", fresh_test=None, *, audit_only=False):
     # Load data
     data_dir = Path(data_dir)
     inputs = [data_dir / name for name in ("all_train.zip", "all_valid.zip", "all_gs.json.gz")]
@@ -35,13 +67,22 @@ def run(data_dir=DATA, output_root=MODELS / "v5", fresh_test=None):
     if missing:
         raise ValueError("Missing WDC inputs: " + ", ".join(missing))
 
-    baseline = load_bundle(model_entry("linear_svc_combined"))
     gold = deduplicate(prepare_pairs(read_gold(data_dir)))
     combined, _, validation, validation_keys, _ = collect_data(data_dir, SIZES)
     gold_keys = set(gold["_key"])
     train = combined.loc[~combined["_key"].isin(validation_keys | gold_keys)]
     validation = validation.loc[~validation["_key"].isin(gold_keys)]
     del combined
+    if audit_only:
+        choices = {"match": 1, "different": 0}
+        print_coverage("Training", train, choices)
+        print_coverage("Validation", validation, choices)
+        feedback = data_dir / "feedback_rows.csv"
+        if feedback.is_file():
+            audit_feedback(feedback)
+        return
+
+    baseline = load_bundle(model_entry("linear_svc_combined"))
     tests = {"wdc_gold": gold}
     if fresh_test:
         fresh = deduplicate(prepare_pairs(pd.read_json(fresh_test, lines=True, compression="gzip")))
@@ -93,9 +134,10 @@ def main():
     parser.add_argument("--data-dir", type=Path, default=DATA)
     parser.add_argument("--output-root", type=Path, default=MODELS / "v5")
     parser.add_argument("--fresh-test", type=Path, help="Verified WDC-format pairs as gzipped JSON Lines.")
+    parser.add_argument("--audit-only", action="store_true", help="Print feature coverage without training.")
     args = parser.parse_args()
     try:
-        run(args.data_dir, args.output_root, args.fresh_test)
+        run(args.data_dir, args.output_root, args.fresh_test, audit_only=args.audit_only)
     except (ValueError, OSError) as exc:
         parser.error(str(exc))
 

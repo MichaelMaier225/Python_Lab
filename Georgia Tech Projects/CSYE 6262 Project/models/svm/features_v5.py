@@ -22,13 +22,18 @@ def covered_size(title):
     return match.groups() if match else None
 
 
-def pair_features(frame, title_vectorizer, description_vectorizer):
-    # Features
-    base = v4_features(frame, title_vectorizer, description_vectorizer)
+def compatibility_conflicts(frame):
     left = text_column(frame, "title", "left")
     right = text_column(frame, "title", "right")
     conflicts = []
     for a, b in zip(left, right):
         size_a, size_b = covered_size(a), covered_size(b)
         conflicts.append(int(bool(size_a and size_b and size_a[1] == size_b[1] and size_a[0] != size_b[0])))
+    return conflicts
+
+
+def pair_features(frame, title_vectorizer, description_vectorizer):
+    # Features
+    base = v4_features(frame, title_vectorizer, description_vectorizer)
+    conflicts = compatibility_conflicts(frame)
     return hstack([base, csr_matrix(conflicts, dtype=float).T], format="csr")
