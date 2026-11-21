@@ -24,7 +24,7 @@ from sklearn.svm import LinearSVC
 from website import database, feedback, registry
 from website.attributes import compare_attributes
 from website.main import app
-from models.svm.features import pair_features
+from models.svm.shared.features import pair_features
 
 
 class ProductMatchTests(unittest.TestCase):

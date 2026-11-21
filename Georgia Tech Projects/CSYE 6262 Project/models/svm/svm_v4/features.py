@@ -4,7 +4,7 @@ import re
 import numpy as np
 from scipy.sparse import csr_matrix, hstack
 
-from .features import text_column, overlap_score, token_set
+from ..shared.features import text_column, overlap_score, token_set
 
 SCHEMA = 'tfidf_pair_v4'
 

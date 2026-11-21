@@ -16,7 +16,7 @@
       "feature_schema": "tfidf_pair_v4",
       "default_threshold": 0.3094963319960764,
       "training_config": {
-        "script": "models/svm/train_sizes.py",
+        "script": "models/svm/svm_v4/train_sizes.py",
         "training_pairs": 201457,
         "validation_pairs": 66769,
         "settings": {
@@ -254,7 +254,7 @@
       "feature_schema": "tfidf_pair_v4",
       "default_threshold": 0.3911445767823112,
       "training_config": {
-        "script": "models/svm/train_sizes.py",
+        "script": "models/svm/svm_v4/train_sizes.py",
         "training_pairs": 5484,
         "validation_pairs": 66769,
         "settings": {
@@ -313,7 +313,7 @@
       "feature_schema": "tfidf_pair_v4",
       "default_threshold": 0.31934256251302495,
       "training_config": {
-        "script": "models/svm/train_sizes.py",
+        "script": "models/svm/svm_v4/train_sizes.py",
         "training_pairs": 16264,
         "validation_pairs": 66769,
         "settings": {
@@ -372,7 +372,7 @@
       "feature_schema": "tfidf_pair_v4",
       "default_threshold": 0.2920337312576764,
       "training_config": {
-        "script": "models/svm/train_sizes.py",
+        "script": "models/svm/svm_v4/train_sizes.py",
         "training_pairs": 71075,
         "validation_pairs": 66769,
         "settings": {
@@ -431,7 +431,7 @@
       "feature_schema": "tfidf_pair_v4",
       "default_threshold": 0.14596673285991568,
       "training_config": {
-        "script": "models/svm/train_sizes.py",
+        "script": "models/svm/svm_v4/train_sizes.py",
         "training_pairs": 159207,
         "validation_pairs": 66769,
         "settings": {

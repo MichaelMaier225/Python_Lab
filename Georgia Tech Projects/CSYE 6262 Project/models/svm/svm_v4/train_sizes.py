@@ -13,10 +13,10 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score, fbeta_score
 
-from .features import clean
-from .features_v4 import SCHEMA
-from .scoring import decision_scores
-from .train import DATA, MODELS, fit_model, read_gold, read_train, read_validation_ids
+from ..shared.features import clean
+from .features import SCHEMA
+from ..shared.scoring import decision_scores
+from .train import DATA, MODELS, ROOT, fit_model, read_gold, read_train, read_validation_ids
 
 SIZES = ("small", "medium", "large", "xlarge")
 TEXT_FIELDS = ("title", "brand", "description")
@@ -153,8 +153,13 @@ def run(data_dir=DATA, output_root=None, sizes=SIZES, overlap_policy="quarantine
         with (data_dir / name).open("rb") as file:
             provenance[name] = hashlib.file_digest(file, "sha256").hexdigest()
     runtime = {"python": platform.python_version(), "scikit-learn": version("scikit-learn")}
-    pipeline_hashes = {name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
-                       for name in ['features.py', 'features_v4.py', 'train.py', 'scoring.py', 'train_sizes.py']}
+    pipeline_paths = [
+        "shared/features.py", "svm_v4/features.py", "svm_v4/train.py",
+        "shared/scoring.py", "svm_v4/train_sizes.py",
+    ]
+    source_root = Path(__file__).resolve().parents[1]
+    pipeline_hashes = {name: hashlib.sha256((source_root / name).read_bytes()).hexdigest()
+                       for name in pipeline_paths}
     results = []
     validation[["pair_id", "_key", "label"]].to_csv(output / "validation_pairs.csv", index=False)
     quarantined.to_csv(output / "quarantined_gold_overlap.csv", index=False)
@@ -210,7 +215,7 @@ def run(data_dir=DATA, output_root=None, sizes=SIZES, overlap_policy="quarantine
         errors["score"] = scores
         errors["prediction"] = (scores >= bundle["threshold"]).astype(int)
         errors.loc[errors["label"] != errors["prediction"]].to_csv(output / f"errors_{result['size']}.csv", index=False)
-        diagnostic_path = Path(__file__).resolve().parents[2] / 'docs/evaluation/svm_sizes_20261104/known_false_matches.json'
+        diagnostic_path = ROOT / 'docs/evaluation/svm_sizes_20261104/known_false_matches.json'
         if diagnostic_path.is_file():
             examples = json.loads(diagnostic_path.read_text())['pairs']
             diagnostic_frame = pd.DataFrame([{f'{field}_{side}': product.get(field, '')

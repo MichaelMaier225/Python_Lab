@@ -15,7 +15,7 @@ from sklearn.exceptions import InconsistentVersionWarning
 
 from models.RF.runtime import run as run_isolated
 
-from models.svm.features import pair_features
+from models.svm.shared.features import pair_features
 from models.logistic_regression.features import FEATURE_COLUMNS
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -165,7 +165,7 @@ def predict_pairs(pairs, model_id=None):
     frame = pd.DataFrame(rows)
     feature_builder = pair_features
     if entry["adapter"] == "tfidf_pair_v4":
-        from models.svm.features_v4 import pair_features as v4_features
+        from models.svm.svm_v4.features import pair_features as v4_features
         feature_builder = v4_features
     features = feature_builder(frame, bundle["title_vectorizer"], bundle["description_vectorizer"])
     model = bundle["model"]

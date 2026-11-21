@@ -13,9 +13,9 @@ from unittest.mock import patch
 import joblib
 import pandas as pd
 
-from models.svm.train import read_validation_ids
-from models.svm.train_sizes import SIZES, deduplicate, prepare_pairs, run
-from models.svm import train_sizes
+from models.svm.svm_v4.train import read_validation_ids
+from models.svm.svm_v4.train_sizes import SIZES, deduplicate, prepare_pairs, run
+from models.svm.svm_v4 import train_sizes
 
 
 def pair(number, label):

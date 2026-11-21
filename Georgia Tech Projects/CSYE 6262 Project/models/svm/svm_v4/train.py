@@ -1,7 +1,7 @@
 """WDC V2 SVM v4 training helpers.
 
 Place the original archives in the project data/ directory.
-Run from the project root: python -m models.svm.train
+Run from the project root: python -m models.svm.svm_v4.train
 """
 from __future__ import annotations
 
@@ -20,10 +20,10 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.svm import LinearSVC
 from sklearn.exceptions import ConvergenceWarning
 
-from .features import text_column
-from .features_v4 import pair_features, SCHEMA
+from ..shared.features import text_column
+from .features import pair_features, SCHEMA
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 DATA = ROOT / "data"
 MODELS = ROOT / "trained_models" / "svm"
 SIZE = "small"  # Try medium or large after establishing a baseline.

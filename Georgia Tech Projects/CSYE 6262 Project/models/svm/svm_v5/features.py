@@ -4,8 +4,8 @@ import re
 
 from scipy.sparse import csr_matrix, hstack
 
-from .features import text_column
-from .features_v4 import pair_features as v4_features
+from ..shared.features import text_column
+from ..svm_v4.features import pair_features as v4_features
 
 SCHEMA = "tfidf_pair_v5"
 SIZE_MENTION = re.compile(r"\b\d+\s*inch\b")

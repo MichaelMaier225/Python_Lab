@@ -12,10 +12,10 @@ import pandas as pd
 
 from website.registry import load_bundle, model_entry
 
-from .features_v5 import SCHEMA, compatibility_conflicts, pair_features
-from .scoring import decision_scores
-from .train import DATA, MODELS, fit_model, read_gold
-from .train_sizes import SIZES, collect_data, deduplicate, metrics, prepare_pairs
+from .features import SCHEMA, compatibility_conflicts, pair_features
+from ..shared.scoring import decision_scores
+from ..svm_v4.train import DATA, MODELS, fit_model, read_gold
+from ..svm_v4.train_sizes import SIZES, collect_data, deduplicate, metrics, prepare_pairs
 
 
 def compare(frame, bundles):

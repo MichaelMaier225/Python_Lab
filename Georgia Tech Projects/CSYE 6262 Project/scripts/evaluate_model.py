@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 
-from models.svm.scoring import decision_scores
+from models.svm.shared.scoring import decision_scores
 from website.registry import load_bundle, model_entry, predict_pairs
 
 ROOT = Path(__file__).resolve().parent.parent

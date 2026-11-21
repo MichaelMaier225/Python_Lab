@@ -9,9 +9,9 @@ def decision_scores(model, title_vectorizer, description_vectorizer, frame, batc
     if feature_schema == "tfidf_pair":
         builder = pair_features
     elif feature_schema == "tfidf_pair_v4":
-        from .features_v4 import pair_features as builder
+        from ..svm_v4.features import pair_features as builder
     elif feature_schema == "tfidf_pair_v5":
-        from .features_v5 import pair_features as builder
+        from ..svm_v5.features import pair_features as builder
     else:
         raise ValueError("Unknown SVM feature schema.")
     if batch_size < 1:

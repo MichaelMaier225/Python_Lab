@@ -3,10 +3,10 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from models.svm.features_v4 import pair_features as v4_features
-from models.svm.features_v5 import SCHEMA, pair_features
-from models.svm.scoring import decision_scores
-from models.svm.train import fit_model, make_vectorizers
+from models.svm.svm_v4.features import pair_features as v4_features
+from models.svm.svm_v5.features import SCHEMA, pair_features
+from models.svm.shared.scoring import decision_scores
+from models.svm.svm_v4.train import fit_model, make_vectorizers
 
 
 class SVMV5Tests(unittest.TestCase):

@@ -4,9 +4,9 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from models.svm.features_v4 import identity, pair_features, SCHEMA
-from models.svm.scoring import decision_scores
-from models.svm.train import fit_model, make_vectorizers
+from models.svm.svm_v4.features import identity, pair_features, SCHEMA
+from models.svm.shared.scoring import decision_scores
+from models.svm.svm_v4.train import fit_model, make_vectorizers
 from website import registry
 from unittest.mock import patch
 
